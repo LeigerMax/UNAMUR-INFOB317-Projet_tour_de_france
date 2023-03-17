@@ -16,7 +16,7 @@ a,
 
 @media (hover: hover) {
   a:hover {
-    background-color: white;
+    background-color: '../assets/Background.png';
   }
 }
 
