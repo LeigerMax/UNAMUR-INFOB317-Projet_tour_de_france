@@ -24,7 +24,7 @@
 - [@LeigerMax](https://github.com/LeigerMax) 
 - [@sdourte](https://github.com/sdourte) 
 - [@BenjaminPans](https://github.com/BenjaminPans) 
-- [@?](https://github.com/) 
+- [@PastoriLucas](https://github.com/PastoriLucas) 
 
 
 ## 🛠 Build with
