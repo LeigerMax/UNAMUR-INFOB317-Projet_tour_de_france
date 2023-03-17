@@ -1,13 +1,13 @@
 <template>
-    <img :src="map" alt="map TDF" width="1000" height="700" />
+    
 </template>
   
 <script>
-  import map from '../assets/carte.png'
+
   export default {
     data() {
       return {
-        map : map
+        
       };
     }
   };
