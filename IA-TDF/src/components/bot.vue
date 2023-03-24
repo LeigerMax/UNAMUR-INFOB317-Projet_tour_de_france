@@ -1,9 +1,9 @@
 <template>
     <div class="chatbot">
-  <img src= '../assets/BotChat.png' alt="Image" class="image-right">
+      <p>BOT : WESH MA COUILLE C'EST MOI LE BOT</p>
+      
   </div>
     <div class="gamebox">
-  <img src= '../assets/BotChat.png' alt="Image" class="image-right">
   </div>
 </template>
 
@@ -20,32 +20,42 @@ export default {
 
 <style scoped>
   .chatbot {
-  display: flex;
-  flex-direction: row;
-  align-items: right;
-  position:absolute;
-  right: 0;
-  margin-right: 40px;
-  margin-top: 50px;
+    text-align: left;
+    padding-left: 20px;
+    padding-top: 10px;
+    color: rgb(255, 229, 84);
+    font-family: "Copperplate", fantasy;
+    font-size: 30px;
+    background-size: fill;
+    width: 700px;
+    height: 300px;
+    background-image: url('../assets/BotChat.png');
+    border: 10px solid black;
+    border-radius: 25px;
+    display: flex;
+    flex-direction: row;
+    align-items: right;
+    position:fixed;
+    right: 0;
+    margin-right: 40px;
+    margin-top: 20px;
 }
 
 .gamebox {
-  display: flex;
-  flex-direction: row;
-  align-items: right;
-  position:absolute;
-  right: 0;
-  margin-right: 40px;
-  margin-top: 530px;
+    background-size: fill;
+    width: 700px;
+    height: 300px;
+    background-image: url('../assets/BotChat.png');
+    border: 10px solid black;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: right;
+    position:fixed;
+    right: 0;
+    margin-right: 40px;
+    margin-top: 380px;
 }
 
-.image-right {
-  width: 600px;
-  height: 450px;
-  margin-right: 30px;
-  object-fit: cover;
-  object-position: 50% 50%;
-  border: 10px solid black;
-  border-radius: 20px;
-}
+
 </style>
