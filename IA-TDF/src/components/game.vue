@@ -9,7 +9,7 @@
 
 <style scoped>
 .cardbox {
-  width: 1740px;
+  width: 1000px;
   height: 220px;
   background-image: url('../assets/CardBox.png');
   background-size: cover;
