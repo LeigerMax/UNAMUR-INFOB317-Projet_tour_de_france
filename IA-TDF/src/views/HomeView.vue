@@ -1,13 +1,13 @@
 <script setup>
 import Map from '../components/map.vue'
-import Bot from '../components/bot.vue'
-import Game from '../components/game.vue'
+import Bot from '../components/chatBot.vue'
+import Card from '../components/card.vue'
 </script>
 
 <template>
   <main>
     <Map />
     <Bot />
-    <Game />
+    <Card />
   </main>
 </template>
