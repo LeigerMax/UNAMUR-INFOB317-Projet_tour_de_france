@@ -67,7 +67,7 @@ export default {
         console.log(message);
 
       }
-      else { //Si form game
+      else { //Si form game 
 
         // Input user
         var inputChatBot = document.getElementById('chatbot_game_input');
