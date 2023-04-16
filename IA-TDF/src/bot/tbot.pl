@@ -359,6 +359,30 @@ ecrire_mot(M,1,0,E,1) :-
 espace(0).
 espace(N) :- N>0, Nn is N-1, write(' '), espace(Nn).
 
+/* --------------------------------------------------------------------- */
+/*                                                                       */
+/*                           CALCUL DISTANCE                             */
+/*                                                                       */
+/* --------------------------------------------------------------------- */
+
+% Cas de base : si le premier argument est une liste vide, la distance est la longueur de la deuxième liste.
+levenshtein_distance([], Y, Distance) :- length(Y, Distance).
+
+% Cas de base : si le deuxième argument est une liste vide, la distance est la longueur de la première liste.
+levenshtein_distance(X, [], Distance) :- length(X, Distance).
+
+% Cas récursif : comparaison des deux premiers éléments des listes X et Y.
+levenshtein_distance([X|Xs], [Y|Ys], Distance) :-
+    % Si les éléments sont identiques, on continue avec les listes restantes.
+    (X == Y -> levenshtein_distance(Xs, Ys, Distance)
+    % Si les éléments sont différents, on a trois options possibles :
+    ; levenshtein_distance(Xs, [Y|Ys], Distance1), % 1. On insère un caractère dans la première liste.
+      levenshtein_distance([X|Xs], Ys, Distance2), % 2. On supprime un caractère de la deuxième liste.
+      levenshtein_distance(Xs, Ys, Distance3),     % 3. On substitue un caractère de la première liste avec un caractère de la deuxième liste.
+      % On calcule récursivement la distance pour chaque option, et on prend le minimum.
+      Distance is min(Distance1, Distance2, Distance3) + 1
+    ).
+
 
 /* --------------------------------------------------------------------- */
 /*                                                                       */
