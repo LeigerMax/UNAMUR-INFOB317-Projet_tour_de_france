@@ -31,7 +31,7 @@ produire_reponse([fin],[L1]) :-
 
 produire_reponse(L,Rep) :-
 %  write(L),
-   mclef(M,_), member(M,L),
+   mclef(M,_), verif_distance(M,L),
    clause(regle_rep(M,_,Pattern,Rep),Body),
    match_pattern(Pattern,L),
    call(Body), !.
@@ -365,6 +365,10 @@ espace(N) :- N>0, Nn is N-1, write(' '), espace(Nn).
 /*                                                                       */
 /* --------------------------------------------------------------------- */
 
+% Définition de la fonction min/3
+min(X, Y, X) :- X =< Y.
+min(X, Y, Y) :- X > Y.
+
 % Cas de base : si le premier argument est une liste vide, la distance est la longueur de la deuxième liste.
 levenshtein_distance([], Y, Distance) :- length(Y, Distance).
 
@@ -380,8 +384,22 @@ levenshtein_distance([X|Xs], [Y|Ys], Distance) :-
       levenshtein_distance([X|Xs], Ys, Distance2), % 2. On supprime un caractère de la deuxième liste.
       levenshtein_distance(Xs, Ys, Distance3),     % 3. On substitue un caractère de la première liste avec un caractère de la deuxième liste.
       % On calcule récursivement la distance pour chaque option, et on prend le minimum.
-      Distance is min(Distance1, Distance2, Distance3) + 1
+      min_list([Distance1, Distance2, Distance3], Min),
+      Distance is Min + 1
     ).
+
+/* --------------------------------------------------------------------- */
+/*                                                                       */
+/*                     VERIFICATION DISTANCE                             */
+/*                                                                       */
+/* --------------------------------------------------------------------- */
+
+verif_distance(X, Y) :- 
+   string_chars(X, Xs),
+   string_chars(Y, Ys),
+   levenshtein_distance(Xs, Ys, Len),
+   Len < 3.
+
 
 
 /* --------------------------------------------------------------------- */
