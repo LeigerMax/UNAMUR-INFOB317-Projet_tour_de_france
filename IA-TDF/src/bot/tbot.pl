@@ -31,7 +31,7 @@ produire_reponse([fin],[L1]) :-
 
 produire_reponse(L,Rep) :-
 %  write(L),
-   mclef(M,_), verif_distance(M,L),
+   mclef(M,_), member(M,L),
    clause(regle_rep(M,_,Pattern,Rep),Body),
    match_pattern(Pattern,L),
    call(Body), !.
@@ -399,7 +399,6 @@ verif_distance(X, Y) :-
    string_chars(Y, Ys),
    levenshtein_distance(Xs, Ys, Len),
    Len < 3.
-
 
 
 /* --------------------------------------------------------------------- */
