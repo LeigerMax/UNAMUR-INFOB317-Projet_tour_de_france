@@ -41,7 +41,7 @@ produire_reponse(_,[L1,L2,L3]) :-
    L2 = [les, etudiants, vont, m, '\'', aider, '.' ],
    L3 = ['vous le verrez !'].
 
-produire_reponse(L_Mots,L_Lignes_reponse):-
+%produire_reponse(L_Mots,L_Lignes_reponse):-
 
 
 
@@ -89,30 +89,31 @@ mclef(depasser, 10).
 
 % ----------------------------------------------------------------%
 
-regle_rep(commence,1,
-  [ 3, [commence], 4 ],
-  [ [ "c'est", au, joueur, ayant, la, plus, haute, carte, secondes, de ],
-    [ "commencer." ] ] ).
+regle_rep(commence,5,
+  [ [ commence ], 4 , [ partie ] ],
+  [ [ des, X, equipes, "c'est", au, joueur, ayant, la, plus, haute, carte, secondes, de, "commencer." ] ] ):-
+
+     nb_equipes(X).
 
 % ----------------------------------------------------------------%
 
 regle_rep(equipe,5,
-  [ [ combien ], 3, [ coureurs], 5, [ equipe ] ],
+  [ [ combien ], 3, [ coureurs ], 5, [ equipe ] ],
   [ [ chaque, equipe, compte, X, "coureurs." ] ]) :-
 
      nb_coureurs(X).
 
 % ----------------------------------------------------------------%
 
-regle_rep(deplacer,3,
-  [ 3, [deplacer], 2, [coureur], 4, [occupee] ],
+regle_rep(deplacer,5,
+  [ [deplacer], 2, [coureur], 4, [occupee] ],
   [ [ non ]]).
 
 %-----------------------------------------------------------------%
 
-regle_rep(depasser,4,
-  [ 3, [depasser], 5, [groupe], 3],
-  [ [ oui, il, est, permis, de, depasser, par, le, bas-cote, de, la, route, pour, autant, que, le, coureur, arrive, sur, une, case, non, "occupee.", si, ce, "n’est", pas, le, cas, le, coureur, chute, et, entraine, dans, sa, chute, le, groupe, de, coureurs, "qu’il", voulait ,"depasser."] ]).
+regle_rep(depasser,5,
+  [ [depasser], 5, [groupe]],
+  [ [ oui, il, est, permis, de, depasser, par, le, bas-cote, de, la, route, pour, autant, que, le, coureur, arrive, sur, une, case, non, "occupee.", si, ce, "n'est", pas, le, cas, le, coureur, chute, et, entraine, dans, sa, chute, le, groupe, de, coureurs, "qu'il", voulait ,"depasser."] ]).
    
 
 
