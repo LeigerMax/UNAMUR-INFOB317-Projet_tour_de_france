@@ -30,8 +30,8 @@ produire_reponse([fin],[L1]) :-
    L1 = [merci, de, m, '\'', avoir, consulte], !.    
 
 produire_reponse(L,Rep) :-
-%  write(L),
-   mclef(M,_), member(M,L),
+   write(L),
+   mclef(M,_), mCompare(M,L),
    clause(regle_rep(M,_,Pattern,Rep),Body),
    match_pattern(Pattern,L),
    call(Body), !.
@@ -516,13 +516,14 @@ levenshtein_distance([X|Xs], [Y|Ys], Distance) :-
       levenshtein_distance([X|Xs], Ys, Distance2), % 2. On supprime un caractère de la deuxième liste.
       levenshtein_distance(Xs, Ys, Distance3),     % 3. On substitue un caractère de la première liste avec un caractère de la deuxième liste.
       % On calcule récursivement la distance pour chaque option, et on prend le minimum.
-<<<<<<< HEAD
       min_list([Distance1, Distance2, Distance3], Min),
       Distance is Min + 1
-=======
-      Distance is min(Distance1, Distance2, Distance3) + 1  %? Distance is min(Distance1, min(Distance2, Distance3)) + 1
->>>>>>> tbot
     ).
+
+lDistance(X, Y, Distance) :-
+   string_chars(X, Xs),
+   string_chars(Y, Ys),
+   levenshtein_distance(Xs, Ys, Distance). 
 
 /* --------------------------------------------------------------------- */
 /*                                                                       */
@@ -531,10 +532,17 @@ levenshtein_distance([X|Xs], [Y|Ys], Distance) :-
 /* --------------------------------------------------------------------- */
 
 verif_distance(X, Y) :- 
-   string_chars(X, Xs),
-   string_chars(Y, Ys),
-   levenshtein_distance(Xs, Ys, Len),
-   Len < 3.
+   lDistance(X, Y, Len),
+   (Len < 3 ; (Len >= 3, !, fail)).
+
+/* --------------------------------------------------------------------- */
+/*                                                                       */
+/*                            COMPARE MCLEF                              */
+/*                                                                       */
+/* --------------------------------------------------------------------- */
+
+mCompare(M,L) :-
+   member(Variant,L), verif_distance(Variant, M).
 
 
 /* --------------------------------------------------------------------- */
