@@ -18,6 +18,10 @@
 
 ## About The Projet
 
+## Installation
+1. Download the Project
+2. ``` npm install ```
+3. ``` npm run dev ```
 
     
 ## Authors
