@@ -1,4 +1,5 @@
 import Cycliste from "./Cycliste";
+import Jeu from "./Jeu";
 
 class Joueur {
     constructor(nom) {
@@ -41,9 +42,10 @@ class Joueur {
 
 
     // Surchage déplacer pour dev
-    deplacerCycliste(nom, choixCycliste,choixCarte, lignePosition, colonnePosition) {
+    deplacerCycliste_dev(choixCycliste,choixCarte, lignePosition, colonnePosition) {
      // Trouver le cycliste dans la liste des cyclistes du joueur
      const cycliste = this.cyclistes.find(c => c.getNumero() === choixCycliste);
+     console.log("Surchage");
 
      if (!cycliste) {
        console.log("Le cycliste " + choixCycliste + " n'appartient pas à la liste des cyclistes du joueur " + this.nom + ".");
@@ -51,14 +53,14 @@ class Joueur {
      }
  
      // Déplacer le cycliste en fonction de la distance obtenue
-     cycliste.deplacement(lignePosition, colonnePosition);
+     cycliste.deplacement_dev(lignePosition, colonnePosition);
 
  
      console.log(`Le joueur ${this.nom} a déplacé le cycliste ${choixCycliste} avec la carte ${choixCarte} de ${lignePosition} lignes devant et à la colonne ${colonnePosition}.`);
     }
 
     // déplacer ok
-    deplacerCycliste(nom, choixCycliste,choixCarte) {
+    deplacerCycliste(choixCycliste,choixCarte) {
       // Trouver le cycliste dans la liste des cyclistes du joueur
       const cycliste = this.cyclistes.find(c => c.getNumero() === choixCycliste);
  
@@ -89,27 +91,13 @@ class Joueur {
     jouer_carte(choixCarte) {
       // Trouver l'index de la carte dans le tableau de cartes du joueur
       const index = this.cartes.findIndex(carte => carte.valeur === parseInt(choixCarte));
-      console.log(index);
       if (index !== -1) {
         // Supprimer la carte du tableau de cartes du joueur
         this.cartes.splice(index, 1);
       }
-      console.log(this.getCarte());
+
     }
 
-    
-    /*
-    jouer_carte(index) {
-      if (index >= 0 && index < this.cartes.length) {
-        const carteJouee = this.cartes[index];
-        this.cartes.splice(index, 1);
-        return carteJouee;
-      } else {
-        console.log("Index de carte invalide.");
-        return null;
-      }
-    }
-    */
 
     getCarte() { 
       const numeros = [];

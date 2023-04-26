@@ -2,10 +2,12 @@ import Joueur from './Joueur';
 import Cycliste from './Cycliste';
 import Carte from './Carte';
 
+
 class Jeu {
     constructor() {
       this.cartes = [];
     }
+    
   
     // Méthodes pour la logique du jeu
     debut_jeu() {
@@ -47,7 +49,7 @@ class Jeu {
     }
 
     // déplacer surchage pour dev
-    deplacer(nom, choixCycliste,choixCarte, lignePosition, colonnePosition) {
+    deplacer_dev(nom, choixCycliste,choixCarte, lignePosition, colonnePosition) {
       switch (nom) {
         case "Belgique":
           this.joueur = this.belgique;
@@ -66,7 +68,7 @@ class Jeu {
           break;
         }
 
-        this.joueur.deplacerCycliste(nom, choixCycliste,choixCarte, lignePosition, colonnePosition);
+        this.joueur.deplacerCycliste_dev(choixCycliste,choixCarte, lignePosition, colonnePosition);
     }
 
       // déplacer jeu
@@ -89,7 +91,7 @@ class Jeu {
             break;
           }
   
-          this.joueur.deplacerCycliste(nom, choixCycliste,choixCarte);
+          this.joueur.deplacerCycliste(choixCycliste,choixCarte);
       }
 
 
@@ -154,7 +156,33 @@ class Jeu {
           console.log("Joueur non trouvé.");
           break;
         }
-      return this.joueur.jouer_carte(choixCarte);
+        if (this.joueur.cartes.length > 1) {
+          return this.joueur.jouer_carte(choixCarte);
+        }
+        else {
+          // Appel piocher_cartes(), sa dernière carte sera jouer là-bas
+          return this.piocher_cartes(choixCarte);
+        }
+      
+    }
+
+    piocher_cartes(choixCarte) {
+      // Vérifier qu'il y a suffisamment de cartes dans le paquet
+      if (this.cartes.length < 5) {
+        throw new Error('Pas assez de cartes dans le paquet.');
+      }
+
+      // Joue sa dernière carte
+      this.joueur.jouer_carte(choixCarte);
+  
+      // Donner des cartes au joueur
+      for (let i = 0; i < 5; i++) {
+        const carte = this.cartes.pop();
+        this.joueur.recevoir_cartes([carte]);
+      }
+
+      this.afficherNombreCartesRestantes();
+  
     }
 
     getCartes_du_joueur(nom) {
@@ -180,8 +208,8 @@ class Jeu {
     }
 
 
-    
 
+  
 
     fin_jeu() {
       console.log("Fin du jeu");

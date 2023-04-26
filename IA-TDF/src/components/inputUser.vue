@@ -65,10 +65,11 @@
     </select>
 
     <label for="nouvelle_position">Nouvelle position :</label>
-    <input id="ligne_position" type="number" min="0" max="10">
-    <input id="colonne_position" type="number" min="0" max="10">
+    <input id="ligne_position" type="number" min="0" max="50">
+    <input id="colonne_position" type="number" min="0" max="3">
 
     <button @click="deplacer_btn">Déplacer</button>
+    <button @click="deplacer_btn_dev">Déplacer dev</button>
     
     <button @click="jouer">Jouer</button>
 
@@ -95,15 +96,26 @@ export default {
       const nom = document.getElementById('choix_pays-select').value;
       const choixCycliste = parseInt(document.getElementById('choix_cycliste-select').value);
       const choixCarte = document.getElementById('choix_cartes-select').value;
+      console.log(choixCycliste);
+      console.log(choixCarte);
+      this.jeu.deplacer(nom, choixCycliste,choixCarte);
+      this.jeu.jouer_carte_jeu(nom,choixCarte);
+      this.carte();
+
+    },
+    deplacer_btn_dev() {
+      // Récupérer les valeurs des inputs et les traiter ici
+      
+      const nom = document.getElementById('choix_pays-select').value;
+      const choixCycliste = parseInt(document.getElementById('choix_cycliste-select').value);
+      const choixCarte = document.getElementById('choix_cartes-select').value;
       const lignePosition = parseInt(document.getElementById('ligne_position').value);
       const colonnePosition = parseInt(document.getElementById('colonne_position').value);
       console.log(choixCycliste);
       console.log(choixCarte);
       console.log(lignePosition);
       console.log(colonnePosition);
-      this.jeu.deplacer(nom, choixCycliste,choixCarte, lignePosition, colonnePosition);
-      this.jeu.jouer_carte_jeu(nom,choixCarte);
-      this.carte();
+      this.jeu.deplacer_dev(nom, choixCycliste,choixCarte, lignePosition, colonnePosition);
 
     },
     onChoixPaysSelectChange() {
