@@ -53,7 +53,7 @@
         </ul>
       </div>
       <div class="team">
-        <h3 class="team-title">Pays-Bas</h3>
+        <h3 class="team-title">Hollande</h3>
         <div class="cards">
           <div class="card" id="cardHo1">Carte 1</div>
           <div class="card" id="cardHo2">Carte 2</div>

@@ -1,6 +1,6 @@
 
-class Plateau{
-    constructor(){
+class Plateau {
+    constructor() {
         this.nbLignes = 96;
         this.nbColonnes = 3;
         this.positionsSpeciales = [
@@ -12,11 +12,11 @@ class Plateau{
             { debut: 72, fin: 75, nbColonnes: 1 },
             { debut: 76, fin: 83, nbColonnes: 2 },
             { debut: 84, fin: 96, nbColonnes: 2 },
-          ];
+        ];
 
     }
 
-    check_position_plateau(ligne,colonne){
+    check_position_plateau(ligne, colonne) {
         // Vérifie si la position est dans une zone spéciale du plateau
         for (const zone of this.positionsSpeciales) {
             if (ligne >= zone.debut && ligne <= zone.fin) {
@@ -29,7 +29,7 @@ class Plateau{
         return false;
     }
 
-    
+
 
 }
 

@@ -5,10 +5,11 @@
     </div>
   </div>
   <form class="chatbot_question_form" @submit.prevent="handleSubmit({ type: 'question' })">
-    <input class="chatbot_question_input" id="chatbot_question_input" name="chatbot_question_input" type="text" placeholder="Votre question...">
-    <button class="chatbot_question_button" id="chatbot_question_submit" name="chatbot_question_submit" type="submit">Envoyer</button>
+    <input class="chatbot_question_input" id="chatbot_question_input" name="chatbot_question_input" type="text"
+      placeholder="Votre question...">
+    <button class="chatbot_question_button" id="chatbot_question_submit" name="chatbot_question_submit"
+      type="submit">Envoyer</button>
   </form>
-
 </template>
 
 <script>
@@ -20,40 +21,40 @@ export default {
   },
   methods: {
     handleSubmit(form) {
-        // Input user
-        var inputChatBot = document.getElementById('chatbot_question_input');
-        const message = inputChatBot.value;
-        const messagesContainer_user = this.$refs.messages_question;
-        const messageUser = document.createElement('p');
-        messageUser.style.textAlign = "right";
-        messageUser.style.backgroundColor = "rgba(255, 229, 84, 0.375)";
-        messageUser.style.color = "white";
-        messageUser.style.padding = "10px";
-        messageUser.style.border = "none";
-        messageUser.style.borderRadius = "5px";
-        messageUser.style.margin = "10px";
-        messageUser.style.wordWrap = "break-word";
-        //messageUser.classList.add('chatbox_messages_user');
-        messageUser.insertAdjacentHTML('beforeend', "<strong style='font-size: 18px;'>Joueur :</strong> <br/>" + message);
-        messagesContainer_user.appendChild(messageUser);
+      // Input user
+      var inputChatBot = document.getElementById('chatbot_question_input');
+      const message = inputChatBot.value;
+      const messagesContainer_user = this.$refs.messages_question;
+      const messageUser = document.createElement('p');
+      messageUser.style.textAlign = "right";
+      messageUser.style.backgroundColor = "rgba(255, 229, 84, 0.375)";
+      messageUser.style.color = "white";
+      messageUser.style.padding = "10px";
+      messageUser.style.border = "none";
+      messageUser.style.borderRadius = "5px";
+      messageUser.style.margin = "10px";
+      messageUser.style.wordWrap = "break-word";
+      //messageUser.classList.add('chatbox_messages_user');
+      messageUser.insertAdjacentHTML('beforeend', "<strong style='font-size: 18px;'>Joueur :</strong> <br/>" + message);
+      messagesContainer_user.appendChild(messageUser);
 
-        // Reponse bot
-        const messagesContainer_bot = this.$refs.messages_question;
-        const messageBot = document.createElement('p');
-        messageBot.style.textAlign = "left";
-        messageBot.style.backgroundColor = "#ffffff74";
-        messageBot.style.color = "white";
-        messageBot.style.padding = "10px";
-        messageBot.style.border = "none";
-        messageBot.style.borderRadius = "5px";
-        messageBot.style.margin = "10px";
-        messageBot.style.wordWrap = "break-word";
-        //messageBot.classList.toggle('chatbox_messages_user');
-        messageBot.insertAdjacentHTML('beforeend', " <strong style='font-size: 18px;'>TBot :</strong> <br/>" + "Je ne suis pas connecté"); // J'ai tenter de mettre des balises <div class='chatbox__messages_bot'>
-        messagesContainer_bot.appendChild(messageBot);
+      // Reponse bot
+      const messagesContainer_bot = this.$refs.messages_question;
+      const messageBot = document.createElement('p');
+      messageBot.style.textAlign = "left";
+      messageBot.style.backgroundColor = "#ffffff74";
+      messageBot.style.color = "white";
+      messageBot.style.padding = "10px";
+      messageBot.style.border = "none";
+      messageBot.style.borderRadius = "5px";
+      messageBot.style.margin = "10px";
+      messageBot.style.wordWrap = "break-word";
+      //messageBot.classList.toggle('chatbox_messages_user');
+      messageBot.insertAdjacentHTML('beforeend', " <strong style='font-size: 18px;'>TBot :</strong> <br/>" + "Je ne suis pas connecté"); // J'ai tenter de mettre des balises <div class='chatbox__messages_bot'>
+      messagesContainer_bot.appendChild(messageBot);
 
-        chatbot_question_input.value = '';
-        console.log(message);
+      chatbot_question_input.value = '';
+      console.log(message);
     }
   }
 }
@@ -74,7 +75,7 @@ export default {
   background-image: url('../assets/BotChat.png');
   background-size: fill;
   width: 700px;
-  height: 390px;
+  height: 250px;
   border: 10px solid black;
   border-top-right-radius: 25px;
   border-top-left-radius: 25px;
@@ -95,7 +96,7 @@ export default {
   position: fixed;
   right: 0;
   margin-right: 40px;
-  margin-top: 390px;
+  margin-top: 260px;
   width: 700px;
 }
 
