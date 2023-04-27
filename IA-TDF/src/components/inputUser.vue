@@ -106,6 +106,7 @@ export default {
       this.jeu.debut_jeu();
 
       this.carte();
+      this.carte2();
     },
     carte(){
       const nom = document.getElementById('choix_pays-select').value;
@@ -128,9 +129,39 @@ export default {
           selectElement.appendChild(optionElement);
           i++;
         }
+        this. carte2();
       }
     },
+    carte2() {
+        this.joueurs = ["Belgique", "Italie", "Hollande", "Allemagne"];
 
+        for (const joueur of this.joueurs) {
+          const cartesDuJoueur = this.jeu.getCartes_du_joueur(joueur);
+
+          const numeros = [];
+
+          const cardElements = document.querySelectorAll(".card"); // get all card elements
+          let i = 0;
+          for (const carte of cartesDuJoueur) {
+            numeros.push(carte.valeur);
+
+            // set card visu
+            const id = "card" + joueur.substring(0, 2) + (i + 1); // gérer le cas où le joueur a une carte de moins
+            const cardElement = document.getElementById(id);
+            cardElement.textContent = numeros[i];
+
+            i++;
+          }
+
+          // gérer le cas où le joueur a une carte de moins
+          if (i < 5) {
+            const id = "card" + joueur.substring(0, 2) + (i + 1); // gérer le cas où le joueur a une carte de moins
+            const cardElement = document.getElementById(id);
+            cardElement.textContent = "?";
+            i++;
+          }
+        }
+      }
   }
 }
 </script>

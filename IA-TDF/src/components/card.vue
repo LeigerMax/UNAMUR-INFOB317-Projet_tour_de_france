@@ -12,11 +12,11 @@
       <div class="team">
         <h3 class="team-title">Belgique</h3>
         <div class="cards">
-          <div class="card">Carte 1</div>
-          <div class="card">Carte 2</div>
-          <div class="card">Carte 3</div>
-          <div class="card">Carte 4</div>
-          <div class="card">Carte 5</div>
+          <div class="card" id="cardBe1">Carte 1</div>
+          <div class="card" id="cardBe2">Carte 2</div>
+          <div class="card" id="cardBe3">Carte 3</div>
+          <div class="card" id="cardBe4">Carte 4</div>
+          <div class="card" id="cardBe5">Carte 5</div>
         </div>
       </div>
     </div>
@@ -34,11 +34,11 @@
       <div class="team">
         <h3 class="team-title">Italie</h3>
         <div class="cards">
-          <div class="card">Carte 1</div>
-          <div class="card">Carte 2</div>
-          <div class="card">Carte 3</div>
-          <div class="card">Carte 4</div>
-          <div class="card">Carte 5</div>
+          <div class="card" id="cardIt1">Carte 1</div>
+          <div class="card" id="cardIt2">Carte 2</div>
+          <div class="card" id="cardIt3">Carte 3</div>
+          <div class="card" id="cardIt4">Carte 4</div>
+          <div class="card" id="cardIt5">Carte 5</div>
         </div>
       </div>
     </div>
@@ -55,11 +55,11 @@
       <div class="team">
         <h3 class="team-title">Pays-Bas</h3>
         <div class="cards">
-          <div class="card">Carte 1</div>
-          <div class="card">Carte 2</div>
-          <div class="card">Carte 3</div>
-          <div class="card">Carte 4</div>
-          <div class="card">Carte 5</div>
+          <div class="card" id="cardHo1">Carte 1</div>
+          <div class="card" id="cardHo2">Carte 2</div>
+          <div class="card" id="cardHo3">Carte 3</div>
+          <div class="card" id="cardHo4">Carte 4</div>
+          <div class="card" id="cardHo5">Carte 5</div>
         </div>
       </div>
     </div>
@@ -76,11 +76,11 @@
       <div class="team">
         <h3 class="team-title">Allemagne</h3>
         <div class="cards">
-          <div class="card">Carte 1</div>
-          <div class="card">Carte 2</div>
-          <div class="card">Carte 3</div>
-          <div class="card">Carte 4</div>
-          <div class="card">Carte 5</div>
+          <div class="card" id="cardAl1">Carte 1</div>
+          <div class="card" id="cardAl2">Carte 2</div>
+          <div class="card" id="cardAl3">Carte 3</div>
+          <div class="card" id="cardAl4">Carte 4</div>
+          <div class="card" id="cardAl5">Carte 5</div>
         </div>
       </div>
     </div>
