@@ -106,7 +106,15 @@ class Joueur {
       return this.position_all_cycliste;
     }
 
-
+    get_position_cycliste(cyclisteNombre) {
+      this.positionDuCycliste = null;
+      this.cyclistes.forEach(cycliste => {
+        if(cycliste.numero === cyclisteNombre) {
+          this.positionDuCycliste = cycliste.getPosition3();
+        }
+      });
+      return this.positionDuCycliste;
+    }
   
   }
   

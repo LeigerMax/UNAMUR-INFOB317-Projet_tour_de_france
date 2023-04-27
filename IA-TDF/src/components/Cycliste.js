@@ -13,6 +13,9 @@ class Cycliste {
 
     getPosition2() { return { numero: this.numero, ligne: this.position.getLigne(), colonne: this.position.getColonne() }; }
 
+    getPosition3() { return  `${this.position.getLigne()},  ${this.position.getColonne()} `; }
+
+
 
     afficher_position() {
       console.log(`Cycliste ${this.numero} : [${this.position.getLigne()},${this.position.getColonne()}]`);

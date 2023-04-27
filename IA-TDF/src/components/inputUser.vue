@@ -1,39 +1,7 @@
 <template>  
   <div class="input_user_game">
 
-    <div class="team">
-      <h3>Belgique :</h3>
-      <ul>
-        <li>Cycliste 1 en position (0-0)</li>
-        <li>Cycliste 2 en position (0-0)</li>
-        <li>Cycliste 3 en position (0-0)</li>
-      </ul>
-    </div>
-    <div class="team">
-      <h3>Italie :</h3>
-      <ul>
-        <li>Cycliste 1 en position (0-0)</li>
-        <li>Cycliste 2 en position (0-0)</li>
-        <li>Cycliste 3 en position (0-0)</li>
-      </ul>
-    </div>
-    <div class="team">
-      <h3>Hollande :</h3>
-      <ul>
-        <li>Cycliste 1 en position (0-0)</li>
-        <li>Cycliste 2 en position (0-0)</li>
-        <li>Cycliste 3 en position (0-0)</li>
-      </ul>
-    </div>
-    <div class="team">
-      <h3>Allemagne :</h3>
-      <ul>
-        <li>Cycliste 1 en position (0-0)</li>
-        <li>Cycliste 2 en position (0-0)</li>
-        <li>Cycliste 3 en position (0-0)</li>
-      </ul>
-    </div>
-
+    <label for="activites"> Activités : Message console</label>
 
     <label for="choix_cycliste-select">Choix du cycliste jouer :</label>
 
@@ -91,12 +59,69 @@ export default {
       const nom = document.getElementById('choix_pays-select').value;
       const choixCycliste = parseInt(document.getElementById('choix_cycliste-select').value);
       const choixCarte = document.getElementById('choix_cartes-select').value;
-      console.log(choixCycliste);
-      console.log(choixCarte);
       this.jeu.deplacer(nom, choixCycliste,choixCarte);
       this.jeu.jouer_carte_jeu(nom,choixCarte);
       this.carte();
 
+      let positionCycliste = this.jeu.get_position_cycliste(nom,choixCycliste);
+      let liCycliste = "";
+
+      if (nom === "Belgique") {
+        if (choixCycliste === 1) {
+          liCycliste = document.querySelector('.cardbox-equipe1 .position ul li:nth-child(1)');
+          liCycliste.textContent = `Cycliste 1 en position (${positionCycliste})`;
+        } 
+        else if (choixCycliste === 2) {
+          liCycliste = document.querySelector('.cardbox-equipe1 .position ul li:nth-child(2)');
+          liCycliste.textContent = `Cycliste 2 en position (${positionCycliste})`;
+        }
+        else if (choixCycliste === 3) {
+          liCycliste = document.querySelector('.cardbox-equipe1 .position ul li:nth-child(3)');
+          liCycliste.textContent = `Cycliste 3 en position (${positionCycliste})`;
+        }
+      } 
+      else if (nom === "Italie") {
+        if (choixCycliste === 1) {
+          liCycliste = document.querySelector('.cardbox-equipe2 .position ul li:nth-child(1)');
+          liCycliste.textContent = `Cycliste 1 en position (${positionCycliste})`;
+        } 
+        else if (choixCycliste === 2) {
+          liCycliste = document.querySelector('.cardbox-equipe2 .position ul li:nth-child(2)');
+          liCycliste.textContent = `Cycliste 2 en position (${positionCycliste})`;
+        }
+        else if (choixCycliste === 3) {
+          liCycliste = document.querySelector('.cardbox-equipe2 .position ul li:nth-child(3)');
+          liCycliste.textContent = `Cycliste 3 en position (${positionCycliste})`;
+        }
+      }
+      else if (nom === "Hollande") {
+        if (choixCycliste === 1) {
+            liCycliste = document.querySelector('.cardbox-equipe3 .position ul li:nth-child(1)');
+            liCycliste.textContent = `Cycliste 1 en position (${positionCycliste})`;
+        } 
+        else if (choixCycliste === 2) {
+          liCycliste = document.querySelector('.cardbox-equipe3 .position ul li:nth-child(2)');
+          liCycliste.textContent = `Cycliste 2 en position (${positionCycliste})`;
+        }
+        else if (choixCycliste === 3) {
+          liCycliste = document.querySelector('.cardbox-equipe3 .position ul li:nth-child(3)');
+          liCycliste.textContent = `Cycliste 3 en position (${positionCycliste})`;
+        }
+      }
+      else if (nom === "Allemagne") {
+        if (choixCycliste === 1) {
+          liCycliste = document.querySelector('.cardbox-equipe4 .position ul li:nth-child(1)');
+          liCycliste.textContent = `Cycliste 1 en position (${positionCycliste})`;
+        } 
+        else if (choixCycliste === 2) {
+          liCycliste = document.querySelector('.cardbox-equipe4 .position ul li:nth-child(2)');
+          liCycliste.textContent = `Cycliste 2 en position (${positionCycliste})`;
+        }
+        else if (choixCycliste === 3) {
+          liCycliste = document.querySelector('.cardbox-equipe4 .position ul li:nth-child(3)');
+          liCycliste.textContent = `Cycliste 3 en position (${positionCycliste})`;
+        }
+      }
     },
     onChoixPaysSelectChange() {
       this.carte();
@@ -107,6 +132,36 @@ export default {
 
       this.carte();
       this.carte2();
+
+      const positionCycliste = "0-0";
+      let liCycliste;
+      let liCycliste2;
+      let liCycliste3;
+      liCycliste = document.querySelector('.cardbox-equipe1 .position ul li:nth-child(1)');
+      liCycliste2 = document.querySelector('.cardbox-equipe1 .position ul li:nth-child(2)');
+      liCycliste3 = document.querySelector('.cardbox-equipe1 .position ul li:nth-child(3)');
+      liCycliste.textContent = `Cycliste 1 en position (${positionCycliste})`;
+      liCycliste2.textContent = `Cycliste 2 en position (${positionCycliste})`;
+      liCycliste3.textContent = `Cycliste 3 en position (${positionCycliste})`;
+      liCycliste = document.querySelector('.cardbox-equipe2 .position ul li:nth-child(1)');
+      liCycliste2 = document.querySelector('.cardbox-equipe2 .position ul li:nth-child(2)');
+      liCycliste3 = document.querySelector('.cardbox-equipe2 .position ul li:nth-child(3)');
+      liCycliste.textContent = `Cycliste 1 en position (${positionCycliste})`;
+      liCycliste2.textContent = `Cycliste 2 en position (${positionCycliste})`;
+      liCycliste3.textContent = `Cycliste 3 en position (${positionCycliste})`;
+      liCycliste = document.querySelector('.cardbox-equipe3 .position ul li:nth-child(1)');
+      liCycliste2 = document.querySelector('.cardbox-equipe3 .position ul li:nth-child(2)');
+      liCycliste3 = document.querySelector('.cardbox-equipe3 .position ul li:nth-child(3)');
+      liCycliste.textContent = `Cycliste 1 en position (${positionCycliste})`;
+      liCycliste2.textContent = `Cycliste 2 en position (${positionCycliste})`;
+      liCycliste3.textContent = `Cycliste 3 en position (${positionCycliste})`;
+      liCycliste = document.querySelector('.cardbox-equipe4 .position ul li:nth-child(1)');
+      liCycliste2 = document.querySelector('.cardbox-equipe4 .position ul li:nth-child(2)');
+      liCycliste3 = document.querySelector('.cardbox-equipe4 .position ul li:nth-child(3)');
+      liCycliste.textContent = `Cycliste 1 en position (${positionCycliste})`;
+      liCycliste2.textContent = `Cycliste 2 en position (${positionCycliste})`;
+      liCycliste3.textContent = `Cycliste 3 en position (${positionCycliste})`;
+
     },
     carte(){
       const nom = document.getElementById('choix_pays-select').value;

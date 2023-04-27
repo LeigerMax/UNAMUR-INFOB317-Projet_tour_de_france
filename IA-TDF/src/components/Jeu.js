@@ -204,6 +204,34 @@ class Jeu {
     }
 
 
+    get_position_cycliste(nom,cycliste) {
+      let position = null;
+      switch (nom) {
+        case "Belgique":
+          this.joueur = this.belgique;
+          break;
+        case "Italie":
+          this.joueur = this.italie;  
+          break;
+        case "Hollande":
+          this.joueur = this.hollande;  
+          break;
+        case "Allemagne":
+          this.joueur = this.allemagne;  
+          break;
+        default:
+          console.log("Joueur non trouvé.");
+          break;
+        }
+    
+      
+      position = this.joueur.get_position_cycliste(cycliste);
+      return position;
+
+    }
+
+    
+
 
   }
   
