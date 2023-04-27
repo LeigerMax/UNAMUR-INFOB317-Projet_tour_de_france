@@ -1,6 +1,7 @@
 <script setup>
 import Map from '../components/map.vue'
 import Bot from '../components/chatBot.vue'
+import InputUser from '../components/inputUser.vue'
 import Card from '../components/card.vue'
 </script>
 
@@ -8,6 +9,7 @@ import Card from '../components/card.vue'
   <main>
     <Map />
     <Bot />
+    <InputUser />
     <Card />
   </main>
 </template>
