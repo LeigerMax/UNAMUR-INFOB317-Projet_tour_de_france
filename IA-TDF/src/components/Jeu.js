@@ -1,11 +1,12 @@
 import Joueur from './Joueur';
 import Cycliste from './Cycliste';
 import Carte from './Carte';
-
+import Plateau from './Plateau';
 
 class Jeu {
     constructor() {
       this.cartes = [];
+      this.plateau = new Plateau();
     }
     
   
@@ -16,7 +17,7 @@ class Jeu {
       this.init_cartes();
       this.melanger_cartes();
       this.distribuer_cartes_debut_jeu();
-      this.afficherNombreCartesRestantes();
+      this.afficher_nombre_cartes_restantes();
     }
 
      /******************************
@@ -35,10 +36,10 @@ class Jeu {
 
       // Création des cyclistes pour chaque joueur
       for (let i = 1; i <= 3; i++) {
-        this.belgique.ajouterCycliste(new Cycliste(i));
-        this.italie.ajouterCycliste(new Cycliste(i));
-        this.hollande.ajouterCycliste(new Cycliste(i));
-        this.allemagne.ajouterCycliste(new Cycliste(i));
+        this.belgique.ajouter_cycliste(new Cycliste(i));
+        this.italie.ajouter_cycliste(new Cycliste(i));
+        this.hollande.ajouter_cycliste(new Cycliste(i));
+        this.allemagne.ajouter_cycliste(new Cycliste(i));
       }
 
       // Affichage des joueurs avec leurs cyclistes
@@ -46,29 +47,6 @@ class Jeu {
       console.log("Italie : ", this.italie);
       console.log("Hollande : ", this.hollande);
       console.log("Allemagne : ", this.allemagne);
-    }
-
-    // déplacer surchage pour dev
-    deplacer_dev(nom, choixCycliste,choixCarte, lignePosition, colonnePosition) {
-      switch (nom) {
-        case "Belgique":
-          this.joueur = this.belgique;
-          break;
-        case "Italie":
-          this.joueur = this.italie;  
-          break;
-        case "Hollande":
-          this.joueur = this.hollande;  
-          break;
-        case "Allemagne":
-          this.joueur = this.allemagne;  
-          break;
-        default:
-          console.log("Joueur non trouvé.");
-          break;
-        }
-
-        this.joueur.deplacerCycliste_dev(choixCycliste,choixCarte, lignePosition, colonnePosition);
     }
 
       // déplacer jeu
@@ -90,14 +68,18 @@ class Jeu {
             console.log("Joueur non trouvé.");
             break;
           }
+
+
+          let positionsCyclistes = [];
+          console.log("Position test");
+          var belgique_positions = this.belgique.get_positions_cyclistes();
+          var italie_positions = this.italie.get_positions_cyclistes();
+          var hollande_positions = this.hollande.get_positions_cyclistes();
+          var allemagne_positions = this.allemagne.get_positions_cyclistes();
   
-          this.joueur.deplacerCycliste(choixCycliste,choixCarte);
+          this.joueur.deplacer_cycliste(choixCycliste,choixCarte,this.plateau,belgique_positions,italie_positions,hollande_positions,allemagne_positions);
       }
 
-
-
-
-    
 
      /******************************
      *                             *
@@ -134,7 +116,7 @@ class Jeu {
       }
     }
 
-    afficherNombreCartesRestantes() {
+    afficher_nombre_cartes_restantes() {
       console.log(`Il reste ${this.cartes.length} cartes dans le paquet.`);
     }
 
@@ -181,7 +163,7 @@ class Jeu {
         this.joueur.recevoir_cartes([carte]);
       }
 
-      this.afficherNombreCartesRestantes();
+      this.afficher_nombre_cartes_restantes();
   
     }
 
@@ -208,8 +190,14 @@ class Jeu {
     }
 
 
+    afficher_position_cycliste() {
+      console.log("Positions de tous les cyclistes :");
+      this.belgique.afficher_positions_cyclistes();
+      this.italie.afficher_positions_cyclistes();
+      this.hollande.afficher_positions_cyclistes();
+      this.allemagne.afficher_positions_cyclistes();
+    }
 
-  
 
     fin_jeu() {
       console.log("Fin du jeu");

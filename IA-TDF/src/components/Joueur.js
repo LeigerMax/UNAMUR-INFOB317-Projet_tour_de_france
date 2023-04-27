@@ -27,7 +27,11 @@ class Joueur {
       return numeros;
     }
 
-    ajouterCycliste(cycliste) {
+    getCyclistes2() {
+      return this.cyclistes;
+    }
+
+    ajouter_cycliste(cycliste) {
       // Vérifier si le joueur a déjà le maximum de cyclistes
       if (this.cyclistes.length >= 3) {
         console.log("Le joueur " + this.nom + " a déjà le maximum de cyclistes.");
@@ -41,26 +45,9 @@ class Joueur {
     }
 
 
-    // Surchage déplacer pour dev
-    deplacerCycliste_dev(choixCycliste,choixCarte, lignePosition, colonnePosition) {
-     // Trouver le cycliste dans la liste des cyclistes du joueur
-     const cycliste = this.cyclistes.find(c => c.getNumero() === choixCycliste);
-     console.log("Surchage");
-
-     if (!cycliste) {
-       console.log("Le cycliste " + choixCycliste + " n'appartient pas à la liste des cyclistes du joueur " + this.nom + ".");
-       return;
-     }
- 
-     // Déplacer le cycliste en fonction de la distance obtenue
-     cycliste.deplacement_dev(lignePosition, colonnePosition);
-
- 
-     console.log(`Le joueur ${this.nom} a déplacé le cycliste ${choixCycliste} avec la carte ${choixCarte} de ${lignePosition} lignes devant et à la colonne ${colonnePosition}.`);
-    }
 
     // déplacer ok
-    deplacerCycliste(choixCycliste,choixCarte) {
+    deplacer_cycliste(choixCycliste,choixCarte,plateau,belgique_positions,italie_positions,hollande_positions,allemagne_positions) {
       // Trouver le cycliste dans la liste des cyclistes du joueur
       const cycliste = this.cyclistes.find(c => c.getNumero() === choixCycliste);
  
@@ -68,12 +55,13 @@ class Joueur {
         console.log("Le cycliste " + choixCycliste + " n'appartient pas à la liste des cyclistes du joueur " + this.nom + ".");
         return;
       }
+
   
       // Déplacer le cycliste en fonction de la distance obtenue
-      cycliste.deplacement(choixCarte);
- 
+      cycliste.deplacement(choixCarte, plateau,belgique_positions,italie_positions,hollande_positions,allemagne_positions);
   
       console.log(`Le joueur ${this.nom} a déplacé le cycliste ${choixCycliste} avec la carte ${choixCarte}.`);
+      
      }
 
 
@@ -110,7 +98,15 @@ class Joueur {
       return numeros;
     }
 
-    
+    get_positions_cyclistes() {
+      this.position_all_cycliste = [];
+      this.cyclistes.forEach(cycliste => {
+        this.position_all_cycliste.push(cycliste.getPosition2());
+      });
+      return this.position_all_cycliste;
+    }
+
+
   
   }
   
