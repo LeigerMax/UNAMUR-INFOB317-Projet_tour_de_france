@@ -10,5 +10,6 @@ import Card from '../components/card.vue'
     <Map />
     <Bot />
     <InputUser />
+    <Card />
   </main>
 </template>
