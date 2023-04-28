@@ -228,6 +228,11 @@ export default {
   align-items: center;
 }
 
+.card:hover {
+  background-color: rgb(221, 168, 22);
+  transition: color 0.5s, background-color 0.5s;
+}
+
 .scroll-to-top {
   width: 80px;
   height: 80px;

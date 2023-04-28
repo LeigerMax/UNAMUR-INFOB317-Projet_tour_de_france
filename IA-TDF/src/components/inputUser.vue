@@ -325,7 +325,8 @@ export default {
 }
 
 .jouer_button:hover {
-  background-color: rgb(234, 189, 66);
+  background-color: rgb(221, 168, 22);
+  transition: color 0.5s, background-color 0.5s;
 }
 
 .deplacer_button {
@@ -340,7 +341,8 @@ export default {
 }
 
 .deplacer_button:hover {
-  background-color: rgb(234, 189, 66);
+  background-color: rgb(221, 168, 22);
+  transition: color 0.5s, background-color 0.5s;
 }
 
 .combobox {

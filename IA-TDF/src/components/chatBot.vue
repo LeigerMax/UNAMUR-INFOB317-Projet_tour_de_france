@@ -119,6 +119,11 @@ export default {
   cursor: pointer;
 }
 
+.chatbot_question_button:hover {
+  background-color: rgb(221, 168, 22);
+  transition: color 0.5s, background-color 0.5s;
+}
+
 /* CHATBOX */
 
 .chatbox_messages_user {
