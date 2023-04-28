@@ -314,8 +314,8 @@ export default {
 }
 
 .jouer_button {
-  background-color: #c58a13;
-  color: white;
+  background-color: rgb(234, 211, 66);
+  color: rgb(10, 10, 10);
   border: none;
   border-radius: 5px;
   padding: 8px;
@@ -325,12 +325,12 @@ export default {
 }
 
 .jouer_button:hover {
-  background-color: #ecb341;
+  background-color: rgb(234, 189, 66);
 }
 
 .deplacer_button {
-  background-color: #c58a13;
-  color: white;
+  background-color: rgb(234, 211, 66);
+  color: rgb(10, 10, 10);
   border: none;
   border-radius: 5px;
   padding: 8px;
@@ -340,7 +340,7 @@ export default {
 }
 
 .deplacer_button:hover {
-  background-color: #ecb341;
+  background-color: rgb(234, 189, 66);
 }
 
 .combobox {

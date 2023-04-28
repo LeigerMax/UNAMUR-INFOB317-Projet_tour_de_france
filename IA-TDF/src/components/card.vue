@@ -217,6 +217,7 @@ export default {
 .card {
   width: 120px;
   height: 140px;
+  font-size: 24px;
   background-color: rgb(234, 211, 66);
   margin: 5px;
   margin-bottom: 10px;

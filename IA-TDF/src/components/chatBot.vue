@@ -69,7 +69,7 @@ export default {
   padding-left: 20px;
   padding-top: 10px;
   padding-bottom: 10px;
-  color: rgb(255, 229, 84);
+  color: rgb(234, 211, 66);
   font-family: "Calibri", "Copperplate", fantasy;
   font-size: 14px;
   background-image: url('../assets/BotChat.png');
@@ -110,8 +110,8 @@ export default {
 
 
 .chatbot_question_button {
-  background-color: #c58a13;
-  color: white;
+  background-color: rgb(234, 211, 66);
+  color: rgb(10, 10, 10);
   border: none;
   border-bottom-right-radius: 5px;
   padding: 10px;
