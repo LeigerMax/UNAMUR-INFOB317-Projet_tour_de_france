@@ -151,7 +151,15 @@ export default {
 
       let positionCycliste = this.jeu.get_position_cycliste(nom, choixCycliste);
 
-      this.visuel_position(nom, positionCycliste, choixCycliste, messageReturn);
+      this.visuel_position(nom, positionCycliste, choixCycliste);
+
+      // Affiche message activitiés
+      const message = messageReturn;
+      const messagesContainer_activites = this.$refs.messages_activities;
+      const messagec_ativites = document.createElement('p');
+      messagec_ativites.insertAdjacentHTML('beforeend', message);
+      messagesContainer_activites.appendChild(messagec_ativites);
+
     },
 
 
@@ -269,9 +277,16 @@ export default {
 
       for (var i = 0; i <= 3; i++) {
         let positionCycliste = this.jeu.get_position_cycliste(nom, i);
-
-        this.visuel_position(nom, positionCycliste, i, messageReturn);
+        this.visuel_position(nom, positionCycliste, i);
       }
+
+      // Affiche message activitiés
+      const message = messageReturn;
+      const messagesContainer_activites = this.$refs.messages_activities;
+      const messagec_ativites = document.createElement('p');
+      messagec_ativites.insertAdjacentHTML('beforeend', message);
+      messagesContainer_activites.appendChild(messagec_ativites);
+      
 
       // Restart compteur
       if (this.move_counter == 13) {
@@ -323,7 +338,7 @@ export default {
       liCycliste3.textContent = `Cycliste 3 en position (${positionCycliste})`;
     },
 
-    visuel_position(nom, positionCycliste, choixCycliste, messageReturn) {
+    visuel_position(nom, positionCycliste, choixCycliste) {
       let liCycliste = "";
       if (nom === "Belgique") {
         if (choixCycliste === 1) {
@@ -382,12 +397,7 @@ export default {
         }
       }
 
-      const message = messageReturn;
-      const messagesContainer_activites = this.$refs.messages_activities;
-      const messagec_ativites = document.createElement('p');
-      messagec_ativites.insertAdjacentHTML('beforeend', message);
-      messagesContainer_activites.appendChild(messagec_ativites);
-
+     
     },
 
 

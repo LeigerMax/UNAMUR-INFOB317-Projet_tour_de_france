@@ -11,6 +11,7 @@ class Jeu {
     this.currentCyclisteIndex = 1; // initialisé à 1 pour le premier cycliste
     this.historiquePositionCycliste = [];
     this.tour = 0;
+    this.cycliste_chute = [];
   }
 
 
@@ -91,6 +92,8 @@ class Jeu {
         break;
     }
 
+    console.log("Liste des gens tombé :"+this.cycliste_chute[1].getNumCycliste());
+
 
     var belgique_positions = this.belgique.get_positions_cyclistes();
     var italie_positions = this.italie.get_positions_cyclistes();
@@ -122,7 +125,6 @@ class Jeu {
         break;
     }
 
-    
 
     var belgique_positions = this.belgique.get_positions_cyclistes();
     var italie_positions = this.italie.get_positions_cyclistes();
@@ -130,7 +132,6 @@ class Jeu {
     var allemagne_positions = this.allemagne.get_positions_cyclistes();
 
     var messageReturn;
-    
 
     // Premier tour pour chaque joueur, il joue leur cycliste 1 à 3 dans l'ordre.
     if(this.tour > 11) {
@@ -165,6 +166,7 @@ class Jeu {
       elemDelete = this.historiquePositionCycliste.splice(lowestPositionIndex, 1);
       console.log("Elem supprimer !",elemDelete);
 
+      // Quand dernier elem supprimer du tableau, on n'arrive pas à récupérer l'elem, j'ai donc fais un peu de scotch.
       if(numeroPosition !== undefined) {
         console.log("Cycliste plus petite position : ", numeroPosition);
       }
@@ -174,13 +176,23 @@ class Jeu {
 
       cycliste_jouer = this.joueur.getNumCycliste(numeroPosition);
 
-    
-      messageReturn = this.joueur.deplacer_cycliste(cycliste_jouer, choixCarte, this.plateau, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
-
-
+      // Vérifier si le cycliste a chuté
+      console.log("Liste des gens tombé :");
+      for (var i = 0; i < this.cycliste_chute.length; i++) {
+        console.log(this.cycliste_chute[i].numero);
+        if (this.joueur.getCyclistes().indexOf(this.cycliste_chute[i])) {
+          console.log("Le cycliste a chuté et ne peut pas jouer !");
+          return "Le cycliste a chuté et ne peut pas jouer !";
+        }
+      }
+  
+      
+      messageReturn = this.joueur.deplacer_cycliste(cycliste_jouer, choixCarte, this.plateau,this.cycliste_chute, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
+      
+          
     }
     else {
-       messageReturn = this.joueur.deplacer_cycliste(this.currentCyclisteIndex, choixCarte, this.plateau, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
+       messageReturn = this.joueur.deplacer_cycliste(this.currentCyclisteIndex, choixCarte, this.plateau,this.cycliste_chute, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
     }
 
     if (this.currentCyclisteIndex < 3) {

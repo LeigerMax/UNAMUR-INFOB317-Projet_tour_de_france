@@ -23,7 +23,7 @@ class Cycliste {
 
 
   // déplacer ok
-  deplacement(choixCarte, plateau, belgique_positions, italie_positions, hollande_positions, allemagne_positions) {
+  deplacement(choixCarte, plateau, cycliste_chute, belgique_positions, italie_positions, hollande_positions, allemagne_positions) {
     var nouvelle_ligne = this.position.getLigne() + parseInt(choixCarte);
     var nouvelle_colonne = 1;
     var messageReturn = "";
@@ -36,14 +36,14 @@ class Cycliste {
       allemagne_positions.find(pos => pos.ligne === nouvelle_ligne && pos.colonne === nouvelle_colonne)
     ) {
       nouvelle_colonne++;
-      messageReturn = console.log("Un cycliste est déjà présent sur la case --> déviation à la case à côté");
+      console.log("Un cycliste est déjà présent sur la case --> déviation à la case à côté");
+      messageReturn = "Un cycliste est déjà présent sur la case --> déviation à la case à côté";
     }
 
 
     //Check si case valide
     if (plateau.check_position_plateau(nouvelle_ligne, nouvelle_colonne)) {
       console.log(`La position ${nouvelle_ligne, nouvelle_colonne} est valide.`);
-      messageReturn = "Place libre";
       const case_chance = plateau.check_case_chance_plateau(nouvelle_ligne, nouvelle_colonne);
       // si cycliste est sur une case chance 
       if (case_chance) {
@@ -54,6 +54,7 @@ class Cycliste {
           console.log(`Le cycliste recule de ${Math.abs(random_chance)} cases.`);
           messageReturn = messageReturn + " <br> Le cycliste recule de " + Math.abs(random_chance) + " case(s).";
           nouvelle_ligne = nouvelle_ligne - Math.abs(random_chance);
+          nouvelle_colonne = 1;
 
           while (
             belgique_positions.find(pos => pos.ligne === nouvelle_ligne && pos.colonne === nouvelle_colonne) ||
@@ -62,7 +63,7 @@ class Cycliste {
             allemagne_positions.find(pos => pos.ligne === nouvelle_ligne && pos.colonne === nouvelle_colonne)
           ) {
             nouvelle_colonne++;
-            messageReturn = console.log("Un cycliste est déjà présent sur la case --> déviation à la case à côté");
+            console.log("Un cycliste est déjà présent sur la case --> déviation à la case à côté");
           }
       
         }
@@ -70,6 +71,7 @@ class Cycliste {
           console.log(`Le cycliste avance de ${random_chance} cases.`);
           messageReturn = messageReturn + " <br> Le cycliste avance de " + random_chance + " case(s).";
           nouvelle_ligne = nouvelle_ligne + random_chance;
+          nouvelle_colonne = 1;
 
           while (
             belgique_positions.find(pos => pos.ligne === nouvelle_ligne && pos.colonne === nouvelle_colonne) ||
@@ -78,7 +80,7 @@ class Cycliste {
             allemagne_positions.find(pos => pos.ligne === nouvelle_ligne && pos.colonne === nouvelle_colonne)
           ) {
             nouvelle_colonne++;
-            messageReturn = console.log("Un cycliste est déjà présent sur la case --> déviation à la case à côté");
+            console.log("Un cycliste est déjà présent sur la case --> déviation à la case à côté");
           }
       
         }
@@ -93,27 +95,29 @@ class Cycliste {
     // Si case invalide, provoque chute
     else {
       console.log(`La position ${nouvelle_ligne, nouvelle_colonne} est invalide.`);
-      messageReturn = this.chute(nouvelle_ligne, this.numero, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
+      messageReturn = this.chute(nouvelle_ligne, this.numero,cycliste_chute, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
       this.position.setLigne(nouvelle_ligne);
       this.position.setColonne(1);
     }
 
 
     console.log(`Le cycliste ${this.numero} se déplace de ${choixCarte} case. Nouvelle position :  (  ${this.position.getLigne()} , ${this.position.getColonne()} ) .`);
-
+    messageReturn = messageReturn + ` <br> Le cycliste ${this.numero} se déplace de ${choixCarte} case. Nouvelle position :  (  ${this.position.getLigne()} , ${this.position.getColonne()} ) .`;
     return messageReturn;
 
   }
 
-  chute(nouvelle_ligne, numero, belgique_positions, italie_positions, hollande_positions, allemagne_positions) {
+  chute(nouvelle_ligne, numero,cycliste_chute, belgique_positions, italie_positions, hollande_positions, allemagne_positions) {
     const ligne_chute = nouvelle_ligne;
     const nums_chutes = [numero];
+    cycliste_chute.push(this);
 
     console.log(`Chute de tous les cyclistes de la ligne ${ligne_chute} !`);
-    belgique_positions.forEach(pos => { if (pos.ligne === ligne_chute) nums_chutes.push(pos.numero) });
-    italie_positions.forEach(pos => { if (pos.ligne === ligne_chute) nums_chutes.push(pos.numero) });
-    hollande_positions.forEach(pos => { if (pos.ligne === ligne_chute) nums_chutes.push(pos.numero) });
-    allemagne_positions.forEach(pos => { if (pos.ligne === ligne_chute) nums_chutes.push(pos.numero) });
+    belgique_positions.forEach(pos => { if (pos.ligne === ligne_chute) nums_chutes.push(pos.numero); if (pos.ligne === ligne_chute) cycliste_chute.push(pos); });
+    italie_positions.forEach(pos => { if (pos.ligne === ligne_chute) nums_chutes.push(pos.numero); if (pos.ligne === ligne_chute) cycliste_chute.push(pos);  });
+    hollande_positions.forEach(pos => { if (pos.ligne === ligne_chute) nums_chutes.push(pos.numero); if (pos.ligne === ligne_chute) cycliste_chute.push(pos); });
+    allemagne_positions.forEach(pos => { if (pos.ligne === ligne_chute) nums_chutes.push(pos.numero); if (pos.ligne === ligne_chute) cycliste_chute.push(pos);  });
+
 
     console.log(`Les cyclistes suivants sont tombés: ${nums_chutes.join(', ')}`);
 

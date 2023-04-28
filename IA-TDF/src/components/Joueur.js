@@ -56,7 +56,7 @@ class Joueur {
 
 
   // déplacer ok
-  deplacer_cycliste(choixCycliste, choixCarte, plateau, belgique_positions, italie_positions, hollande_positions, allemagne_positions) {
+  deplacer_cycliste(choixCycliste, choixCarte, plateau,cycliste_chute, belgique_positions, italie_positions, hollande_positions, allemagne_positions) {
     // Trouver le cycliste dans la liste des cyclistes du joueur
     const cycliste = this.cyclistes.find(c => c.getNumero() === choixCycliste);
 
@@ -67,7 +67,7 @@ class Joueur {
 
 
     // Déplacer le cycliste en fonction de la distance obtenue
-    const messageReturn = cycliste.deplacement(choixCarte, plateau, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
+    const messageReturn = cycliste.deplacement(choixCarte, plateau,cycliste_chute, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
 
     console.log(`Le joueur ${this.nom} a déplacé le cycliste ${choixCycliste} avec la carte ${choixCarte}.`);
 
