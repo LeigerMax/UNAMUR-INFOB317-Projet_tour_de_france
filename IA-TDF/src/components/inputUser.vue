@@ -7,28 +7,9 @@
 
   <div class="input_user_game">
 
-    <button class="jouer_button" @click="jouer">Jouer</button>
-
-    <label class="texte" for="choix_cycliste-select">Choix du cycliste jouer :</label>
-
-    <select class="combobox" name="choix_cycliste" id="choix_cycliste-select">
-      <option value="" disabled selected>--Veuillez choisir un cycliste--</option>
-      <option value="1">1</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-    </select>
+    <button class="jouer_button" @click="jouer">Jouer </button>
 
     <label class="texte" for="choix_cartes-select">Choix de la carte à jouer :</label>
-
-    <select class="combobox" name="choix_pays" id="choix_pays-select" v-model="choix_pays"
-      v-on:change="onChoixPaysSelectChange">
-      <option value="" disabled selected>--Veuillez choisir un pays--</option>
-      <option value="Belgique">Belgique</option>
-      <option value="Italie">Italie</option>
-      <option value="Hollande">Hollande</option>
-      <option value="Allemagne">Allemagne</option>
-    </select>
-
 
     <select class="combobox" name="choix_cartes-select" id="choix_cartes-select">
       <option value="" disabled selected>--Veuillez choisir une carte--</option>
@@ -39,7 +20,43 @@
       <option id="carte5" value="??">??</option>
     </select>
 
+
+
     <button class="deplacer_button" @click="deplacer_btn">Déplacer</button>
+
+
+    <button class="jouer_button_dev" @click="jouer_dev">Jouer dev</button>
+
+
+    <select class="combobox" name="choix_cycliste-dev" id="choix_cycliste-select-dev">
+      <option value="" disabled selected>--Veuillez choisir un cycliste--</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+    </select>
+
+    <select class="combobox" name="choix_pays-dev" id="choix_pays-select-dev" v-model="choix_pays"
+      v-on:change="onChoixPaysSelectChange">
+      <option value="" disabled selected>--Veuillez choisir un pays--</option>
+      <option value="Belgique">Belgique</option>
+      <option value="Italie">Italie</option>
+      <option value="Hollande">Hollande</option>
+      <option value="Allemagne">Allemagne</option>
+    </select>
+
+
+    <select class="combobox" name="choix_cartes-select_dev" id="choix_cartes-select-dev">
+      <option value="" disabled selected>--Veuillez choisir une carte--</option>
+      <option id="carte1" value="??">??</option>
+      <option id="carte2" value="??">??</option>
+      <option id="carte3" value="??">??</option>
+      <option id="carte4" value="??">??</option>
+      <option id="carte5" value="??">??</option>
+    </select>
+
+
+    <button class="deplacer_button" @click="deplacer_btn_dev">Déplacer dev</button>
+
   </div>
 </template>
   
@@ -56,19 +73,258 @@ export default {
     }
   },
   methods: {
-    deplacer_btn() {
-      // Récupérer les valeurs des inputs et les traiter ici
 
-      const nom = document.getElementById('choix_pays-select').value;
-      const choixCycliste = parseInt(document.getElementById('choix_cycliste-select').value);
-      const choixCarte = document.getElementById('choix_cartes-select').value;
-      const messageReturn = this.jeu.deplacer(nom, choixCycliste, choixCarte);
+    /************************
+     *                      *
+     *        DEV           *
+     *                      *
+     ***********************/
+    jouer_dev() {
+      const dev = true;
+      this.jeu = new Jeu();
+      this.jeu.debut_jeu(dev);
+
+      var jeu_bouton = document.querySelector('.jouer_button_dev');
+      jeu_bouton.textContent = `Rejouer dev`;
+
+      this.init_visuel_cartes();
+
+      const message = "Création du jeu pour dev <br> Création du plateau  <br> Création des joueurs  <br> Création des cyclistes  <br> Création des cartes et mélange  <br> Distribution des cartes aux joueurs";
+
+      const messagesContainer_activites = this.$refs.messages_activities;
+      const messagec_ativites = document.createElement('p');
+      messagec_ativites.insertAdjacentHTML('beforeend', message);
+      messagesContainer_activites.appendChild(messagec_ativites);
+
+      this.init_visuel_positions();
+
+      // Bloque/Débloque inputs
+      var selectElement = document.getElementById('choix_cartes-select');
+      selectElement.disabled = true;
+      selectElement = document.getElementById('choix_cycliste-select-dev');
+      selectElement.disabled = false;
+      selectElement = document.getElementById('choix_pays-select-dev');
+      selectElement.disabled = false;
+      selectElement = document.getElementById("choix_cartes-select-dev");
+      selectElement.disabled = false;
+
+    },
+
+
+    onChoixPaysSelectChange() {
+      this.carte_dev();
+    },
+
+    carte_dev() {
+      const nom = document.getElementById('choix_pays-select-dev').value;
+      console.log(nom);
+      if (nom) {
+        this.cartes = this.jeu.getCartes_du_joueur(nom);
+        console.log(this.cartes);
+
+        const numeros = [];
+
+        const selectElement = document.getElementById("choix_cartes-select-dev");
+        selectElement.innerHTML = '<option value="">--Veuillez choisir une carte--</option>';
+        var i = 0;
+        for (const carte of this.cartes) {
+          numeros.push(carte.valeur);
+          console.log(numeros[i]);
+          const optionElement = document.createElement("option");
+          optionElement.value = numeros[i];
+          optionElement.textContent = numeros[i];
+          selectElement.appendChild(optionElement);
+          i++;
+        }
+        this.init_visuel_cartes();
+      }
+    },
+
+
+    deplacer_btn_dev() {
+      const nom = document.getElementById('choix_pays-select-dev').value;
+      const choixCycliste = parseInt(document.getElementById('choix_cycliste-select-dev').value);
+      const choixCarte = document.getElementById('choix_cartes-select-dev').value;
+      const messageReturn = this.jeu.deplacer_dev(nom, choixCycliste, choixCarte);
       this.jeu.jouer_carte_jeu(nom, choixCarte);
-      this.carte();
+      this.carte_dev();
 
       let positionCycliste = this.jeu.get_position_cycliste(nom, choixCycliste);
-      let liCycliste = "";
 
+      this.visuel_position(nom, positionCycliste, choixCycliste, messageReturn);
+    },
+
+
+    /************************
+    *                       *
+    *        Dynamique      *
+    *                       *
+    *************************/
+    jouer() {
+      const dev = false;
+      this.jeu = new Jeu();
+      this.jeu.debut_jeu(dev);
+
+      this.move_counter = 1;
+      this.move_card_counter = 1;
+
+      var jeu_bouton = document.querySelector('.jouer_button');
+      jeu_bouton.textContent = `Rejouer`;
+
+      this.init_visuel_cartes();
+
+      const message = "Création du jeu dynamique <br> Création du plateau  <br> Création des joueurs  <br> Création des cyclistes  <br> Création des cartes et mélange  <br> Distribution des cartes aux joueurs";
+
+      const messagesContainer_activites = this.$refs.messages_activities;
+      const messagec_ativites = document.createElement('p');
+      messagec_ativites.insertAdjacentHTML('beforeend', message);
+      messagesContainer_activites.appendChild(messagec_ativites);
+
+      this.init_visuel_positions();
+
+      // Bloque/Débloque inputs
+      var selectElement = document.getElementById('choix_cartes-select');
+      selectElement.disabled = false;
+      selectElement = document.getElementById('choix_cycliste-select-dev');
+      selectElement.disabled = true;
+      selectElement = document.getElementById('choix_pays-select-dev');
+      selectElement.disabled = true;
+      selectElement = document.getElementById("choix_cartes-select-dev");
+      selectElement.disabled = true;
+
+      this.carte_dynamique();
+
+
+    },
+
+
+    carte_dynamique() {
+      var nom = "";
+      if (this.move_card_counter <= 3) {
+        this.move_card_counter++;
+        nom = "Belgique";
+      }
+      else if (this.move_card_counter <= 6) {
+        this.move_card_counter++;
+        nom = "Italie";
+      }
+      else if (this.move_card_counter <= 9) {
+        this.move_card_counter++;
+        nom = "Hollande";
+      }
+      else {
+        this.move_card_counter++;
+        nom = "Allemagne";
+      }
+
+
+      this.cartes = this.jeu.getCartes_du_joueur(nom);
+      console.log(this.cartes);
+
+      const numeros = [];
+
+      const selectElement = document.getElementById("choix_cartes-select");
+      selectElement.innerHTML = '<option value="">--Veuillez choisir une carte--</option>';
+      var i = 0;
+      for (const carte of this.cartes) {
+        numeros.push(carte.valeur);
+        console.log(numeros[i]);
+        const optionElement = document.createElement("option");
+        optionElement.value = numeros[i];
+        optionElement.textContent = numeros[i];
+        selectElement.appendChild(optionElement);
+        i++;
+      }
+      this.init_visuel_cartes();
+
+    },
+
+
+    deplacer_btn() {
+      var nom = "";
+      if (this.move_counter <= 3) {
+        this.move_counter++;
+        nom = "Belgique";
+      }
+      else if (this.move_counter <= 6) {
+        this.move_counter++;
+        nom = "Italie";
+      }
+      else if (this.move_counter <= 9) {
+        this.move_counter++;
+        nom = "Hollande";
+      }
+      else {
+        this.move_counter++;
+        nom = "Allemagne";
+      }
+
+
+      const choixCarte = document.getElementById('choix_cartes-select').value;
+      const messageReturn = this.jeu.deplacer_dynamique(nom, choixCarte);
+      this.jeu.jouer_carte_jeu(nom, choixCarte);
+      this.carte_dynamique();
+      this.init_visuel_cartes();
+
+
+      for (var i = 0; i <= 3; i++) {
+        let positionCycliste = this.jeu.get_position_cycliste(nom, i);
+
+        this.visuel_position(nom, positionCycliste, i, messageReturn);
+      }
+
+      // Restart compteur
+      if (this.move_counter == 13) {
+        this.move_counter = 1;
+      }
+
+      if (this.move_card_counter == 13) {
+        this.move_card_counter = 1;
+      }
+
+    },
+
+
+
+
+    /************************
+    *                       *
+    *        Global         *
+    *                       *
+    *************************/
+    init_visuel_positions() {
+      const positionCycliste = "0-0";
+      let liCycliste;
+      let liCycliste2;
+      let liCycliste3;
+      liCycliste = document.querySelector('.cardbox-equipe1 .position ul li:nth-child(1)');
+      liCycliste2 = document.querySelector('.cardbox-equipe1 .position ul li:nth-child(2)');
+      liCycliste3 = document.querySelector('.cardbox-equipe1 .position ul li:nth-child(3)');
+      liCycliste.textContent = `Cycliste 1 en position (${positionCycliste})`;
+      liCycliste2.textContent = `Cycliste 2 en position (${positionCycliste})`;
+      liCycliste3.textContent = `Cycliste 3 en position (${positionCycliste})`;
+      liCycliste = document.querySelector('.cardbox-equipe2 .position ul li:nth-child(1)');
+      liCycliste2 = document.querySelector('.cardbox-equipe2 .position ul li:nth-child(2)');
+      liCycliste3 = document.querySelector('.cardbox-equipe2 .position ul li:nth-child(3)');
+      liCycliste.textContent = `Cycliste 1 en position (${positionCycliste})`;
+      liCycliste2.textContent = `Cycliste 2 en position (${positionCycliste})`;
+      liCycliste3.textContent = `Cycliste 3 en position (${positionCycliste})`;
+      liCycliste = document.querySelector('.cardbox-equipe3 .position ul li:nth-child(1)');
+      liCycliste2 = document.querySelector('.cardbox-equipe3 .position ul li:nth-child(2)');
+      liCycliste3 = document.querySelector('.cardbox-equipe3 .position ul li:nth-child(3)');
+      liCycliste.textContent = `Cycliste 1 en position (${positionCycliste})`;
+      liCycliste2.textContent = `Cycliste 2 en position (${positionCycliste})`;
+      liCycliste3.textContent = `Cycliste 3 en position (${positionCycliste})`;
+      liCycliste = document.querySelector('.cardbox-equipe4 .position ul li:nth-child(1)');
+      liCycliste2 = document.querySelector('.cardbox-equipe4 .position ul li:nth-child(2)');
+      liCycliste3 = document.querySelector('.cardbox-equipe4 .position ul li:nth-child(3)');
+      liCycliste.textContent = `Cycliste 1 en position (${positionCycliste})`;
+      liCycliste2.textContent = `Cycliste 2 en position (${positionCycliste})`;
+      liCycliste3.textContent = `Cycliste 3 en position (${positionCycliste})`;
+    },
+
+    visuel_position(nom, positionCycliste, choixCycliste, messageReturn) {
+      let liCycliste = "";
       if (nom === "Belgique") {
         if (choixCycliste === 1) {
           liCycliste = document.querySelector('.cardbox-equipe1 .position ul li:nth-child(1)');
@@ -132,84 +388,10 @@ export default {
       messagec_ativites.insertAdjacentHTML('beforeend', message);
       messagesContainer_activites.appendChild(messagec_ativites);
 
-
-
     },
-    onChoixPaysSelectChange() {
-      this.carte();
-    },
-    jouer() {
-      this.jeu = new Jeu();
-      this.jeu.debut_jeu();
-
-      var jeu_bouton = document.querySelector('.jouer_button');
-      jeu_bouton.textContent = `Rejouer`;
-
-      this.carte2();
-
-      const message = "Création du jeu <br> Création du plateau  <br> Création des joueurs  <br> Création des cyclistes  <br> Création des cartes et mélange  <br> Distribution des cartes aux joueurs";
-
-      const messagesContainer_activites = this.$refs.messages_activities;
-      const messagec_ativites = document.createElement('p');
-      messagec_ativites.insertAdjacentHTML('beforeend', message);
-      messagesContainer_activites.appendChild(messagec_ativites);
 
 
-      const positionCycliste = "0-0";
-      let liCycliste;
-      let liCycliste2;
-      let liCycliste3;
-      liCycliste = document.querySelector('.cardbox-equipe1 .position ul li:nth-child(1)');
-      liCycliste2 = document.querySelector('.cardbox-equipe1 .position ul li:nth-child(2)');
-      liCycliste3 = document.querySelector('.cardbox-equipe1 .position ul li:nth-child(3)');
-      liCycliste.textContent = `Cycliste 1 en position (${positionCycliste})`;
-      liCycliste2.textContent = `Cycliste 2 en position (${positionCycliste})`;
-      liCycliste3.textContent = `Cycliste 3 en position (${positionCycliste})`;
-      liCycliste = document.querySelector('.cardbox-equipe2 .position ul li:nth-child(1)');
-      liCycliste2 = document.querySelector('.cardbox-equipe2 .position ul li:nth-child(2)');
-      liCycliste3 = document.querySelector('.cardbox-equipe2 .position ul li:nth-child(3)');
-      liCycliste.textContent = `Cycliste 1 en position (${positionCycliste})`;
-      liCycliste2.textContent = `Cycliste 2 en position (${positionCycliste})`;
-      liCycliste3.textContent = `Cycliste 3 en position (${positionCycliste})`;
-      liCycliste = document.querySelector('.cardbox-equipe3 .position ul li:nth-child(1)');
-      liCycliste2 = document.querySelector('.cardbox-equipe3 .position ul li:nth-child(2)');
-      liCycliste3 = document.querySelector('.cardbox-equipe3 .position ul li:nth-child(3)');
-      liCycliste.textContent = `Cycliste 1 en position (${positionCycliste})`;
-      liCycliste2.textContent = `Cycliste 2 en position (${positionCycliste})`;
-      liCycliste3.textContent = `Cycliste 3 en position (${positionCycliste})`;
-      liCycliste = document.querySelector('.cardbox-equipe4 .position ul li:nth-child(1)');
-      liCycliste2 = document.querySelector('.cardbox-equipe4 .position ul li:nth-child(2)');
-      liCycliste3 = document.querySelector('.cardbox-equipe4 .position ul li:nth-child(3)');
-      liCycliste.textContent = `Cycliste 1 en position (${positionCycliste})`;
-      liCycliste2.textContent = `Cycliste 2 en position (${positionCycliste})`;
-      liCycliste3.textContent = `Cycliste 3 en position (${positionCycliste})`;
-
-    },
-    carte() {
-      const nom = document.getElementById('choix_pays-select').value;
-      console.log(nom);
-      if (nom) {
-        this.cartes = this.jeu.getCartes_du_joueur(nom);
-        console.log(this.cartes);
-
-        const numeros = [];
-
-        const selectElement = document.getElementById("choix_cartes-select");
-        selectElement.innerHTML = '<option value="">--Veuillez choisir une carte--</option>';
-        var i = 0;
-        for (const carte of this.cartes) {
-          numeros.push(carte.valeur);
-          console.log(numeros[i]);
-          const optionElement = document.createElement("option");
-          optionElement.value = numeros[i];
-          optionElement.textContent = numeros[i];
-          selectElement.appendChild(optionElement);
-          i++;
-        }
-        this.carte2();
-      }
-    },
-    carte2() {
+    init_visuel_cartes() {
       this.joueurs = ["Belgique", "Italie", "Hollande", "Allemagne"];
 
       for (const joueur of this.joueurs) {
@@ -238,7 +420,9 @@ export default {
           i++;
         }
       }
-    }
+    },
+
+
   }
 }
 </script>
@@ -313,7 +497,8 @@ export default {
   margin-right: 5px;
 }
 
-.jouer_button {
+.jouer_button,
+.jouer_button_dev {
   background-color: rgb(234, 211, 66);
   color: rgb(10, 10, 10);
   border: none;
@@ -324,7 +509,8 @@ export default {
   margin: 10px;
 }
 
-.jouer_button:hover {
+.jouer_button:hover,
+.jouer_button_dev:hover {
   background-color: rgb(221, 168, 22);
   transition: color 0.5s, background-color 0.5s;
 }

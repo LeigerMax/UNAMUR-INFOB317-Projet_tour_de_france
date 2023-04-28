@@ -31,6 +31,15 @@ class Joueur {
     return this.cyclistes;
   }
 
+  getNumCycliste(numero) {
+    const cycliste = this.cyclistes.find(c => c.getNumero() === numero);
+    if (!cycliste) {
+      return null;
+    }
+    return cycliste.getNumero();
+  }
+
+
   ajouter_cycliste(cycliste) {
     // Vérifier si le joueur a déjà le maximum de cyclistes
     if (this.cyclistes.length >= 3) {
@@ -64,6 +73,24 @@ class Joueur {
 
     return messageReturn;
 
+  }
+
+  get_positions_cyclistes() {
+    this.position_all_cycliste = [];
+    this.cyclistes.forEach(cycliste => {
+      this.position_all_cycliste.push(cycliste.getPosition2());
+    });
+    return this.position_all_cycliste;
+  }
+
+  get_position_cycliste(cyclisteNombre) {
+    this.positionDuCycliste = null;
+    this.cyclistes.forEach(cycliste => {
+      if (cycliste.numero === cyclisteNombre) {
+        this.positionDuCycliste = cycliste.getPosition3();
+      }
+    });
+    return this.positionDuCycliste;
   }
 
 
@@ -100,23 +127,7 @@ class Joueur {
     return numeros;
   }
 
-  get_positions_cyclistes() {
-    this.position_all_cycliste = [];
-    this.cyclistes.forEach(cycliste => {
-      this.position_all_cycliste.push(cycliste.getPosition2());
-    });
-    return this.position_all_cycliste;
-  }
-
-  get_position_cycliste(cyclisteNombre) {
-    this.positionDuCycliste = null;
-    this.cyclistes.forEach(cycliste => {
-      if (cycliste.numero === cyclisteNombre) {
-        this.positionDuCycliste = cycliste.getPosition3();
-      }
-    });
-    return this.positionDuCycliste;
-  }
+  
 
 }
 
