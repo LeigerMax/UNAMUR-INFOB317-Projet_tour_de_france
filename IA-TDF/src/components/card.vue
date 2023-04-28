@@ -119,8 +119,8 @@ export default {
 
 .position{
   color: rgb(255, 229, 84);
-  font-family: "Calibri", "Copperplate", fantasy;
-  font-size: 20px;
+  font-family: "Rockwell", serif;
+  font-size: 16px;
   right: 0;
   margin-top: 50px;
 }
