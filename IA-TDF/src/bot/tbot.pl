@@ -53,7 +53,9 @@ match_pattern(LPatterns,Lmots) :-
 
 match_pattern_dist([],_).
 match_pattern_dist([N,Pattern|Lpatterns],Lmots) :-
-   within_dist(N,Pattern,Lmots,Lmots_rem),
+   pFind(Pattern,Lmots,Variant),
+   replace(Lmots,Variant,Pattern,NewPhrase),
+   within_dist(N,Pattern,NewPhrase,Lmots_rem),
    match_pattern_dist(Lpatterns,Lmots_rem).
 
 within_dist(_,Pattern,Lmots,Lmots_rem) :-
@@ -170,7 +172,7 @@ regle_rep(montee,10,
 
 % ----------------------------------------------------------------%
 
-monteeregle_rep(descente,10,
+regle_rep(descente,10,
   [ [descente] ],
   [ [les,cases,situees,en,descente,sont,marquees,par,des,fleches,"bleues.",en,descente,les,regles,sont,les,memes,que,sur,une,etape,de,plaine,à,"l'exception",du,phenomene,"d'aspiration",":",
   la,prise,de,vitesse,equivaut,alors,a,"2",secondes,au,lieu,"d'1","seconde.",autre,difference,importante,":",en,utilisant,une,prise,de,vitesse,de,"2",secondes,
@@ -459,7 +461,8 @@ levenshtein_distance([X|Xs], [Y|Ys], Distance) :-
 lDistance(X, Y, Distance) :-
    string_chars(X, Xs),
    string_chars(Y, Ys),
-   levenshtein_distance(Xs, Ys, Distance). 
+   levenshtein_distance(Xs, Ys, Distance).
+
 
 
 /* --------------------------------------------------------------------- */
@@ -470,7 +473,8 @@ lDistance(X, Y, Distance) :-
 
 verif_distance(X, Y) :- 
    lDistance(X, Y, Len),
-   (Len < 3 ; (Len >= 3, !, fail)).
+   (Len < 2 ; (Len >= 2, !, fail)).
+
 
 /* --------------------------------------------------------------------- */
 /*                                                                       */
@@ -483,11 +487,24 @@ mFind(M, L, Variant) :-
    member(Variant,L), 
    verif_distance(Variant, M).
 
+pFind([P], Lmots, Variant) :-
+   member(Variant,Lmots),
+   verif_distance(P,Variant).
+   
+
 /* --------------------------------------------------------------------- */
 /*                                                                       */
 /*                  REMPLACE VARIANT PAR M                               */
 /*                                                                       */
 /* --------------------------------------------------------------------- */
+replace([], _, [], []).
+replace([Word|T], Old, [New], [New|T2]) :-
+   Word == Old,
+   replace(T, Old, New, T2).
+replace([Word|T], Old, [New], [Word|T2]) :-
+   Word \== Old,
+   replace(T, Old, New, T2).
+
 
 replace([], _, _, []).
 replace([Word|T], Old, New, [New|T2]) :-
@@ -496,6 +513,7 @@ replace([Word|T], Old, New, [New|T2]) :-
 replace([Word|T], Old, New, [Word|T2]) :-
     Word \== Old,
     replace(T, Old, New, T2).
+
 
 
 /* --------------------------------------------------------------------- */
