@@ -16,6 +16,8 @@ class Cycliste {
 
   getPosition3() { return `${this.position.getLigne()},  ${this.position.getColonne()}`; }
 
+  getFinCircuit() { return this.fin_circuit; }
+
 
 
   afficher_position() {
@@ -23,7 +25,6 @@ class Cycliste {
   }
 
 
-  // déplacer ok
   deplacement(choixCarte, plateau, cycliste_chute, belgique_positions, italie_positions, hollande_positions, allemagne_positions) {
     var nouvelle_ligne = this.position.getLigne() + parseInt(choixCarte);
     var nouvelle_colonne = 1;
@@ -92,15 +93,33 @@ class Cycliste {
       }
       this.position.setLigne(nouvelle_ligne);
       this.position.setColonne(nouvelle_colonne);
+
+      if (nouvelle_ligne >= plateau.getNbLignes()) {
+        console.log(`Le cycliste ${this.numero} a terminé le circuit !`);
+        this.fin_circuit = true;
+        console.log(this);
+      }
+  
+
     }
-    // Si case invalide, provoque chute
+    // Si case invalide
     else {
       console.log(`La position ${nouvelle_ligne, nouvelle_colonne} est invalide.`);
-      messageReturn = this.chute(nouvelle_ligne, this.numero,cycliste_chute, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
-      this.position.setLigne(nouvelle_ligne);
-      this.position.setColonne(1);
-    }
 
+      // Check si ligne arrivé 
+      if (nouvelle_ligne >= plateau.getNbLignes()) {
+        console.log(`Le cycliste ${this.numero} a terminé le circuit !`);
+        this.fin_circuit = true;
+        console.log(this);
+      }
+      // Sinon chute
+      else {
+        messageReturn = this.chute(nouvelle_ligne, this.numero,cycliste_chute, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
+        this.position.setLigne(nouvelle_ligne);
+        this.position.setColonne(1);
+      }
+      
+    }
 
     console.log(`Le cycliste ${this.numero} se déplace de ${choixCarte} case. Nouvelle position :  (  ${this.position.getLigne()} , ${this.position.getColonne()} ) .`);
     messageReturn = messageReturn + ` <br> Le cycliste ${this.numero} se déplace de ${choixCarte} case. Nouvelle position :  (  ${this.position.getLigne()} , ${this.position.getColonne()} ) .`;

@@ -117,7 +117,6 @@ export default {
 
     carte_dev() {
       const nom = document.getElementById('choix_pays-select-dev').value;
-      console.log(nom);
       if (nom) {
         this.cartes = this.jeu.getCartes_du_joueur(nom);
         console.log(this.cartes);
@@ -142,13 +141,14 @@ export default {
 
 
     deplacer_btn_dev() {
+      var messageReturn;
       const nom = document.getElementById('choix_pays-select-dev').value;
       const choixCycliste = parseInt(document.getElementById('choix_cycliste-select-dev').value);
       const choixCarte = document.getElementById('choix_cartes-select-dev').value;
-      const messageReturn = this.jeu.deplacer_dev(nom, choixCycliste, choixCarte);
-      this.jeu.jouer_carte_jeu(nom, choixCarte);
-      this.carte_dev();
 
+      messageReturn = this.jeu.deplacer_dev(nom, choixCycliste, choixCarte);
+      this.carte_dev();
+     
       let positionCycliste = this.jeu.get_position_cycliste(nom, choixCycliste);
 
       this.visuel_position(nom, positionCycliste, choixCycliste);
@@ -270,7 +270,6 @@ export default {
 
       const choixCarte = document.getElementById('choix_cartes-select').value;
       const messageReturn = this.jeu.deplacer_dynamique(nom, choixCarte);
-      this.jeu.jouer_carte_jeu(nom, choixCarte);
       this.carte_dynamique();
       this.init_visuel_cartes();
 

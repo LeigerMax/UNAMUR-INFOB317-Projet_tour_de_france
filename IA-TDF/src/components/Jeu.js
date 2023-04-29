@@ -74,6 +74,8 @@ class Jeu {
   // déplacemeent d'un cycliste (dev)
   deplacer_dev(nom, choixCycliste, choixCarte) {
     console.log("DEV : Dépalacer");
+    var messageReturn;
+
     switch (nom) {
       case "Belgique":
         this.joueur = this.belgique;
@@ -92,15 +94,22 @@ class Jeu {
         break;
     }
 
-    console.log("Liste des gens tombé :"+this.cycliste_chute[1].getNumCycliste());
-
-
     var belgique_positions = this.belgique.get_positions_cyclistes();
     var italie_positions = this.italie.get_positions_cyclistes();
     var hollande_positions = this.hollande.get_positions_cyclistes();
     var allemagne_positions = this.allemagne.get_positions_cyclistes();
 
-    const messageReturn = this.joueur.deplacer_cycliste(choixCycliste, choixCarte, this.plateau, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
+    // Appel la méthode deplacer_cycliste();
+    if(!this.cycliste_fin_course(this.joueur,choixCycliste)) {
+      messageReturn = this.joueur.deplacer_cycliste(choixCycliste, choixCarte, this.plateau,this.cycliste_chute, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
+      this.jouer_carte_jeu(this.joueur,choixCarte);
+    }
+    else {
+      messageReturn = "Le cycliste a déjà atteint la ligne d'arrivé";
+      console.log(messageReturn);
+    }
+      
+
 
     return messageReturn;
   }
@@ -143,7 +152,7 @@ class Jeu {
 
     
 
-    // 
+    // Check si premier tour fini
     if(this.tour > 11) {
 
       // Si le tableau d'historique des positions de cyclistes est vide, on récupère les positions de tous les cyclistes du joueur
@@ -176,17 +185,6 @@ class Jeu {
       //Récupère l'objet cycliste.
       cyclisteJouer = this.joueur.getNumCycliste(numeroCyclisteAJouer);
 
-
-
-      // Quand dernier elem supprimer du tableau this.cycliste_chute
-      //if(numeroCyclisteAJouer === undefined) {
-      //  numeroCyclisteAJouer = elemCyclisteDelete[0].numero;
-      //}
-
-
-      
-
-
       // Check si cycliste a chuté 
       var test =this.joueur.getCyclistes2();
       for (var i = 0; i < test.length; i++) {
@@ -197,7 +195,6 @@ class Jeu {
               elemCyclisteDelete = this.cycliste_chute.splice(j, 1);
               console.log("Cycliste  supprimer du tableau cycliste_chute !",elemCyclisteDelete);
 
-
               console.log("Le cycliste a chuté et ne peut pas jouer !");
               return "Le cycliste a chuté et ne peut pas jouer !";
             }
@@ -206,8 +203,16 @@ class Jeu {
       }
   
       // Appel la méthode deplacer_cycliste();
-      messageReturn = this.joueur.deplacer_cycliste(cyclisteJouer, choixCarte, this.plateau,this.cycliste_chute, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
-          
+      if(!this.cycliste_fin_course(this.joueur,cyclisteJouer)) {
+        messageReturn = this.joueur.deplacer_cycliste(cyclisteJouer, choixCarte, this.plateau,this.cycliste_chute, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
+        this.jouer_carte_jeu(this.joueur,choixCarte);
+      }
+      else {
+        messageReturn = "Le cycliste a déjà atteint la ligne d'arrivé";
+        console.log(messageReturn);
+      }
+     
+
     }
 
     //Premier tour pour chaque joueur, il joue leur cycliste 1 à 3 dans l'ordre.
@@ -227,6 +232,18 @@ class Jeu {
 
     return messageReturn;
   }
+
+
+  cycliste_fin_course(nom,cyclisteJouer){
+    const cycliste2 = nom.cyclistes.find(cycliste => cycliste.numero === cyclisteJouer);
+    if(cycliste2.getFinCircuit()) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
 
 
   afficher_position_cycliste() {
@@ -306,25 +323,8 @@ class Jeu {
   }
 
   jouer_carte_jeu(nom, choixCarte) {
-    switch (nom) {
-      case "Belgique":
-        this.joueur = this.belgique;
-        break;
-      case "Italie":
-        this.joueur = this.italie;
-        break;
-      case "Hollande":
-        this.joueur = this.hollande;
-        break;
-      case "Allemagne":
-        this.joueur = this.allemagne;
-        break;
-      default:
-        console.log("Joueur non trouvé.");
-        break;
-    }
-    if (this.joueur.cartes.length > 1) {
-      return this.joueur.jouer_carte(choixCarte);
+    if (nom.cartes.length > 1) {
+      return nom.jouer_carte(choixCarte);
     }
     else {
       // Appel piocher_cartes(), sa dernière carte sera jouer là-bas
@@ -336,7 +336,9 @@ class Jeu {
   piocher_cartes(choixCarte) {
     // Vérifier qu'il y a suffisamment de cartes dans le paquet
     if (this.cartes.length < 5) {
-      throw new Error('Pas assez de cartes dans le paquet.');
+      console.log(`Il n'a plus de carte dans le paquet.`);
+      this.init_cartes();
+      this.melanger_cartes();
     }
 
     // Joue sa dernière carte

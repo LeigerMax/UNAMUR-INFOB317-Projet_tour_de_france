@@ -39,6 +39,10 @@ class Plateau {
 
     }
 
+    getNbLignes() {
+        return this.nbLignes;
+      }
+
      // Vérifie si la position est dans une zone spéciale du plateau
     check_position_plateau(ligne, colonne) {
         for (const zone of this.cases) {

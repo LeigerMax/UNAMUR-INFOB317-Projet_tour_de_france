@@ -59,7 +59,6 @@ class Joueur {
 
 
 
-  // déplacer ok
   deplacer_cycliste(choixCycliste, choixCarte, plateau,cycliste_chute, belgique_positions, italie_positions, hollande_positions, allemagne_positions) {
     // Trouver le cycliste dans la liste des cyclistes du joueur
     const cycliste = this.cyclistes.find(c => c.getNumero() === choixCycliste);
