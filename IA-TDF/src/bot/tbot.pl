@@ -97,7 +97,7 @@ mclef(equipe,5).
 mclef(chance,10).
 mclef(montee,10).
 mclef(descente,10).
-mclef(help,10).
+mclef(help,5).
 
 
 /* --------------------------------------------------------------------- */
@@ -481,6 +481,14 @@ verif_distance(X, Y) :-
 /*                            TROUVE MCLEF                               */
 /*                                                                       */
 /* --------------------------------------------------------------------- */
+
+mSelecter(L, Mchoice):-
+   mclef(M1,P1),
+   mclef(M2,P2),
+   member(M1,L),
+   member(M2,L),
+   (P1 < P2, Mchoice = M1 ; (P2 < P1, Mchoice = M2)).
+ 
 
 mFind(M, L, Variant) :-
    mclef(M,_),
