@@ -472,8 +472,8 @@ lDistance(X, Y, Distance) :-
 /* --------------------------------------------------------------------- */
 
 verif_distance(X, Y) :- 
-   lDistance(X, Y, Len),
-   (Len < 2 ; (Len >= 2, !, fail)).
+   distance_degree(X, Y, Len),
+   (Len >= 75 ; (Len < 75, !, fail)).
 
 
 /* --------------------------------------------------------------------- */
@@ -514,6 +514,21 @@ replace([Word|T], Old, New, [Word|T2]) :-
     Word \== Old,
     replace(T, Old, New, T2).
 
+/* --------------------------------------------------------------------- */
+/*                                                                       */
+/*                  COMPTE ET TRANSFORME EN %                            */
+/*                                                                       */
+/* --------------------------------------------------------------------- */
+
+count_chars(Word, Count) :-
+   atom_chars(Word, Chars),
+   length(Chars, Count).
+
+distance_degree(Word1,Word2,Degree) :-
+   count_chars(Word1,Count),
+   count_chars(Word2,Count2),
+   lDistance(Word1,Word2,Dist),
+   Degree is (1-(Dist/max(Count,Count2)))*100.
 
 
 /* --------------------------------------------------------------------- */
