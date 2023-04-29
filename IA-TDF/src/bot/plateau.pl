@@ -1,9 +1,21 @@
 plateau([
-    [0,0,false,true],[0,1,false,true],[0,2,false,true],[0,3,false,true], %case depart
+
+    /* 
+    
+    Voici un set de tout les états possible (les différentes cases du jeu, 
+    ainsi que leurs accesibilité et les cases chances), un état fonctionne comme ceci : 
+
+    [case ligne, case colonne, case chance, case accessible],
+    
+    */
+
+    %CASE DE BASE
+
+    [0,0,false,true],[0,1,false,true],[0,2,false,true],[0,3,false,true],
 
     %CASE DE JEU
 
-    [1,1,false,true],[1,2,false,true],[1,3,false,true], %[case ligne, case colonne, case chance, case accessible]
+    [1,1,false,true],[1,2,false,true],[1,3,false,true],            
     [2,1,false,true], [2,2,false,true], [2,3,false,true],
     [3,1,false,true],[3,2,false,true],[3,3,false,true],
     [4,1,false,true],[4,2,false,true],[4,3,false,true],
@@ -11,100 +23,111 @@ plateau([
     [6,1,false,true],[6,2,false,true],[6,3,false,true],
     [7,1,false,true],[7,2,false,true],[7,3,false,true],
     [8,1,false,true],[8,2,false,true],[8,3,false,true],
-    [9,1,false,true],[9,2,false,true],[9,3,false,true],
-    [10,1,false,true],[10,2,false,true],[10,3,false,true],
-    [11,1,false,true],[11,2,false,true],[11,3,false,true],
-    [12,1,false,true],[12,2,false,true],[12,3,false,true],
-    [13,1,false,true],[13,2,false,true],[13,3,false,true],
-    [14,1,false,true],[14,2,false,true],[14,3,false,true],
-    [15,1,false,true],[15,2,false,true],[15,3,false,true],
-    [16,1,false,true],[16,2,false,true],[16,3,false,true],
-    [17,1,false,true],[17,2,false,true],[17,3,false,true],
-    [18,1,false,true],[18,2,false,true],[18,3,false,true],
-    [19,1,false,true],[19,2,false,true],[19,3,false,true],
-    [20,1,false,true],[20,2,false,true],[20,3,false,true],
+
+    [9,1,false,true],[9,2,false,true],[9,3,false,false],
+    [10,1,false,false],[10,2,false,true],[10,3,false,false],
+    [11,1,false,true],[11,2,false,true],[11,3,false,false],
+    [12,1,false,false],[12,2,false,true],[12,3,false,false],
+
+    [13,1,false,true],[13,2,false,true],[13,3,false,false],
+    [14,1,false,true],[14,2,false,true],[14,3,false,false],
+    [15,1,false,true],[15,2,false,true],[15,3,false,false],
+    [16,1,false,true],[16,2,false,true],[16,3,false,false],
+    [17,1,false,true],[17,2,false,true],[17,3,false,false],
+    [18,1,false,true],[18,2,false,true],[18,3,false,false],
+    [19,1,false,true],[19,2,false,true],[19,3,false,false],
+    [20,1,false,true],[20,2,false,true],[20,3,false,false],
+
     [21,1,false,true],[21,2,false,true],[21,3,false,true],
     [22,1,false,true],[22,2,false,true],[22,3,false,true],
     [23,1,false,true],[23,2,false,true],[23,3,false,true],
-    [24,1,false,true],[24,2,false,true],[24,3,false,true],
-    [25,1,false,true],[25,2,false,true],[25,3,false,true],
-    [26,1,false,true],[26,2,false,true],[26,3,false,true],
-    [27,1,false,true],[27,2,false,true],[27,3,false,true],
-    [28,1,false,true],[28,2,false,true],[28,3,false,true],
-    [29,1,false,true],[29,2,false,true],[29,3,false,true],
-    [30,1,false,true],[30,2,false,true],[30,3,false,true],
-    [31,1,false,true],[31,2,false,true],[31,3,false,true],
-    [32,1,false,true],[32,2,false,true],[32,3,false,true],
-    [33,1,false,true],[33,2,false,true],[33,3,false,true],
-    [34,1,false,true],[34,2,false,true],[34,3,false,true],
-    [35,1,false,true],[35,2,false,true],[35,3,false,true],
-    [36,1,false,true],[36,2,false,true],[36,3,false,true],
-    [37,1,false,true],[37,2,false,true],[37,3,false,true],
-    [38,1,false,true],[38,2,false,true],[38,3,false,true],
-    [39,1,false,true],[39,2,false,true],[39,3,false,true],
-    [40,1,false,true],[40,2,false,true],[40,3,false,true],
-    [41,1,false,true],[41,2,false,true],[41,3,false,true],
-    [42,1,false,true],[42,2,false,true],[42,3,false,true],
-    [43,1,false,true],[43,2,false,true],[43,3,false,true],
-    [44,1,false,true],[44,2,false,true],[44,3,false,true],
-    [45,1,false,true],[45,2,false,true],[45,3,false,true],
-    [46,1,false,true],[46,2,false,true],[46,3,false,true],
-    [47,1,false,true],[47,2,false,true],[47,3,false,true],
-    [48,1,false,true],[48,2,false,true],[48,3,false,true],
-    [49,1,false,true],[49,2,false,true],[49,3,false,true],
-    [50,1,false,true],[50,2,false,true],[50,3,false,true],
-    [51,1,false,true],[51,2,false,true],[51,3,false,true],
-    [52,1,false,true],[52,2,false,true],[52,3,false,true],
-    [53,1,false,true],[53,2,false,true],[53,3,false,true],
-    [54,1,false,true],[54,2,false,true],[54,3,false,true],
-    [55,1,false,true],[55,2,false,true],[55,3,false,true],
-    [56,1,false,true],[56,2,false,true],[56,3,false,true],
-    [57,1,false,true],[57,2,false,true],[57,3,false,true],
-    [58,1,false,true],[58,2,false,true],[58,3,false,true],
-    [59,1,false,true],[59,2,false,true],[59,3,false,true],
-    [60,1,false,true],[60,2,false,true],[60,3,false,true],
-    [61,1,false,true],[61,2,false,true],[61,3,false,true],
-    [62,1,false,true],[62,2,false,true],[62,3,false,true],
-    [63,1,false,true],[63,2,false,true],[63,3,false,true],
-    [64,1,false,true],[64,2,false,true],[64,3,false,true],
-    [65,1,false,true],[65,2,false,true],[65,3,false,true],
-    [66,1,false,true],[66,2,false,true],[66,3,false,true],
-    [67,1,false,true],[67,2,false,true],[67,3,false,true],
-    [68,1,false,true],[68,2,false,true],[68,3,false,true],
-    [69,1,false,true],[69,2,false,true],[69,3,false,true],
-    [70,1,false,true],[70,2,false,true],[70,3,false,true],
-    [71,1,false,true],[71,2,false,true],[71,3,false,true],
-    [72,1,false,true],[72,2,false,true],[72,3,false,true],
-    [73,1,false,true],[73,2,false,true],[73,3,false,true],
-    [74,1,false,true],[74,2,false,true],[74,3,false,true],
-    [75,1,false,true],[75,2,false,true],[75,3,false,true],
-    [76,1,false,true],[76,2,false,true],[76,3,false,true],
-    [77,1,false,true],[77,2,false,true],[77,3,false,true],
-    [78,1,false,true],[78,2,false,true],[78,3,false,true],
-    [79,1,false,true],[79,2,false,true],[79,3,false,true],
-    [80,1,false,true],[80,2,false,true],[80,3,false,true],
-    [81,1,false,true],[81,2,false,true],[81,3,false,true],
-    [82,1,false,true],[82,2,false,true],[82,3,false,true],
-    [83,1,false,true],[83,2,false,true],[83,3,false,true],
-    [84,1,false,true],[84,2,false,true],[84,3,false,true],
-    [85,1,false,true],[85,2,false,true],[85,3,false,true],
-    [86,1,false,true],[86,2,false,true],[86,3,false,true],
-    [87,1,false,true],[87,2,false,true],[87,3,false,true],
-    [88,1,false,true],[88,2,false,true],[88,3,false,true],
-    [89,1,false,true],[89,2,false,true],[89,3,false,true],
-    [90,1,false,true],[90,2,false,true],[90,3,false,true],
-    [91,1,false,true],[91,2,false,true],[91,3,false,true],
-    [92,1,false,true],[92,2,false,true],[92,3,false,true],
-    [93,1,false,true],[93,2,false,true],[93,3,false,true],
-    [94,1,false,true],[94,2,false,true],[94,3,false,true],
-    [95,1,false,true],[95,2,false,true],[95,3,false,true],
-    [96,1,false,true],[96,2,false,true],[96,3,false,true],
-    [97,1,false,true],[97,2,false,true],[97,3,false,true],
-    [98,1,false,true],[98,2,false,true],[98,3,false,true],
-    [99,1,false,true],[99,2,false,true],[99,3,false,true],
-    [100,1,false,true],[100,2,false,true],[100,3,false,true],
-    [101,1,false,true],[101,2,false,true],[101,3,false,true],
+
+    [24,1,false,true],[24,2,false,true],[24,4,false,true],
+    [25,1,false,true],[25,2,false,true],[25,4,false,true],
+    [26,1,false,true],[26,2,false,true],[26,4,false,true],
+    [27,1,false,true],[27,2,false,true],[27,4,false,true],
+    [28,1,false,true],[28,2,false,true],[28,4,false,true],
+    [29,1,false,true],[29,2,false,true],[29,4,false,true],
+    [30,1,false,true],[30,2,false,true],[30,4,false,true],
+    [31,1,false,true],[31,2,false,true],[31,4,false,true],
+    [32,1,false,true],[32,2,false,true],[32,4,false,true],
+    [33,1,false,true],[33,2,false,true],[33,4,false,true],
+    [34,1,false,true],[34,2,false,true],[34,4,false,true],
+    [35,1,false,true],[35,2,false,true],[35,4,false,true],
+    [36,1,false,true],[36,2,false,true],[36,4,false,true],
+    [37,1,false,true],[37,2,false,true],[37,4,false,true],
+
+    [38,1,false,false],[38,2,false,false],[38,4,false,true],
+    [39,1,false,false],[39,2,false,false],[39,4,false,true],
+
+    [40,1,false,true],[40,2,false,true],[40,3,false,false],
+    [41,1,false,true],[41,2,false,true],[41,3,false,false],
+    [42,1,false,true],[42,2,false,true],[42,3,false,false],
+    [43,1,false,true],[43,2,false,true],[43,3,false,false],
+    [44,1,false,true],[44,2,false,true],[44,3,false,false],
+    [45,1,false,true],[45,2,false,true],[45,3,false,false],
+    [46,1,false,true],[46,2,false,true],[46,3,false,false],
+    [47,1,false,true],[47,2,false,true],[47,3,false,false],
+    [48,1,false,true],[48,2,false,true],[48,3,false,false],
+    [49,1,false,true],[49,2,false,true],[49,3,false,false],
+    [50,1,false,true],[50,2,false,true],[50,3,false,false],
+    [51,1,false,true],[51,2,false,true],[51,3,false,false],
+    [52,1,false,true],[52,2,false,true],[52,3,false,false],
+    [53,1,false,true],[53,2,false,true],[53,3,false,false],
+    [54,1,false,true],[54,2,false,true],[54,3,false,false],
+    [55,1,false,true],[55,2,false,true],[55,3,false,false],
+    [56,1,false,true],[56,2,false,true],[56,3,false,false],
+    [57,1,false,true],[57,2,false,true],[57,3,false,false],
+    [58,1,false,true],[58,2,false,true],[58,3,false,false],
+    [59,1,false,true],[59,2,false,true],[59,3,false,false],
+    [60,1,false,true],[60,2,false,true],[60,3,false,false],
+    [61,1,false,true],[61,2,false,true],[61,3,false,false],
+    [62,1,false,true],[62,2,false,true],[62,3,false,false],
+    [63,1,false,true],[63,2,false,true],[63,3,false,false],
+    [64,1,false,true],[64,2,false,true],[64,3,false,false],
+    [65,1,false,true],[65,2,false,true],[65,3,false,false],
+    [66,1,false,true],[66,2,false,true],[66,3,false,false],
+    [67,1,false,true],[67,2,false,true],[67,3,false,false],
+    [68,1,false,true],[68,2,false,true],[68,3,false,false],
+    [69,1,false,true],[69,2,false,true],[69,3,false,false],
+    [70,1,false,true],[70,2,false,true],[70,3,false,false],
+    [71,1,false,true],[71,2,false,true],[71,3,false,false],
+    [72,1,false,true],[72,2,false,true],[72,3,false,false],
+    [73,1,false,true],[73,2,false,true],[73,3,false,false],
+    [74,1,false,true],[74,2,false,true],[74,3,false,false],
+    [75,1,false,true],[75,2,false,true],[75,3,false,false],
+    [76,1,false,true],[76,2,false,true],[76,3,false,false],
+    [77,1,false,true],[77,2,false,true],[77,3,false,false],
+
+    [78,1,false,true],[78,2,false,false],[78,3,false,false],
+    [79,1,false,true],[79,2,false,false],[79,3,false,false],
+    [80,1,false,true],[80,2,false,false],[80,3,false,false],
+    [81,1,false,true],[81,2,false,false],[81,3,false,false],
+    [82,1,false,true],[82,2,false,false],[82,3,false,false],
+    [83,1,false,true],[83,2,false,false],[83,3,false,false],
+
+    [84,1,false,true],[84,2,false,true],[84,3,false,false],
+    [85,1,false,true],[85,2,false,true],[85,3,false,false],
+    [86,1,false,true],[86,2,false,true],[86,3,false,false],
+    [87,1,false,true],[87,2,false,true],[87,3,false,false],
+    [88,1,false,true],[88,2,false,true],[88,3,false,false],
+
+    [89,1,false,true],[89,2,false,false],[89,3,false,true],
+    [90,1,false,true],[90,2,false,false],[90,3,false,true],
+    [91,1,false,true],[91,2,false,false],[91,3,false,true],
+    [92,1,false,true],[92,2,false,false],[92,3,false,true],
+    [93,1,false,true],[93,2,false,false],[93,3,false,true],
+    [94,1,false,true],[94,2,false,false],[94,3,false,true],
+    [95,1,false,true],[95,2,false,false],[95,3,false,true],
+    [96,1,false,true],[96,2,false,false],[96,3,false,true],
+    [97,1,false,true],[97,2,false,false],[97,3,false,true],
+    [98,1,false,true],[98,2,false,false],[98,3,false,true],
+    [99,1,false,true],[99,2,false,false],[99,3,false,true],
+    [100,1,false,false],[100,2,false,false],[100,3,false,true],
+    [101,1,false,false],[101,2,false,false],[101,3,false,true],
     [102,1,false,true],[102,2,false,true],[102,3,false,true],
+
+
     [103,1,false,true],[103,2,false,true],[103,3,false,true],
     [104,1,false,true],[104,2,false,true],[104,3,false,true],
     [105,1,false,true],[105,2,false,true],[105,3,false,true],
@@ -114,5 +137,57 @@ plateau([
     [109,1,false,true],[109,2,false,true],[109,3,false,true],
     [110,1,false,true],[110,2,false,true],[110,3,false,true],
     [111,1,false,true],[111,2,false,true],[111,3,false,true],
-    [112,1,false,true],[112,2,false,true],[112,3,false,true],
-])
+    [112,1,false,true],[112,2,false,true],[112,3,false,true]
+]).
+
+%DOUBLE CASE DANS LES VIRAGES
+
+double_case([9,1,false,true],[10,1,false,false]).
+double_case([11,1,false,true],[12,1,false,false]).
+double_case([68,1,false,true],[69,1,false,false]).
+
+/* CASE BONUS TEMPS
+
+    Si caseBonus((Case-_)) est vrai alors caseBonus([Case, _, _, _]) est vrai
+
+    caseBonus([Case, _, _, _]) est vrai si et seulement si Case est plus grand ou égal à 103 (peu importe les autres arguments)
+
+*/
+
+
+caseBonus((Case-_)) :- caseBonus([Case, _, _, _]).
+caseBonus([Case, _, _, _]):- Case >= 103.    
+
+
+/* 
+
+DEPLACEMENT POSSIBLE
+
+Si on est sur la case départ (la case 0), les cyclistes peuvent aller sur la première case peu importe sa colonne
+
+Si pas dans la case départ, on check la case actuelle du cycliste (LignePos, ColPos), et on la compare a la case désirée (LignTarget, ColTarget). 
+Afin de satisfaire le prédicat, il faut que la Ligne désirée soit plus grande de 1 unité (Case 10 -> Case 11).
+Il faut aussi que la ligne soit plus grande de 1, moins grande de 1 ou égale à la case actuelle (Si nous sommes dans la 1 ère colonne, la seule colonne possible sera 2).
+Il faut aussi que le booléen Accès soit sur true.
+
+Enfin on regarde si la case désirée existe bien dans la setlist plateau.
+
+*/
+
+
+deplacementPossible([0, _, _, _], [1, 1, _, _]).
+deplacementPossible([0, _, _, _], [1, 2, _, _]).
+deplacementPossible([0, _, _, _], [1, 3, _, _]).
+deplacementPossible([LignPos, ColPos, _, _], [LignTarget, ColTarget, Chance, Acces]):-
+    LignTarget is LignPos + 1,
+    Acces = true,
+    (ColTarget is ColPos + 1; ColTarget is ColPos -1; ColTarget = ColPos),
+    plateau(Verif),
+    member([LignTarget, ColTarget, Chance, Acces], Verif).
+
+
+
+
+
+
+
