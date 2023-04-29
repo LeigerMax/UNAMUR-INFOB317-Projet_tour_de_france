@@ -49,10 +49,10 @@ class Jeu {
 
     // Création des cyclistes pour chaque joueur
     for (let i = 1; i <= 3; i++) {
-      this.belgique.ajouter_cycliste(new Cycliste(i));
-      this.italie.ajouter_cycliste(new Cycliste(i));
-      this.hollande.ajouter_cycliste(new Cycliste(i));
-      this.allemagne.ajouter_cycliste(new Cycliste(i));
+      this.belgique.ajouter_cycliste(new Cycliste(i,"be"+i));
+      this.italie.ajouter_cycliste(new Cycliste(i,"it"+i));
+      this.hollande.ajouter_cycliste(new Cycliste(i,"ho"+i));
+      this.allemagne.ajouter_cycliste(new Cycliste(i,"al"+i));
     }
 
     // Affichage des joueurs avec leurs cyclistes
@@ -107,6 +107,15 @@ class Jeu {
 
   // déplacemeent d'un cycliste (dynamique)
   deplacer_dynamique(nom, choixCarte) {
+    var messageReturn;
+    var lowestPositionIndex = 0;
+    var numeroCyclisteAJouer;
+    var cyclisteJouer;
+    var elemDelete;
+    var elemCyclisteDelete;
+
+
+    // Check le nom du joeuur
     switch (nom) {
       case "Belgique":
         this.joueur = this.belgique;
@@ -126,18 +135,18 @@ class Jeu {
     }
 
 
+    // Importe les positions des cyclistes de chaque joueurs
     var belgique_positions = this.belgique.get_positions_cyclistes();
     var italie_positions = this.italie.get_positions_cyclistes();
     var hollande_positions = this.hollande.get_positions_cyclistes();
     var allemagne_positions = this.allemagne.get_positions_cyclistes();
 
-    var messageReturn;
+    
 
-    // Premier tour pour chaque joueur, il joue leur cycliste 1 à 3 dans l'ordre.
+    // 
     if(this.tour > 11) {
 
-      // Si le tableau d'historique des positions de cyclistes est vide, 
-      // on récupère les positions de tous les cyclistes du joueur
+      // Si le tableau d'historique des positions de cyclistes est vide, on récupère les positions de tous les cyclistes du joueur
       if (this.historiquePositionCycliste.length === 0) {
         var positions = this.joueur.get_positions_cyclistes();
         for (var i = 0; i < positions.length; i++) {
@@ -146,55 +155,67 @@ class Jeu {
       }
 
 
-      console.log("TABLEAU : ", this.historiquePositionCycliste);
-
       // Chercher le Cycliste avec la position la plus basse du tableau (à savoir la nbligne plus petite)
-      var lowestPositionIndex = 0;
-      var numeroPosition;
-      var cycliste_jouer;
-
       for (var i = 0; i < this.historiquePositionCycliste.length; i++) {
         if (this.historiquePositionCycliste[i].ligne < this.historiquePositionCycliste[lowestPositionIndex].ligne) {
           lowestPositionIndex = i;
-          numeroPosition = this.historiquePositionCycliste[i].numero;
+          numeroCyclisteAJouer = this.historiquePositionCycliste[i].numero;
         }
       }
 
-      
       // Supprimer cycliste jouer du tableau
-      var elemDelete;
       elemDelete = this.historiquePositionCycliste.splice(lowestPositionIndex, 1);
       console.log("Elem supprimer !",elemDelete);
 
-      // Quand dernier elem supprimer du tableau, on n'arrive pas à récupérer l'elem, j'ai donc fais un peu de scotch.
-      if(numeroPosition !== undefined) {
-        console.log("Cycliste plus petite position : ", numeroPosition);
-      }
-      else{
-        numeroPosition = elemDelete[0].numero;
+
+      // Quand dernier elem supprimer du tableau this.historiquePositionCycliste
+      if(numeroCyclisteAJouer === undefined) {
+        numeroCyclisteAJouer = elemDelete[0].numero;
       }
 
-      cycliste_jouer = this.joueur.getNumCycliste(numeroPosition);
+      //Récupère l'objet cycliste.
+      cyclisteJouer = this.joueur.getNumCycliste(numeroCyclisteAJouer);
 
-      // Vérifier si le cycliste a chuté
-      console.log("Liste des gens tombé :");
-      for (var i = 0; i < this.cycliste_chute.length; i++) {
-        console.log(this.cycliste_chute[i].numero);
-        if (this.joueur.getCyclistes().indexOf(this.cycliste_chute[i])) {
-          console.log("Le cycliste a chuté et ne peut pas jouer !");
-          return "Le cycliste a chuté et ne peut pas jouer !";
+
+
+      // Quand dernier elem supprimer du tableau this.cycliste_chute
+      //if(numeroCyclisteAJouer === undefined) {
+      //  numeroCyclisteAJouer = elemCyclisteDelete[0].numero;
+      //}
+
+
+      
+
+
+      // Check si cycliste a chuté 
+      var test =this.joueur.getCyclistes2();
+      for (var i = 0; i < test.length; i++) {
+        for (var j = 0; j < this.cycliste_chute.length; j++) {
+          if(test[i].nom === this.cycliste_chute[j].nom) {
+            if(test[i] === this.joueur.getCyclisteTest(cyclisteJouer)) {
+
+              elemCyclisteDelete = this.cycliste_chute.splice(j, 1);
+              console.log("Cycliste  supprimer du tableau cycliste_chute !",elemCyclisteDelete);
+
+
+              console.log("Le cycliste a chuté et ne peut pas jouer !");
+              return "Le cycliste a chuté et ne peut pas jouer !";
+            }
+          }
         }
       }
   
-      
-      messageReturn = this.joueur.deplacer_cycliste(cycliste_jouer, choixCarte, this.plateau,this.cycliste_chute, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
-      
+      // Appel la méthode deplacer_cycliste();
+      messageReturn = this.joueur.deplacer_cycliste(cyclisteJouer, choixCarte, this.plateau,this.cycliste_chute, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
           
     }
+
+    //Premier tour pour chaque joueur, il joue leur cycliste 1 à 3 dans l'ordre.
     else {
        messageReturn = this.joueur.deplacer_cycliste(this.currentCyclisteIndex, choixCarte, this.plateau,this.cycliste_chute, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
     }
 
+    //Incrémente this.currentCyclisteIndex tant que inférieur à 3, sinon le init à 1.
     if (this.currentCyclisteIndex < 3) {
       this.currentCyclisteIndex++;
     }

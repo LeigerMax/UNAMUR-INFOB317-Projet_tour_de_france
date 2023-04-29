@@ -39,6 +39,10 @@ class Joueur {
     return cycliste.getNumero();
   }
 
+  getCyclisteTest(numero) {
+    return this.cyclistes.find(cycliste => cycliste.getNumero() === numero) || null;
+  }
+
 
   ajouter_cycliste(cycliste) {
     // Vérifier si le joueur a déjà le maximum de cyclistes

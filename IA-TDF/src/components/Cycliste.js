@@ -1,7 +1,8 @@
 import Position from './Position';
 
 class Cycliste {
-  constructor(numero) {
+  constructor(numero,nom) {
+    this.nom = nom;
     this.numero = numero;
     this.position = new Position(0, 0);
     this.fin_circuit = false;
@@ -11,7 +12,7 @@ class Cycliste {
 
   getPosition() { return this.position; }
 
-  getPosition2() { return { numero: this.numero, ligne: this.position.getLigne(), colonne: this.position.getColonne() }; }
+  getPosition2() { return {nom: this.nom, numero: this.numero, ligne: this.position.getLigne(), colonne: this.position.getColonne() }; }
 
   getPosition3() { return `${this.position.getLigne()},  ${this.position.getColonne()}`; }
 
@@ -128,7 +129,7 @@ class Cycliste {
 
 
   toString() {
-    return "Nom : " + this.nom + " | Posiiton : " + this.pos
+    return "Nom : " + this.nom + " | Position : " + this.pos;
   }
 
 
