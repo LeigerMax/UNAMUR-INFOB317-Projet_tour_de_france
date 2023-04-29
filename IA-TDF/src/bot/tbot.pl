@@ -165,13 +165,17 @@ regle_rep(chance,10,
 
 regle_rep(montee,10,
   [ [montee]  ],
-  [ [a, remplir] ]).
+  [ [les, cases, situees, en, montee, sont, marquees, par, des, fleches, "rouges.", pour, determiner, la, vitesse, "d'un", coureur, en, montee, divisez, par, deux, la, valeur, 
+  de, la, carte, jouee, et, arrondissez, au, plus, "bas.", un, coureur, en, montee, ne, peut, pas, profiter, du, phenomene, "d'aspiration" ] ]).
 
 % ----------------------------------------------------------------%
 
-regle_rep(descente,10,
+monteeregle_rep(descente,10,
   [ [descente] ],
-  [ [a, remplir] ]).
+  [ [les,cases,situees,en,descente,sont,marquees,par,des,fleches,"bleues.",en,descente,les,regles,sont,les,memes,que,sur,une,etape,de,plaine,à,"l'exception",du,phenomene,"d'aspiration",":",
+  la,prise,de,vitesse,equivaut,alors,a,"2",secondes,au,lieu,"d'1","seconde.",autre,difference,importante,":",en,utilisant,une,prise,de,vitesse,de,"2",secondes,
+  vous,pouvez,depasser,le,coureur,"d'1",case,maximum,et,prendre,la,tete,de,la,"course.",comme,pour,les,etapes,de,plaine,vous,"n'êtes",pas,oblige,"d'utiliser",la,prise,de,"vitesse.";
+  vous,pouvez,donc,avancer,"d'1",seconde,au,lieu,de,"2",secondes,si,cela,"s'avère",plus,"prioritaire."] ]).
 
 
 % ----------------------------------------------------------------%
