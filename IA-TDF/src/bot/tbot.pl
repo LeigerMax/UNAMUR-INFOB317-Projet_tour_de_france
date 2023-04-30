@@ -482,7 +482,12 @@ verif_distance(X, Y) :-
 /*                                                                       */
 /* --------------------------------------------------------------------- */
 
-mSelecter(L, Mchoice):-
+mSelecter(L,M1,_,Mchoice):-
+   mclef(M1,_),
+   member(M1,L),
+   Mchoice = M1.
+
+mSelecter(L, M1, M2, Mchoice):-
    mclef(M1,P1),
    mclef(M2,P2),
    member(M1,L),
