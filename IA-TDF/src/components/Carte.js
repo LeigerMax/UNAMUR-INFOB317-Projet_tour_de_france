@@ -4,6 +4,10 @@ class Carte {
     this.valeur = valeur;
   }
 
+  /**
+   * 
+   * @returns valeur de la carte
+   */
   getValeur() { return this.valeur; }
 }
 

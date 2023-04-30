@@ -13,20 +13,20 @@ class Plateau {
             { debut: 81, fin: 88, nbColonnes: 2 },
             { debut: 89, fin: 102, nbColonnes: 2 },
         ];
-        this.caseSupplementaire = [     
-            { nbLignes: 103,  nbColonnes: 3, nbPointMinus :  0 },     
-            { nbLignes: 104,  nbColonnes: 3, nbPointMinus :  1 },    
-            { nbLignes: 105,  nbColonnes: 3, nbPointMinus :  2 },    
-            { nbLignes: 106,  nbColonnes: 3, nbPointMinus :  3 },    
-            { nbLignes: 107,  nbColonnes: 3, nbPointMinus :  4 },    
-            { nbLignes: 108,  nbColonnes: 3, nbPointMinus :  5 },    
-            { nbLignes: 109,  nbColonnes: 3, nbPointMinus :  6 },    
-            { nbLignes: 110,  nbColonnes: 3, nbPointMinus :  7 },    
-            { nbLignes: 111,  nbColonnes: 3, nbPointMinus :  8 },    
-            { nbLignes: 112,  nbColonnes: 3, nbPointMinus :  9 },      
+        this.caseSupplementaire = [
+            { nbLignes: 103, nbColonnes: 3, nbPointMinus: 0 },
+            { nbLignes: 104, nbColonnes: 3, nbPointMinus: 1 },
+            { nbLignes: 105, nbColonnes: 3, nbPointMinus: 2 },
+            { nbLignes: 106, nbColonnes: 3, nbPointMinus: 3 },
+            { nbLignes: 107, nbColonnes: 3, nbPointMinus: 4 },
+            { nbLignes: 108, nbColonnes: 3, nbPointMinus: 5 },
+            { nbLignes: 109, nbColonnes: 3, nbPointMinus: 6 },
+            { nbLignes: 110, nbColonnes: 3, nbPointMinus: 7 },
+            { nbLignes: 111, nbColonnes: 3, nbPointMinus: 8 },
+            { nbLignes: 112, nbColonnes: 3, nbPointMinus: 9 },
         ];
-        this.caseChance = [       
-            { nbLignes: 9,  nbColonnes: 1 },
+        this.caseChance = [
+            { nbLignes: 9, nbColonnes: 1 },
             { nbLignes: 10, nbColonnes: 1 },
             { nbLignes: 11, nbColonnes: 1 },
             { nbLignes: 12, nbColonnes: 1 },
@@ -63,11 +63,21 @@ class Plateau {
         ];
     }
 
+    /**
+     * 
+     * @returns le nombre de lignes maximales
+     */
     getNbLignes() {
         return this.nbLignes;
-      }
+    }
 
-     // Vérifie si la position est dans une zone spéciale du plateau
+    /**
+     *  Vérifie si la position est dans une zone spéciale du plateau
+     * 
+     * @param {*} ligne 
+     * @param {*} colonne 
+     * @returns true si position ok, false sinon
+     */
     check_position_plateau(ligne, colonne) {
         for (const circuit of this.case) {
             if (ligne >= circuit.debut && ligne <= circuit.fin) {
@@ -80,36 +90,57 @@ class Plateau {
         return false;
     }
 
-    // Vérifie si le cycliste est sur une case chance
+
+    /**
+     * Vérifie si le cycliste est sur une case chance
+     * 
+     * @param {*} ligne 
+     * @param {*} colonne 
+     * @returns  true si case chance, false sinon
+     */
     check_case_chance_plateau(ligne, colonne) {
         for (const caseChance of this.caseChance) {
             if (caseChance.nbLignes === ligne && caseChance.nbColonnes >= colonne) {
-            return true;
+                return true;
             }
         }
         return false;
     }
 
-    // Vérifie si le cycliste est sur une case supplémentaire
+
+    /**
+     * Vérifie si le cycliste est sur une case supplémentaire
+     * 
+     * @param {*} ligne 
+     * @param {*} colonne 
+     * @returns true si case supplementaire, false sinon
+     */
     check_case_supplementaire_plateau(ligne, colonne) {
         for (const caseSupplementaire of this.caseSupplementaire) {
             if (caseSupplementaire.nbLignes === ligne && caseSupplementaire.nbColonnes >= colonne) {
-            return true;
+                return true;
             }
         }
         return false;
     }
 
-    // Vérifie si le cycliste est sur une case indisponible
+
+    /**
+     * Vérifie si le cycliste est sur une case indisponible
+     * 
+     * @param {*} ligne 
+     * @param {*} colonne 
+     * @returns  true si case indisponible, false sinon
+     */
     check_case_indisponible(ligne, colonne) {
         for (const caseIndispo of this.caseIndisponible) {
-          if (caseIndispo[0] === ligne && caseIndispo[1] === colonne) {
-            return true;
-          }
+            if (caseIndispo[0] === ligne && caseIndispo[1] === colonne) {
+                return true;
+            }
         }
         return false;
     }
-      
+
 
 }
 

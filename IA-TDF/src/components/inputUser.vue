@@ -79,24 +79,25 @@ export default {
      *        DEV           *
      *                      *
      ***********************/
+
+    // Lance le jeu en mode dev
     jouer_dev() {
       const dev = true;
       this.jeu = new Jeu();
       this.jeu.debut_jeu(dev);
 
-      var jeu_bouton = document.querySelector('.jouer_button_dev');
+      // Modifie le texte du bouton
+      const jeu_bouton = document.querySelector('.jouer_button_dev');
       jeu_bouton.textContent = `Rejouer dev`;
 
-      this.init_visuel_cartes();
 
+      // Affiche message activitiés
       const message = "Création du jeu pour dev <br> Création du plateau  <br> Création des joueurs  <br> Création des cyclistes  <br> Création des cartes et mélange  <br> Distribution des cartes aux joueurs";
-
       const messagesContainer_activites = this.$refs.messages_activities;
       const messagec_ativites = document.createElement('p');
       messagec_ativites.insertAdjacentHTML('beforeend', message);
       messagesContainer_activites.appendChild(messagec_ativites);
 
-      this.init_visuel_positions();
 
       // Bloque/Débloque inputs
       var selectElement = document.getElementById('choix_cartes-select');
@@ -108,23 +109,30 @@ export default {
       selectElement = document.getElementById("choix_cartes-select-dev");
       selectElement.disabled = false;
 
+
+      this.init_visuel_cartes();
+      this.init_visuel_positions();
+
     },
 
 
+    // Appelée lorsqu'un pays est sélectionné dans le menu déroulant. Elle appelle la méthode carte_dev().
     onChoixPaysSelectChange() {
       this.carte_dev();
     },
 
+    // Met à jour l'input des cartes disponibles pour le pays sélectionné. Elle récupère toutes les cartes appartenant à ce joueur, les trie et les ajoute au menu déroulant des cartes.
     carte_dev() {
       const nom = document.getElementById('choix_pays-select-dev').value;
+
+      // Check si nom select
       if (nom) {
         this.cartes = this.jeu.getCartes_du_joueur(nom);
-        console.log(this.cartes);
-
         const numeros = [];
 
         const selectElement = document.getElementById("choix_cartes-select-dev");
         selectElement.innerHTML = '<option value="">--Veuillez choisir une carte--</option>';
+
         var i = 0;
         for (const carte of this.cartes) {
           numeros.push(carte.valeur);
@@ -135,22 +143,23 @@ export default {
           selectElement.appendChild(optionElement);
           i++;
         }
+
         this.init_visuel_cartes();
       }
     },
 
-
+    // Déplace le cycliste
     deplacer_btn_dev() {
       var messageReturn;
       const nom = document.getElementById('choix_pays-select-dev').value;
       const choixCycliste = parseInt(document.getElementById('choix_cycliste-select-dev').value);
       const choixCarte = document.getElementById('choix_cartes-select-dev').value;
 
+      // Appelle la méthode deplacer_dev() de la classe Jeu
       messageReturn = this.jeu.deplacer_dev(nom, choixCycliste, choixCarte);
-      this.carte_dev();
-     
-      let positionCycliste = this.jeu.get_position_cycliste(nom, choixCycliste);
 
+      // Récupère la position du cycliste et met à jour sur le frontend
+      let positionCycliste = this.jeu.get_position_cycliste(nom, choixCycliste);
       this.visuel_position(nom, positionCycliste, choixCycliste);
 
       // Affiche message activitiés
@@ -160,6 +169,7 @@ export default {
       messagec_ativites.insertAdjacentHTML('beforeend', message);
       messagesContainer_activites.appendChild(messagec_ativites);
 
+      this.carte_dev();
     },
 
 
@@ -168,6 +178,8 @@ export default {
     *        Dynamique      *
     *                       *
     *************************/
+
+    // Lance le jeu en mode dynamique
     jouer() {
       const dev = false;
       this.jeu = new Jeu();
@@ -176,19 +188,17 @@ export default {
       this.move_counter = 1;
       this.move_card_counter = 1;
 
+      // Modifie le texte du bouton
       var jeu_bouton = document.querySelector('.jouer_button');
       jeu_bouton.textContent = `Rejouer`;
 
-      this.init_visuel_cartes();
-
+      // Affiche message activitiés
       const message = "Création du jeu dynamique <br> Création du plateau  <br> Création des joueurs  <br> Création des cyclistes  <br> Création des cartes et mélange  <br> Distribution des cartes aux joueurs";
-
       const messagesContainer_activites = this.$refs.messages_activities;
       const messagec_ativites = document.createElement('p');
       messagec_ativites.insertAdjacentHTML('beforeend', message);
       messagesContainer_activites.appendChild(messagec_ativites);
 
-      this.init_visuel_positions();
 
       // Bloque/Débloque inputs
       var selectElement = document.getElementById('choix_cartes-select');
@@ -200,13 +210,17 @@ export default {
       selectElement = document.getElementById("choix_cartes-select-dev");
       selectElement.disabled = true;
 
+      this.init_visuel_cartes();
+      this.init_visuel_positions();
       this.carte_dynamique();
-
 
     },
 
 
+    // Met à jour l'input des cartes disponibles en fonction du joueur à jouer
     carte_dynamique() {
+
+      // Cherche le joueur qui doit jouer
       var nom = "";
       if (this.move_card_counter <= 3) {
         this.move_card_counter++;
@@ -226,8 +240,8 @@ export default {
       }
 
 
+      // Récupère les cartes du joueur
       this.cartes = this.jeu.getCartes_du_joueur(nom);
-      console.log(this.cartes);
 
       const numeros = [];
 
@@ -243,12 +257,15 @@ export default {
         selectElement.appendChild(optionElement);
         i++;
       }
-      this.init_visuel_cartes();
 
+      this.init_visuel_cartes();
     },
 
 
+    // Déplace le cycliste
     deplacer_btn() {
+
+      // Cherche le joueur qui doit jouer
       var nom = "";
       if (this.move_counter <= 3) {
         this.move_counter++;
@@ -270,6 +287,7 @@ export default {
 
       const choixCarte = document.getElementById('choix_cartes-select').value;
       const messageReturn = this.jeu.deplacer_dynamique(nom, choixCarte);
+
       this.carte_dynamique();
       this.init_visuel_cartes();
 
@@ -285,9 +303,9 @@ export default {
       const messagec_ativites = document.createElement('p');
       messagec_ativites.insertAdjacentHTML('beforeend', message);
       messagesContainer_activites.appendChild(messagec_ativites);
-      
 
-      // Restart compteur
+
+      // Restart les compteurs
       if (this.move_counter == 13) {
         this.move_counter = 1;
       }
@@ -299,13 +317,13 @@ export default {
     },
 
 
-
-
     /************************
     *                       *
     *        Global         *
     *                       *
     *************************/
+
+    // Initialisation des positions frontend
     init_visuel_positions() {
       const positionCycliste = "0-0";
       let liCycliste;
@@ -337,6 +355,7 @@ export default {
       liCycliste3.textContent = `Cycliste 3 en position (${positionCycliste})`;
     },
 
+    // Modification des positions des cyclistes frondend
     visuel_position(nom, positionCycliste, choixCycliste) {
       let liCycliste = "";
       if (nom === "Belgique") {
@@ -396,14 +415,14 @@ export default {
         }
       }
 
-     
+
     },
 
-
+    // Initialisation des cartes frontend
     init_visuel_cartes() {
-      this.joueurs = ["Belgique", "Italie", "Hollande", "Allemagne"];
+      var joueurs = ["Belgique", "Italie", "Hollande", "Allemagne"];
 
-      for (const joueur of this.joueurs) {
+      for (const joueur of joueurs) {
         const cartesDuJoueur = this.jeu.getCartes_du_joueur(joueur);
 
         const numeros = [];

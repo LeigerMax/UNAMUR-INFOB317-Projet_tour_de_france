@@ -31,6 +31,7 @@ class Cycliste {
     var nouvelle_colonne = 1;
     var messageReturn = "";
 
+    // Check si case indisponible 
     while(ancienne_ligne != nouvelle_ligne) {
       if(plateau.check_case_indisponible(ancienne_ligne,nouvelle_colonne)){
         nouvelle_ligne++;
