@@ -30,13 +30,8 @@ produire_reponse([fin],[L1]) :-
    L1 = [merci, de, m, '\'', avoir, consulte], !.    
 
 produire_reponse(L,Rep) :-
-<<<<<<< HEAD
-   write(L),
-   mclef(M,_), mCompare(M,L),
-=======
    mFind(M,L,Variant),
    replace(L,Variant,M, NewPhrase),
->>>>>>> 94e9a7a744f11007e6d974e4e98d71a13d045353
    clause(regle_rep(M,_,Pattern,Rep),Body),
    match_pattern(Pattern,NewPhrase),
    call(Body), !.
@@ -440,19 +435,11 @@ espace(N) :- N>0, Nn is N-1, write(' '), espace(Nn).
 /*                                                                       */
 /* --------------------------------------------------------------------- */
 
-<<<<<<< HEAD
-% Définition de la fonction min/3
-min(X, Y, X) :- X =< Y.
-min(X, Y, Y) :- X > Y.
-
-% Cas de base : si le premier argument est une liste vide, la distance est la longueur de la deuxième liste.
-=======
 % DÃ©finition de la fonction min/3
 min(X, Y, X) :- X =< Y.
 min(X, Y, Y) :- X > Y.
 
 % Cas de base : si le premier argument est une liste vide, la distance est la longueur de la deuxiÃ¨me liste.
->>>>>>> 94e9a7a744f11007e6d974e4e98d71a13d045353
 levenshtein_distance([], Y, Distance) :- length(Y, Distance).
 
 % Cas de base : si le deuxiÃ¨me argument est une liste vide, la distance est la longueur de la premiÃ¨re liste.
@@ -462,19 +449,11 @@ levenshtein_distance(X, [], Distance) :- length(X, Distance).
 levenshtein_distance([X|Xs], [Y|Ys], Distance) :-
     % Si les Ã©lÃ©ments sont identiques, on continue avec les listes restantes.
     (X == Y -> levenshtein_distance(Xs, Ys, Distance)
-<<<<<<< HEAD
-    % Si les éléments sont différents, on a trois options possibles :
-    ; levenshtein_distance(Xs, [Y|Ys], Distance1), % 1. On insère un caractère dans la première liste.
-      levenshtein_distance([X|Xs], Ys, Distance2), % 2. On supprime un caractère de la deuxième liste.
-      levenshtein_distance(Xs, Ys, Distance3),     % 3. On substitue un caractère de la première liste avec un caractère de la deuxième liste.
-      % On calcule récursivement la distance pour chaque option, et on prend le minimum.
-=======
     % Si les Ã©lÃ©ments sont diffÃ©rents, on a trois options possibles :
     ; levenshtein_distance(Xs, [Y|Ys], Distance1), % 1. On insÃ¨re un caractÃ¨re dans la premiÃ¨re liste.
       levenshtein_distance([X|Xs], Ys, Distance2), % 2. On supprime un caractÃ¨re de la deuxiÃ¨me liste.
       levenshtein_distance(Xs, Ys, Distance3),     % 3. On substitue un caractÃ¨re de la premiÃ¨re liste avec un caractÃ¨re de la deuxiÃ¨me liste.
       % On calcule rÃ©cursivement la distance pour chaque option, et on prend le minimum.
->>>>>>> 94e9a7a744f11007e6d974e4e98d71a13d045353
       min_list([Distance1, Distance2, Distance3], Min),
       Distance is Min + 1
     ).
@@ -482,13 +461,9 @@ levenshtein_distance([X|Xs], [Y|Ys], Distance) :-
 lDistance(X, Y, Distance) :-
    string_chars(X, Xs),
    string_chars(Y, Ys),
-<<<<<<< HEAD
-   levenshtein_distance(Xs, Ys, Distance). 
-=======
    levenshtein_distance(Xs, Ys, Distance).
 
 
->>>>>>> 94e9a7a744f11007e6d974e4e98d71a13d045353
 
 /* --------------------------------------------------------------------- */
 /*                                                                       */
@@ -497,19 +472,6 @@ lDistance(X, Y, Distance) :-
 /* --------------------------------------------------------------------- */
 
 verif_distance(X, Y) :- 
-<<<<<<< HEAD
-   lDistance(X, Y, Len),
-   (Len < 3 ; (Len >= 3, !, fail)).
-
-/* --------------------------------------------------------------------- */
-/*                                                                       */
-/*                            COMPARE MCLEF                              */
-/*                                                                       */
-/* --------------------------------------------------------------------- */
-
-mCompare(M,L) :-
-   member(Variant,L), verif_distance(Variant, M).
-=======
    distance_degree(X, Y, Len),
    (Len >= 75 ; (Len < 75, !, fail)).
 
@@ -580,7 +542,6 @@ distance_degree(Word1,Word2,Degree) :-
    count_chars(Word2,Count2),
    lDistance(Word1,Word2,Dist),
    Degree is (1-(Dist/max(Count,Count2)))*100.
->>>>>>> 94e9a7a744f11007e6d974e4e98d71a13d045353
 
 
 /* --------------------------------------------------------------------- */
