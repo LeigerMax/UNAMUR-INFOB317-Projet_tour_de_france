@@ -30,10 +30,15 @@ produire_reponse([fin],[L1]) :-
    L1 = [merci, de, m, '\'', avoir, consulte], !.    
 
 produire_reponse(L,Rep) :-
+<<<<<<< HEAD
    write(L),
    mclef(M,_), mCompare(M,L),
+=======
+   mFind(M,L,Variant),
+   replace(L,Variant,M, NewPhrase),
+>>>>>>> 94e9a7a744f11007e6d974e4e98d71a13d045353
    clause(regle_rep(M,_,Pattern,Rep),Body),
-   match_pattern(Pattern,L),
+   match_pattern(Pattern,NewPhrase),
    call(Body), !.
 
 produire_reponse(_,[L1,L2,L3]) :-
@@ -53,7 +58,9 @@ match_pattern(LPatterns,Lmots) :-
 
 match_pattern_dist([],_).
 match_pattern_dist([N,Pattern|Lpatterns],Lmots) :-
-   within_dist(N,Pattern,Lmots,Lmots_rem),
+   pFind(Pattern,Lmots,Variant),
+   replace(Lmots,Variant,Pattern,NewPhrase),
+   within_dist(N,Pattern,NewPhrase,Lmots_rem),
    match_pattern_dist(Lpatterns,Lmots_rem).
 
 within_dist(_,Pattern,Lmots,Lmots_rem) :-
@@ -86,26 +93,17 @@ nb_equipes(4).
 /*                                                                       */
 /* --------------------------------------------------------------------- */
 
-mclef(description,10).
 mclef(but,10).
 mclef(commence,10).
 mclef(chute,10).
 mclef(depasser,10).
 mclef(deplacer,10).
-mclef(carte,10).
 mclef(equipe,5).
-mclef(aspiration,10).
 mclef(chance,10).
-mclef(case,10).
-mclef(echange,10).
-mclef(sprint,10).
 mclef(montee,10).
 mclef(descente,10).
-mclef(points,10).
-mclef(classement,10).
-mclef(fonctionnement,10).
-mclef(createur,10).
-mclef(help,10).
+mclef(help,5).
+
 
 /* --------------------------------------------------------------------- */
 /*                                                                       */
@@ -113,27 +111,19 @@ mclef(help,10).
 /*                                                                       */
 /* --------------------------------------------------------------------- */
 
-/*regle_rep(description,10,
-  [ [ description ], 1 , [ jeu ] ],
-  [ [ le, tour, de, france, est, un, jeu, de, societe, qui, simule, la, celebre, course, cycliste,., les, joueurs, participent, 
-  en, equipe, de, trois, coureurs, et, tentent, "d'obtenir", le, meilleur, score, possible, en, parcourant, plusieurs, etapes,., 
-  le, classement, est, tenu, par, joueur, et, par, equipe, et, le, coureur, le, plus, rapide, sur, "l'ensemble", des, etapes, porte, 
-  le, maillot, jaune,., les, regles, du, jeu, permettent, de, deplacer, les, coureurs, de, les, faire, depasser, et, de, prendre, en, compte, des, chutes,. ] ] ).
-*/
-% ----------------------------------------------------------------%
-/*
 regle_rep(but,5,
    [[quel], 3, [but], 4, [jeu]],
    [[dans, ce, jeu, les, joueurs, participent, aux, etapes, en, equipe, de, trois, coureurs, le, but, de, chaque,
    equipe, est, "d'obtenir", le, meilleur, score, possible, et, le, classement, est, tenu,
-   par, joueur, et, par, ,equipe, chaque, tour, se, compose, de, plusieurs, etapes, et, le,
+   par, joueur, et, par,equipe, chaque, tour, se, compose, de, plusieurs, etapes, et, le,
    coureur, le, plus, rapide, sur, "l'ensemble", des, etapes, porte, le, maillot, jaune, le, 
    joueur, dont, "l'equipe", obtient, le, meilleur, temps, remporte, le, plus, de, points, au,
    classement, general, et, est, declare, vainqueur, du, tour
    ]]
-  ).*/
+  ).
 
 % ----------------------------------------------------------------%
+
 
 regle_rep(commence,5,
   [ [ commence ], 4 , [ partie ] ],
@@ -142,13 +132,14 @@ regle_rep(commence,5,
      nb_equipes(X).
 
 % ----------------------------------------------------------------%
-/*
+
+
 regle_rep(chute,10,
-  [ [ comment ], 1 ,[ chute ], 2 ,[ arriver ] ],
+  [ [ comment ], 2 ,[ chute ], 3 ,[ arriver ] ],
   [ [une, chute, se, produit ,lorsque, deux, joueurs, entrent, en, contact, sur, la, meme, case, ce, qui, entraine, 
   une, chute, des, deux, joueurs, ainsi, que, des, cases, autour, "d'eux", ., de, plus, tout, contact, avec, un, joueur, 
-  provoque, egalement, une, chute,. ] ]).
-*/
+  provoque, egalement, une, chute ] ]).
+
 % ----------------------------------------------------------------%
 
 regle_rep(depasser,5,
@@ -165,24 +156,11 @@ regle_rep(deplacer,5,
 
 % ----------------------------------------------------------------%
 
-regle_rep(carte,10,
-  [ [ comment ], 2 ,[ fonctionne ] ],
-  [ [a, remplir] ]).
-
-% ----------------------------------------------------------------%
-
 regle_rep(equipe,5,
   [ [ combien ], 3, [ coureurs ], 5, [ equipe ] ],
   [ [ chaque, equipe, compte, X, "coureurs." ] ]) :-
 
      nb_coureurs(X).
-
-
-% ----------------------------------------------------------------%
-
-regle_rep(aspiration,10,
-  [ [aspiration]  ],
-  [ [a, remplir] ]).
 
 % ----------------------------------------------------------------%
 
@@ -192,62 +170,27 @@ regle_rep(chance,10,
 
 % ----------------------------------------------------------------%
 
-regle_rep(echange,10,
-  [ [echange] ],
-  [ [a, remplir] ]).
-
-% ----------------------------------------------------------------%
-
-regle_rep(sprint,10,
-  [ [sprint] ],
-  [ [a, remplir] ]).
-
-% ----------------------------------------------------------------%
-
 regle_rep(montee,10,
   [ [montee]  ],
-  [ [a, remplir] ]).
+  [ [les, cases, situees, en, montee, sont, marquees, par, des, fleches, "rouges.", pour, determiner, la, vitesse, "d'un", coureur, en, montee, divisez, par, deux, la, valeur, 
+  de, la, carte, jouee, et, arrondissez, au, plus, "bas.", un, coureur, en, montee, ne, peut, pas, profiter, du, phenomene, "d'aspiration" ] ]).
 
 % ----------------------------------------------------------------%
 
 regle_rep(descente,10,
   [ [descente] ],
-  [ [a, remplir] ]).
+  [ [les,cases,situees,en,descente,sont,marquees,par,des,fleches,"bleues.",en,descente,les,regles,sont,les,memes,que,sur,une,etape,de,plaine,à,"l'exception",du,phenomene,"d'aspiration",":",
+  la,prise,de,vitesse,equivaut,alors,a,"2",secondes,au,lieu,"d'1","seconde.",autre,difference,importante,":",en,utilisant,une,prise,de,vitesse,de,"2",secondes,
+  vous,pouvez,depasser,le,coureur,"d'1",case,maximum,et,prendre,la,tete,de,la,"course.",comme,pour,les,etapes,de,plaine,vous,"n'êtes",pas,oblige,"d'utiliser",la,prise,de,"vitesse.";
+  vous,pouvez,donc,avancer,"d'1",seconde,au,lieu,de,"2",secondes,si,cela,"s'avère",plus,"prioritaire."] ]).
+
 
 % ----------------------------------------------------------------%
 
-regle_rep(points,10,
-  [ [points] ],
-  [ [a, remplir] ]).
-
-% ----------------------------------------------------------------%
-
-regle_rep(classement,10,
-  [ [ comment ], 2 ,[ calculer ], 1 ,[ classement ] ],
-  [ [a, remplir] ]).
-
-% ----------------------------------------------------------------%
-
-
-regle_rep(fonctionnement,10,
-  [ [ comment ], 2 ,[ fonctionne ] ],
-  [ [sur, le, site, on, peut, trouver, la, carte, du, jeu, ainsi, que, deux, chatbots, :,
-   "l'un", pour, jouer, au, jeu, et, "l'autre", pour, poser, des, questions, a, tbot, ., 
-   en, outre, on, peut, egalement, trouver, les, cartes, selectionnees, des, deux, equipes, .] ]).
-
-% ----------------------------------------------------------------%
-
-regle_rep(createur,10,
-  [ [ createur ] ,2 ],
-  [ [ les, createurs, sont, :, maxime, lucas, benjamin, simon ] ] ).
-
-% ----------------------------------------------------------------%
-
-/*
 regle_rep(help,10,
    [ [ help ] ],
    [ [voici, quelques, exemples, de, questions, que, vous, pouvez, me, poser ] ] ).
-*/
+
 
 /* --------------------------------------------------------------------- */
 /*                                                                       */
@@ -497,25 +440,41 @@ espace(N) :- N>0, Nn is N-1, write(' '), espace(Nn).
 /*                                                                       */
 /* --------------------------------------------------------------------- */
 
+<<<<<<< HEAD
 % Définition de la fonction min/3
 min(X, Y, X) :- X =< Y.
 min(X, Y, Y) :- X > Y.
 
 % Cas de base : si le premier argument est une liste vide, la distance est la longueur de la deuxième liste.
+=======
+% DÃ©finition de la fonction min/3
+min(X, Y, X) :- X =< Y.
+min(X, Y, Y) :- X > Y.
+
+% Cas de base : si le premier argument est une liste vide, la distance est la longueur de la deuxiÃ¨me liste.
+>>>>>>> 94e9a7a744f11007e6d974e4e98d71a13d045353
 levenshtein_distance([], Y, Distance) :- length(Y, Distance).
 
-% Cas de base : si le deuxième argument est une liste vide, la distance est la longueur de la première liste.
+% Cas de base : si le deuxiÃ¨me argument est une liste vide, la distance est la longueur de la premiÃ¨re liste.
 levenshtein_distance(X, [], Distance) :- length(X, Distance).
 
-% Cas récursif : comparaison des deux premiers éléments des listes X et Y.
+% Cas rÃ©cursif : comparaison des deux premiers Ã©lÃ©ments des listes X et Y.
 levenshtein_distance([X|Xs], [Y|Ys], Distance) :-
-    % Si les éléments sont identiques, on continue avec les listes restantes.
+    % Si les Ã©lÃ©ments sont identiques, on continue avec les listes restantes.
     (X == Y -> levenshtein_distance(Xs, Ys, Distance)
+<<<<<<< HEAD
     % Si les éléments sont différents, on a trois options possibles :
     ; levenshtein_distance(Xs, [Y|Ys], Distance1), % 1. On insère un caractère dans la première liste.
       levenshtein_distance([X|Xs], Ys, Distance2), % 2. On supprime un caractère de la deuxième liste.
       levenshtein_distance(Xs, Ys, Distance3),     % 3. On substitue un caractère de la première liste avec un caractère de la deuxième liste.
       % On calcule récursivement la distance pour chaque option, et on prend le minimum.
+=======
+    % Si les Ã©lÃ©ments sont diffÃ©rents, on a trois options possibles :
+    ; levenshtein_distance(Xs, [Y|Ys], Distance1), % 1. On insÃ¨re un caractÃ¨re dans la premiÃ¨re liste.
+      levenshtein_distance([X|Xs], Ys, Distance2), % 2. On supprime un caractÃ¨re de la deuxiÃ¨me liste.
+      levenshtein_distance(Xs, Ys, Distance3),     % 3. On substitue un caractÃ¨re de la premiÃ¨re liste avec un caractÃ¨re de la deuxiÃ¨me liste.
+      % On calcule rÃ©cursivement la distance pour chaque option, et on prend le minimum.
+>>>>>>> 94e9a7a744f11007e6d974e4e98d71a13d045353
       min_list([Distance1, Distance2, Distance3], Min),
       Distance is Min + 1
     ).
@@ -523,7 +482,13 @@ levenshtein_distance([X|Xs], [Y|Ys], Distance) :-
 lDistance(X, Y, Distance) :-
    string_chars(X, Xs),
    string_chars(Y, Ys),
+<<<<<<< HEAD
    levenshtein_distance(Xs, Ys, Distance). 
+=======
+   levenshtein_distance(Xs, Ys, Distance).
+
+
+>>>>>>> 94e9a7a744f11007e6d974e4e98d71a13d045353
 
 /* --------------------------------------------------------------------- */
 /*                                                                       */
@@ -532,6 +497,7 @@ lDistance(X, Y, Distance) :-
 /* --------------------------------------------------------------------- */
 
 verif_distance(X, Y) :- 
+<<<<<<< HEAD
    lDistance(X, Y, Len),
    (Len < 3 ; (Len >= 3, !, fail)).
 
@@ -543,6 +509,78 @@ verif_distance(X, Y) :-
 
 mCompare(M,L) :-
    member(Variant,L), verif_distance(Variant, M).
+=======
+   distance_degree(X, Y, Len),
+   (Len >= 75 ; (Len < 75, !, fail)).
+
+
+/* --------------------------------------------------------------------- */
+/*                                                                       */
+/*                            TROUVE MCLEF                               */
+/*                                                                       */
+/* --------------------------------------------------------------------- */
+
+mSelecter(L,M1,_,Mchoice):-
+   mclef(M1,_),
+   member(M1,L),
+   Mchoice = M1.
+
+mSelecter(L, M1, M2, Mchoice):-
+   mclef(M1,P1),
+   mclef(M2,P2),
+   member(M1,L),
+   member(M2,L),
+   (P1 < P2, Mchoice = M1 ; (P2 < P1, Mchoice = M2)).
+ 
+
+mFind(M, L, Variant) :-
+   mclef(M,_),
+   member(Variant,L), 
+   verif_distance(Variant, M).
+
+pFind([P], Lmots, Variant) :-
+   member(Variant,Lmots),
+   verif_distance(P,Variant).
+   
+
+/* --------------------------------------------------------------------- */
+/*                                                                       */
+/*                  REMPLACE VARIANT PAR M                               */
+/*                                                                       */
+/* --------------------------------------------------------------------- */
+replace([], _, [], []).
+replace([Word|T], Old, [New], [New|T2]) :-
+   Word == Old,
+   replace(T, Old, New, T2).
+replace([Word|T], Old, [New], [Word|T2]) :-
+   Word \== Old,
+   replace(T, Old, New, T2).
+
+
+replace([], _, _, []).
+replace([Word|T], Old, New, [New|T2]) :-
+    Word == Old,
+    replace(T, Old, New, T2).
+replace([Word|T], Old, New, [Word|T2]) :-
+    Word \== Old,
+    replace(T, Old, New, T2).
+
+/* --------------------------------------------------------------------- */
+/*                                                                       */
+/*                  COMPTE ET TRANSFORME EN %                            */
+/*                                                                       */
+/* --------------------------------------------------------------------- */
+
+count_chars(Word, Count) :-
+   atom_chars(Word, Chars),
+   length(Chars, Count).
+
+distance_degree(Word1,Word2,Degree) :-
+   count_chars(Word1,Count),
+   count_chars(Word2,Count2),
+   lDistance(Word1,Word2,Dist),
+   Degree is (1-(Dist/max(Count,Count2)))*100.
+>>>>>>> 94e9a7a744f11007e6d974e4e98d71a13d045353
 
 
 /* --------------------------------------------------------------------- */
