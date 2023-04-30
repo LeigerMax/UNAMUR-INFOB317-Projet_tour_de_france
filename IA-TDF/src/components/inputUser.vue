@@ -9,7 +9,7 @@
 
     <button class="jouer_button" @click="jouer">Jouer </button>
 
-    <label class="texte" for="choix_cartes-select">Choix de la carte à jouer :</label>
+    <label class="texte" id="texte_qui_joue" for="choix_cartes-select"> Joueur </label>
 
     <select class="combobox" name="choix_cartes-select" id="choix_cartes-select" @click="onChoixCarteSelectChange">
       <option value="" disabled selected>--Veuillez choisir une carte--</option>
@@ -218,6 +218,9 @@ export default {
       const jeu_bouton_dev = document.querySelector('.jouer_button_dev');
       jeu_bouton_dev.textContent = `Jouer dev`;
 
+      const selectElementQuiJoue = document.getElementById("texte_qui_joue");
+      selectElementQuiJoue.textContent = "C'est à Belgique de sélectionner une carte : ";
+
       // Affiche message activitiés
       const message = "Création du jeu dynamique <br> Création du plateau  <br> Création des joueurs  <br> Création des cyclistes  <br> Création des cartes et mélange  <br> Distribution des cartes aux joueurs";
       const messagesContainer_activites = this.$refs.messages_activities;
@@ -269,6 +272,9 @@ export default {
         this.move_card_counter++;
         nom = "Allemagne";
       }
+      
+      const selectElementQuiJoue = document.getElementById("texte_qui_joue");
+      selectElementQuiJoue.textContent = "C'est à "+nom+" de sélectionner une carte : ";
 
 
       // Récupère les cartes du joueur
@@ -327,6 +333,7 @@ export default {
 
       const choixCarte = document.getElementById('choix_cartes-select').value;
       messageReturn = this.jeu.deplacer_dynamique(nom, choixCarte);
+
 
       this.carte_dynamique();
       this.init_visuel_cartes();
