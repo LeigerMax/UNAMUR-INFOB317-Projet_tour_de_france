@@ -9,32 +9,55 @@ class Cycliste {
     this.secondesCompteur = 102;
   }
 
+  /**
+   * 
+   * @returns le numero du cycliste.
+   */
   getNumero() { return this.numero; }
 
   getPosition() { return this.position; }
 
-  getPosition2() { return {nom: this.nom, numero: this.numero, ligne: this.position.getLigne(), colonne: this.position.getColonne() }; }
+  getPosition2() { return {nom: this.nom, numero: this.numero, ligne: this.position.getLigne(), colonne: this.position.getColonne(), position: this.position }; }
 
   getPosition3() { return `${this.position.getLigne()},  ${this.position.getColonne()}`; }
 
+
+
+  /**
+   * 
+   * @returns {Boolean} true si le circuit est fini, false sinon
+   */
   getFinCircuit() { return this.fin_circuit; }
 
+  /**
+   * Ajoute des secondes à this.secondesCompteur.
+   * @param {number} numero nombre de secondes à ajouter
+   */
   setSecondesCompteurAdd(numero) { 
     this.secondesCompteur = this.secondesCompteur + numero;
     console.log(this);
   }
 
+  /**
+   * Enlève des secondes à this.secondesCompteur.
+   * @param {number} numero nombre de secondes à enlever
+   */
   setSecondesCompteurMinus(numero) { 
     this.secondesCompteur = this.secondesCompteur - numero;
     console.log(this);
   }
 
+  /**
+   * @returns {number} nombre de seconde du cycliste.
+   */
   getSecondesCompteur() { 
     return this.secondesCompteur;
   }
 
 
-
+  /**
+   * Affiche la position du joueur
+   */
   afficher_position() {
     console.log(`Cycliste ${this.numero} : [${this.position.getLigne()},${this.position.getColonne()}]`);
   }
@@ -161,28 +184,35 @@ class Cycliste {
 
   }
 
+  
   chute(nouvelle_ligne, numero,cycliste_chute, belgique_positions, italie_positions, hollande_positions, allemagne_positions) {
     const ligne_chute = nouvelle_ligne;
     const nums_chutes = [numero];
     cycliste_chute.push(this);
 
     console.log(`Chute de tous les cyclistes de la ligne ${ligne_chute} !`);
+    // Check la position de tout les cycliste, si présent sur la ligne chuté, ils sont ajoutés dans la liste cycliste_chute.
     belgique_positions.forEach(pos => { if (pos.ligne === ligne_chute) nums_chutes.push(pos.numero); if (pos.ligne === ligne_chute) cycliste_chute.push(pos); });
     italie_positions.forEach(pos => { if (pos.ligne === ligne_chute) nums_chutes.push(pos.numero); if (pos.ligne === ligne_chute) cycliste_chute.push(pos);  });
     hollande_positions.forEach(pos => { if (pos.ligne === ligne_chute) nums_chutes.push(pos.numero); if (pos.ligne === ligne_chute) cycliste_chute.push(pos); });
     allemagne_positions.forEach(pos => { if (pos.ligne === ligne_chute) nums_chutes.push(pos.numero); if (pos.ligne === ligne_chute) cycliste_chute.push(pos);  });
 
+    // Fixe la colonne des cyclistes tombés sur 0
+    cycliste_chute.forEach(cycliste => {
+      console.log(cycliste);
+      cycliste.position.setColonne(1);
+      console.log(cycliste);
+    });
 
     console.log(`Les cyclistes suivants sont tombés: ${nums_chutes.join(', ')}`);
 
-    return "Chute de tous les cyclistes de la ligne " + ligne_chute + " ! Les cyclistes suivants sont tombés: " + nums_chutes.join(', ');
+    return "Chute de tous les cyclistes de la ligne " + ligne_chute + " ! Les cyclistes suivants sont tombés: " + nums_chutes.join(', ')+ " Au prochain tour ils seront remis à la colonne 1";
 
   }
 
 
-
   toString() {
-    return "Nom : " + this.nom + " | Position : " + this.pos;
+    return "Nom : " + this.nom + " | Position : " + this.position;
   }
 
 

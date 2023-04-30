@@ -186,11 +186,14 @@ class Joueur {
   jouer_carte(choixCarte) {
     // Trouver l'index de la carte dans le tableau de cartes du joueur
     const index = this.cartes.findIndex(carte => carte.valeur === parseInt(choixCarte));
+    var carteSupp;
     if (index !== -1) {
       // Supprimer la carte du tableau de cartes du joueur
+      carteSupp = this.cartes[index];
       this.cartes.splice(index, 1);
-    }
 
+    }
+    return carteSupp;
   }
 
 

@@ -6,6 +6,7 @@ import Plateau from './Plateau';
 class Jeu {
   constructor() {
     this.cartes = [];
+    this.cartesDepot = [];
     this.plateau = new Plateau();
     this.joueursList = [];
     this.currentCyclisteIndex = 1; // initialisé à 1 pour le premier cycliste
@@ -23,7 +24,7 @@ class Jeu {
     console.log("Lancement");
     this.init_joueurs();
     this.init_cartes();
-    this.melanger_cartes();
+    this.melanger_cartes(this.cartes);
     this.distribuer_cartes_debut_jeu();
     this.afficher_nombre_cartes_restantes();
   }
@@ -113,6 +114,8 @@ class Jeu {
     var italie_positions = this.italie.get_positions_cyclistes();
     var hollande_positions = this.hollande.get_positions_cyclistes();
     var allemagne_positions = this.allemagne.get_positions_cyclistes();
+
+    
 
     // Check si joueur à fini la course ou non
     // Si pas fini, appel la méthode deplacer_cycliste() et joue la carte.
@@ -367,10 +370,10 @@ class Jeu {
   /**
    * Mélange les cartes du paquet en utilisant l'algorithme de Fisher-Yates.
    */
-  melanger_cartes() {
-    for (let i = this.cartes.length - 1; i > 0; i--) {
+  melanger_cartes(paquet) {
+    for (let i = paquet.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [this.cartes[i], this.cartes[j]] = [this.cartes[j], this.cartes[i]];
+      [paquet[i], paquet[j]] = [paquet[j], paquet[i]];
     }
   }
 
@@ -395,10 +398,14 @@ class Jeu {
    */
   afficher_nombre_cartes_restantes() {
     console.log(`Il reste ${this.cartes.length} cartes dans le paquet.`);
+    for(var i = 0; i < this.cartes.length; i++) {
+      console.log(this.cartes[i].valeur);
+    }
   }
 
   /**
    * Joue une carte du joueur ou pioche de nouvelles cartes s'il n'en reste plus.
+   * Met les objets des cartes jouées dans une liste.
    *
    * @param {string} nom du joueur
    * @param {number} choixCarte  carte que le joueur doit jouer.
@@ -406,12 +413,23 @@ class Jeu {
    */
   jouer_carte_jeu(nom, choixCarte) {
     if (nom.cartes.length > 1) {
-      return nom.jouer_carte(choixCarte);
+      const carteJouee = nom.jouer_carte(choixCarte);
+      this.cartesDepot.push(carteJouee);
+      for(var i = 0; i < this.cartesDepot.length; i++) {
+        console.log("Cartes dépot "+this.cartesDepot[i].valeur);
+      }
+      return carteJouee;
     }
     else {
       // Appel piocher_cartes(), sa dernière carte sera jouer là-bas
       return this.piocher_cartes(choixCarte);
     }
+  }
+
+  carte_depot() {
+    this.melanger_cartes(this.cartesDepot)
+    this.cartes =  this.cartes.concat(this.cartesDepot);
+    this.cartesDepot = [];
   }
 
   /**
@@ -424,8 +442,7 @@ class Jeu {
     // Vérifier qu'il y a suffisamment de cartes dans le paquet
     if (this.cartes.length < 5) {
       console.log(`Il n'a plus de carte dans le paquet.`);
-      this.init_cartes();
-      this.melanger_cartes();
+      this.carte_depot();
     }
 
     // Joue sa dernière carte
