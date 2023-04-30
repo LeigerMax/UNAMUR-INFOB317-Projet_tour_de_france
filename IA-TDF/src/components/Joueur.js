@@ -85,9 +85,8 @@ class Joueur {
       return;
     }
 
-
     // Déplacer le cycliste en fonction de la distance obtenue
-    const messageReturn = cycliste.deplacement(choixCarte, plateau,cycliste_chute,cyclistes_finis, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
+    const messageReturn = cycliste.deplacement(choixCarte, plateau, cycliste_chute , cyclistes_finis, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
 
     console.log(`Le joueur ${this.nom} a déplacé le cycliste ${choixCycliste} avec la carte ${choixCarte}.`);
 

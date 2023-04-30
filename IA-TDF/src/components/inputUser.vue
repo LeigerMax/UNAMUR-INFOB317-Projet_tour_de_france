@@ -1,7 +1,7 @@
 <template>
   <div class="activities_game">
 
-    <div class="chatbox_messages_question" ref="messages_activities"></div>
+    <div class="chatbox_messages" ref="messages_activities"></div>
 
   </div>
 
@@ -182,6 +182,7 @@ export default {
       const message = messageReturn;
       const messagesContainer_activites = this.$refs.messages_activities;
       const messagec_ativites = document.createElement('p');
+
       messagec_ativites.insertAdjacentHTML('beforeend', message);
       messagesContainer_activites.appendChild(messagec_ativites);
 
@@ -191,6 +192,8 @@ export default {
       var selectElement = document.getElementById("deplacer_button_dev");
       selectElement.style.backgroundColor = "#989795";
       selectElement.disabled = true;
+
+
     },
 
 
@@ -492,12 +495,15 @@ export default {
       }
     },
 
+    // check si fin jeu
     check_fin_jeu(){
       var messageReturn = "";
       
+      // Si fin du jeu
       if(this.jeu.check_fin_jeu())
       {
         messageReturn = this.jeu.fin_jeu();
+
         // Bloquer les inputs
         var selectElement = document.getElementById('choix_cartes-select');
         selectElement.disabled = true;
@@ -546,8 +552,9 @@ export default {
   right: 0;
   margin-right: 40px;
   margin-top: 350px;
-  overflow: auto;
+  overflow:auto; ;
 }
+
 
 .input_user_game {
   background-size: left;

@@ -246,7 +246,7 @@ class Jeu {
 
     //Premier tour pour chaque joueur, il joue leur cycliste 1 à 3 dans l'ordre.
     else {
-       messageReturn = this.joueur.deplacer_cycliste(this.currentCyclisteIndex, choixCarte, this.plateau,this.cycliste_chute, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
+       messageReturn = this.joueur.deplacer_cycliste(this.currentCyclisteIndex, choixCarte, this.plateau,this.cycliste_chute, this.cyclistes_finis,belgique_positions, italie_positions, hollande_positions, allemagne_positions);
        this.jouer_carte_jeu(this.joueur,choixCarte);
     }
 
