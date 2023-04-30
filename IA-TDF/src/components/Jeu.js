@@ -16,7 +16,9 @@ class Jeu {
     this.cyclistes_finis = [];  
   }
 
-  // Méthodes pour la logique du jeu
+  /**
+   * Initialise le jeu en initialisant les joueurs, les cartes, en les mélangeant et en distribuant les cartes aux joueurs.
+   */
   debut_jeu() {
     console.log("Lancement");
     this.init_joueurs();
@@ -24,7 +26,6 @@ class Jeu {
     this.melanger_cartes();
     this.distribuer_cartes_debut_jeu();
     this.afficher_nombre_cartes_restantes();
-
   }
 
   /******************************
@@ -34,6 +35,11 @@ class Jeu {
   *******************************/
 
 
+  /**
+   * Initialise les joueurs et leurs cyclistes pour le jeu.
+   * Les joueurs créés sont la Belgique, l'Italie, la Hollande et l'Allemagne.
+   * Chaque joueur a trois cyclistes avec un identifiant unique et un nom de code spécifique à leur pays.
+   */
   init_joueurs() {
     // Création des joueurs
     this.belgique = new Joueur("Belgique");
@@ -72,7 +78,14 @@ class Jeu {
   *                             *
   *******************************/
 
-  // déplacemeent d'un cycliste (dev)
+  /**
+   * DEV : Permet de faire dépalcer un cycliste.
+   * 
+   * @param {string} nom du joueur
+   * @param {number} choixCycliste numéro du cycliste
+   * @param {number} choixCarte numéro de la carte
+   * @returns {string} Une chaine de character contenant les informations sur le déplacement du cycliste.
+   */
   deplacer_dev(nom, choixCycliste, choixCarte) {
     console.log("DEV : Dépalacer");
     var messageReturn;
@@ -95,19 +108,23 @@ class Jeu {
         break;
     }
 
+    // Récupère les positions de tout les cyclistes de chaque joueur
     var belgique_positions = this.belgique.get_positions_cyclistes();
     var italie_positions = this.italie.get_positions_cyclistes();
     var hollande_positions = this.hollande.get_positions_cyclistes();
     var allemagne_positions = this.allemagne.get_positions_cyclistes();
 
-    // Appel la méthode deplacer_cycliste();
+    // Check si joueur à fini la course ou non
+    // Si pas fini, appel la méthode deplacer_cycliste() et joue la carte.
     if(!this.cycliste_fin_course(this.joueur,choixCycliste)) {
       messageReturn = this.joueur.deplacer_cycliste(choixCycliste, choixCarte, this.plateau,this.cycliste_chute,this.cyclistes_finis, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
       this.jouer_carte_jeu(this.joueur,choixCarte);
     }
+    // Si fini, vérifie que le cycliste se trouve dans la liste cyclistes_finis, sinon l'ajoute dedans.
     else {
       messageReturn = "Le cycliste a déjà atteint la ligne d'arrivé";
       console.log(messageReturn);
+      //Si liste vide ajoute le cycliste 
       if(this.cyclistes_finis.length === 0) {
         this.cyclistes_finis.push(this.joueur.getCyclisteTest(choixCycliste));
       }
@@ -123,12 +140,17 @@ class Jeu {
       }
     }
       
-
-
     return messageReturn;
   }
 
-  // déplacemeent d'un cycliste (dynamique)
+
+  /**
+   * DYNAMIQUE : Permet de faire dépalcer un cycliste.
+   * 
+   * @param {string} nom du joueur
+   * @param {number} choixCarte numéro du cycliste
+   * @returns {string} Une chaine de character contenant les informations sur le déplacement du cycliste.
+   */
   deplacer_dynamique(nom, choixCarte) {
     var messageReturn;
     var lowestPositionIndex = 0;
@@ -158,7 +180,7 @@ class Jeu {
     }
 
 
-    // Importe les positions des cyclistes de chaque joueurs
+    // Récupère les positions de tout les cyclistes de chaque joueur
     var belgique_positions = this.belgique.get_positions_cyclistes();
     var italie_positions = this.italie.get_positions_cyclistes();
     var hollande_positions = this.hollande.get_positions_cyclistes();
@@ -191,7 +213,7 @@ class Jeu {
       console.log("Elem supprimer !",elemDelete);
 
 
-      // Quand dernier elem supprimer du tableau this.historiquePositionCycliste
+      // Quand dernier elem supprimer du tableau this.historiquePositionCycliste, on récupère la valeur supprimer afin de la traité (merci javascript)
       if(numeroCyclisteAJouer === undefined) {
         numeroCyclisteAJouer = elemDelete[0].numero;
       }
@@ -238,9 +260,7 @@ class Jeu {
             console.log("Ajout cycliste : " + cyclisteACheck);
           }
         }
-
       }
-     
 
     }
 
@@ -264,6 +284,13 @@ class Jeu {
   }
 
 
+  /**
+   * Vérifie si un cycliste a terminé la course.
+   * 
+   * @param {string} nom du joueur
+   * @param {number} cyclisteJouer numéro du cycliste
+   * @returns {boolean} Un booléen indiquant si le cycliste a terminé la course ou non.
+   */
   cycliste_fin_course(nom,cyclisteJouer){
     const cyclisteObject = nom.cyclistes.find(cycliste => cycliste.numero === cyclisteJouer);
     if(cyclisteObject.getFinCircuit()) {
@@ -276,16 +303,23 @@ class Jeu {
 
 
 
+  /*
   afficher_position_cycliste() {
     console.log("Positions de tous les cyclistes :");
     this.belgique.afficher_positions_cyclistes();
     this.italie.afficher_positions_cyclistes();
     this.hollande.afficher_positions_cyclistes();
     this.allemagne.afficher_positions_cyclistes();
-  }
+  }*/
 
 
-
+  /**
+   * Récupère la position d'un cycliste.
+   * 
+   * @param {string} nom du joueur
+   * @param {number} cycliste  numéro du cycliste
+   * @returns {string} Chaîne de caractères contenant la position du cycliste
+   */
   get_position_cycliste(nom, cycliste) {
     let position = null;
     switch (nom) {
@@ -319,8 +353,10 @@ class Jeu {
   *                             *
   *******************************/
 
+  /**
+   * Créer les cartes avec des valeurs de 1 à 12
+   */
   init_cartes() {
-    // Créer les cartes avec des valeurs de 1 à 12
     for (let i = 1; i <= 12; i++) {
       for (let j = 0; j < 8; j++) {
         this.cartes.push(new Carte(i));
@@ -328,14 +364,20 @@ class Jeu {
     }
   }
 
+  /**
+   * Mélange les cartes du paquet en utilisant l'algorithme de Fisher-Yates.
+   */
   melanger_cartes() {
-    // Mélanger les cartes en utilisant l'algorithme de Fisher-Yates
     for (let i = this.cartes.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [this.cartes[i], this.cartes[j]] = [this.cartes[j], this.cartes[i]];
     }
   }
 
+  /**
+   * Distribue 5 cartes à chaque joueur au début du jeu.
+   * Les cartes sont distribuées de manière aléatoire depuis le paquet de cartes.
+   */
   distribuer_cartes_debut_jeu() {
     const joueurs = [this.italie, this.hollande, this.belgique, this.allemagne];
     for (const joueur of joueurs) {
@@ -348,10 +390,20 @@ class Jeu {
     }
   }
 
+  /**
+   * Affiche les cartes restantes du paquet.
+   */
   afficher_nombre_cartes_restantes() {
     console.log(`Il reste ${this.cartes.length} cartes dans le paquet.`);
   }
 
+  /**
+   * Joue une carte du joueur ou pioche de nouvelles cartes s'il n'en reste plus.
+   *
+   * @param {string} nom du joueur
+   * @param {number} choixCarte  carte que le joueur doit jouer.
+   * @returns la méthode jouer_carte() ou piocher_cartes()
+   */
   jouer_carte_jeu(nom, choixCarte) {
     if (nom.cartes.length > 1) {
       return nom.jouer_carte(choixCarte);
@@ -360,10 +412,15 @@ class Jeu {
       // Appel piocher_cartes(), sa dernière carte sera jouer là-bas
       return this.piocher_cartes(choixCarte);
     }
-
   }
 
+  /**
+   * Pioche des cartes pour un joueur donné et lui donne la possibilité de jouer l'une de ses cartes.
+   * 
+   * @param {number} choixCarte carte que le joueur doit encorer jouer.
+   */
   piocher_cartes(choixCarte) {
+
     // Vérifier qu'il y a suffisamment de cartes dans le paquet
     if (this.cartes.length < 5) {
       console.log(`Il n'a plus de carte dans le paquet.`);
@@ -380,10 +437,17 @@ class Jeu {
       this.joueur.recevoir_cartes([carte]);
     }
 
+    // Affiche les cartes restantes du paquet
     this.afficher_nombre_cartes_restantes();
 
   }
 
+  /**
+   * Récupère les cartes d'un joueur.
+   * 
+   * @param {string} nom le nom du joueur dont on veut récupérer les cartes.
+   * @returns  un tableau contenant les cartes du joueur.
+   */
   getCartes_du_joueur(nom) {
     switch (nom) {
       case "Belgique":
@@ -406,16 +470,31 @@ class Jeu {
     return this.joueur.getCarte();
   }
 
+  /******************************
+  *                             *
+  *          Fin du jeu         *
+  *                             *
+  *******************************/
 
-
+  /**
+   * Vérifie si tout les cyclistes_finis ont finis la course.
+   * 
+   * @returns {bollean} Un booléen indiquant si le jeu est terminé la course ou non.
+   */
   check_fin_jeu(){
-    if(this.cyclistes_finis.length === 1){
+    if(this.cyclistes_finis.length === 12){
       return true;
     }
     return false;
   }
 
 
+  /**
+   * Affiche la fin du jeu et calcule les points de chaque joueur.
+   * Trie ensuite les joueurs par ordre croissant de score et affiche le classement final.
+   * 
+   * @returns {string} Chaîne de caractères contenant le classement final avec le numéro de position, le nom du joueur et son score.
+   */
   fin_jeu() {
     console.log("Fin du jeu");
 
@@ -448,8 +527,7 @@ class Jeu {
     console.log("Allemagne ",this.allemagne.getPoints());
     
 
-    // Afficher le classement final
-    
+    // Affiche le classement final
     console.log("Classement final :");
     for (let i = 0; i < scores.length; i++) {
       console.log(`${i+1}. ${scores[i].nom} - ${scores[i].score} points`);

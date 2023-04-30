@@ -6,7 +6,7 @@ class Carte {
 
   /**
    * 
-   * @returns valeur de la carte
+   * @returns {number} valeur de la carte
    */
   getValeur() { return this.valeur; }
 }

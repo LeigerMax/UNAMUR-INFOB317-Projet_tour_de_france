@@ -65,7 +65,7 @@ class Plateau {
 
     /**
      * 
-     * @returns le nombre de lignes maximales
+     * @returns {number} le nombre de lignes maximales
      */
     getNbLignes() {
         return this.nbLignes;
@@ -74,9 +74,9 @@ class Plateau {
     /**
      *  Vérifie si la position est dans une zone spéciale du plateau
      * 
-     * @param {*} ligne 
-     * @param {*} colonne 
-     * @returns true si position ok, false sinon
+     * @param {number} ligne 
+     * @param {number} colonne 
+     * @returns {boolean} true si position ok, false sinon
      */
     check_position_plateau(ligne, colonne) {
         for (const circuit of this.case) {
@@ -94,9 +94,9 @@ class Plateau {
     /**
      * Vérifie si le cycliste est sur une case chance
      * 
-     * @param {*} ligne 
-     * @param {*} colonne 
-     * @returns  true si case chance, false sinon
+     * @param {number} ligne 
+     * @param {number} colonne 
+     * @returns {boolean} true si case chance, false sinon
      */
     check_case_chance_plateau(ligne, colonne) {
         for (const caseChance of this.caseChance) {
@@ -111,9 +111,9 @@ class Plateau {
     /**
      * Vérifie si le cycliste est sur une case supplémentaire
      * 
-     * @param {*} ligne 
-     * @param {*} colonne 
-     * @returns true si case supplementaire, false sinon
+     * @param {number} ligne 
+     * @param {number} colonne 
+     * @returns {boolean} true si case supplementaire, false sinon
      */
     check_case_supplementaire_plateau(ligne, colonne) {
         for (const caseSupplementaire of this.caseSupplementaire) {
@@ -138,9 +138,9 @@ class Plateau {
     /**
      * Vérifie si le cycliste est sur une case indisponible
      * 
-     * @param {*} ligne 
-     * @param {*} colonne 
-     * @returns  true si case indisponible, false sinon
+     * @param {number} ligne 
+     * @param {number} colonne 
+     * @returns {boolean} true si case indisponible, false sinon
      */
     check_case_indisponible(ligne, colonne) {
         for (const caseIndispo of this.caseIndisponible) {

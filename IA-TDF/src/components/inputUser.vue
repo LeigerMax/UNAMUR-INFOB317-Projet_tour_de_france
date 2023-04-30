@@ -218,8 +218,6 @@ export default {
       const jeu_bouton_dev = document.querySelector('.jouer_button_dev');
       jeu_bouton_dev.textContent = `Jouer dev`;
 
-      const selectElementQuiJoue = document.getElementById("texte_qui_joue");
-      selectElementQuiJoue.textContent = "C'est à Belgique de sélectionner une carte : ";
 
       // Affiche message activitiés
       const message = "Création du jeu dynamique <br> Création du plateau  <br> Création des joueurs  <br> Création des cyclistes  <br> Création des cartes et mélange  <br> Distribution des cartes aux joueurs";
@@ -272,7 +270,7 @@ export default {
         this.move_card_counter++;
         nom = "Allemagne";
       }
-      
+
       const selectElementQuiJoue = document.getElementById("texte_qui_joue");
       selectElementQuiJoue.textContent = "C'est à "+nom+" de sélectionner une carte : ";
 

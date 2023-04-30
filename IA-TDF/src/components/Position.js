@@ -7,7 +7,7 @@ class Position {
 
   /**
    * 
-   * @returns ligne
+   * @returns {number} ligne
    */
   getLigne() {
     return this.ligne;
@@ -15,7 +15,7 @@ class Position {
 
   /**
    * 
-   * @returns colonne
+   * @returns {number} colonne
    */
   getColonne() {
     return this.colonne;
@@ -25,7 +25,7 @@ class Position {
   /**
    * Setter ligne
    * 
-   * @param {*} ligne 
+   * @param {number} ligne 
    */
   setLigne(ligne) {
     this.ligne = ligne;
@@ -34,7 +34,7 @@ class Position {
   /**
    * Setter colonne
    * 
-   * @param {*} colonne 
+   * @param {number} colonne 
    */
   setColonne(colonne) {
     this.colonne = colonne;
