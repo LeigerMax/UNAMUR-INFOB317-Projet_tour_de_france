@@ -124,6 +124,16 @@ class Plateau {
         return false;
     }
 
+    getNbPointMinus(ligne, colonne) {
+        for (const caseSupplementaire of this.caseSupplementaire) {
+            if (caseSupplementaire.nbLignes === ligne && caseSupplementaire.nbColonnes >= colonne) {
+                return caseSupplementaire.nbPointMinus;
+            }
+        }
+        return 0;
+    }
+    
+
 
     /**
      * Vérifie si le cycliste est sur une case indisponible

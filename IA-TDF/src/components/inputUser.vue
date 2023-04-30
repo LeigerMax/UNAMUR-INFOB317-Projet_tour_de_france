@@ -11,7 +11,7 @@
 
     <label class="texte" for="choix_cartes-select">Choix de la carte à jouer :</label>
 
-    <select class="combobox" name="choix_cartes-select" id="choix_cartes-select">
+    <select class="combobox" name="choix_cartes-select" id="choix_cartes-select" @click="onChoixCarteSelectChange">
       <option value="" disabled selected>--Veuillez choisir une carte--</option>
       <option id="carte1" value="??">??</option>
       <option id="carte2" value="??">??</option>
@@ -22,7 +22,7 @@
 
 
 
-    <button class="deplacer_button" @click="deplacer_btn">Déplacer</button>
+    <button class="deplacer_button" id="deplacer_button_dynamique" @click="deplacer_btn">Déplacer</button>
 
 
     <button class="jouer_button_dev" @click="jouer_dev">Jouer dev</button>
@@ -45,7 +45,7 @@
     </select>
 
 
-    <select class="combobox" name="choix_cartes-select_dev" id="choix_cartes-select-dev">
+    <select class="combobox" name="choix_cartes-select_dev" id="choix_cartes-select-dev" @click="onChoixCarteDevSelectChange">
       <option value="" disabled selected>--Veuillez choisir une carte--</option>
       <option id="carte1" value="??">??</option>
       <option id="carte2" value="??">??</option>
@@ -54,8 +54,7 @@
       <option id="carte5" value="??">??</option>
     </select>
 
-
-    <button class="deplacer_button" @click="deplacer_btn_dev">Déplacer dev</button>
+    <button  class="deplacer_button" id="deplacer_button_dev" @click="deplacer_btn_dev">Déplacer dev</button>
 
   </div>
 </template>
@@ -82,13 +81,15 @@ export default {
 
     // Lance le jeu en mode dev
     jouer_dev() {
-      const dev = true;
       this.jeu = new Jeu();
-      this.jeu.debut_jeu(dev);
+      this.jeu.debut_jeu();
 
       // Modifie le texte du bouton
-      const jeu_bouton = document.querySelector('.jouer_button_dev');
-      jeu_bouton.textContent = `Rejouer dev`;
+      const jeu_bouton = document.querySelector('.jouer_button');
+      jeu_bouton.textContent = `Jouer`;
+
+      const jeu_bouton_dev = document.querySelector('.jouer_button_dev');
+      jeu_bouton_dev.textContent = `Rejouer dev`;
 
 
       // Affiche message activitiés
@@ -109,6 +110,10 @@ export default {
       selectElement = document.getElementById("choix_cartes-select-dev");
       selectElement.disabled = false;
 
+      var selectElementB = document.getElementById("deplacer_button_dev");
+      selectElementB.style.backgroundColor = "#989795";
+      selectElementB.disabled = true;
+
 
       this.init_visuel_cartes();
       this.init_visuel_positions();
@@ -120,6 +125,14 @@ export default {
     onChoixPaysSelectChange() {
       this.carte_dev();
     },
+
+    // Appelée lorsqu'une carte est sélectionné dans le menu déroulant. débloque le bouton déplacer.
+    onChoixCarteDevSelectChange() {
+      var selectElement = document.getElementById("deplacer_button_dev");
+      selectElement.style.backgroundColor = "rgb(234, 211, 66)";
+      selectElement.disabled = false;
+    },
+
 
     // Met à jour l'input des cartes disponibles pour le pays sélectionné. Elle récupère toutes les cartes appartenant à ce joueur, les trie et les ajoute au menu déroulant des cartes.
     carte_dev() {
@@ -150,7 +163,10 @@ export default {
 
     // Déplace le cycliste
     deplacer_btn_dev() {
-      var messageReturn;
+
+      this.check_fin_jeu();
+
+      var messageReturn = "";
       const nom = document.getElementById('choix_pays-select-dev').value;
       const choixCycliste = parseInt(document.getElementById('choix_cycliste-select-dev').value);
       const choixCarte = document.getElementById('choix_cartes-select-dev').value;
@@ -170,6 +186,11 @@ export default {
       messagesContainer_activites.appendChild(messagec_ativites);
 
       this.carte_dev();
+
+      // Bloque bouton déplacer
+      var selectElement = document.getElementById("deplacer_button_dev");
+      selectElement.style.backgroundColor = "#989795";
+      selectElement.disabled = true;
     },
 
 
@@ -181,16 +202,18 @@ export default {
 
     // Lance le jeu en mode dynamique
     jouer() {
-      const dev = false;
       this.jeu = new Jeu();
-      this.jeu.debut_jeu(dev);
+      this.jeu.debut_jeu();
 
       this.move_counter = 1;
       this.move_card_counter = 1;
 
-      // Modifie le texte du bouton
-      var jeu_bouton = document.querySelector('.jouer_button');
+      // Modifie le texte des boutons
+      const jeu_bouton = document.querySelector('.jouer_button');
       jeu_bouton.textContent = `Rejouer`;
+
+      const jeu_bouton_dev = document.querySelector('.jouer_button_dev');
+      jeu_bouton_dev.textContent = `Jouer dev`;
 
       // Affiche message activitiés
       const message = "Création du jeu dynamique <br> Création du plateau  <br> Création des joueurs  <br> Création des cyclistes  <br> Création des cartes et mélange  <br> Distribution des cartes aux joueurs";
@@ -208,6 +231,11 @@ export default {
       selectElement = document.getElementById('choix_pays-select-dev');
       selectElement.disabled = true;
       selectElement = document.getElementById("choix_cartes-select-dev");
+      selectElement.disabled = true;
+
+      // Bloque bouton déplacer
+      var selectElement = document.getElementById("deplacer_button_dynamique");
+      selectElement.style.backgroundColor = "#989795";
       selectElement.disabled = true;
 
       this.init_visuel_cartes();
@@ -261,9 +289,18 @@ export default {
       this.init_visuel_cartes();
     },
 
+    // Appelée lorsqu'une carte est sélectionné dans le menu déroulant. débloque le bouton déplacer.
+    onChoixCarteSelectChange() {
+      var selectElement = document.getElementById("deplacer_button_dynamique");
+      selectElement.style.backgroundColor = "rgb(234, 211, 66)";
+      selectElement.disabled = false;
+    },
 
     // Déplace le cycliste
     deplacer_btn() {
+      var messageReturn = "";
+
+      this.check_fin_jeu();
 
       // Cherche le joueur qui doit jouer
       var nom = "";
@@ -286,7 +323,7 @@ export default {
 
 
       const choixCarte = document.getElementById('choix_cartes-select').value;
-      const messageReturn = this.jeu.deplacer_dynamique(nom, choixCarte);
+      messageReturn = this.jeu.deplacer_dynamique(nom, choixCarte);
 
       this.carte_dynamique();
       this.init_visuel_cartes();
@@ -313,6 +350,11 @@ export default {
       if (this.move_card_counter == 13) {
         this.move_card_counter = 1;
       }
+
+      // Bloque bouton déplacer
+      var selectElement = document.getElementById("deplacer_button_dynamique");
+      selectElement.style.backgroundColor = "#989795";
+      selectElement.disabled = true;
 
     },
 
@@ -450,6 +492,31 @@ export default {
       }
     },
 
+    check_fin_jeu(){
+      var messageReturn = "";
+      
+      if(this.jeu.check_fin_jeu())
+      {
+        messageReturn = this.jeu.fin_jeu();
+        // Bloquer les inputs
+        var selectElement = document.getElementById('choix_cartes-select');
+        selectElement.disabled = true;
+        selectElement = document.getElementById('choix_cycliste-select-dev');
+        selectElement.disabled = true;
+        selectElement = document.getElementById('choix_pays-select-dev');
+        selectElement.disabled = true;
+        selectElement = document.getElementById("choix_cartes-select-dev");
+        selectElement.disabled = true;
+
+        // Affiche message activitiés
+        const message = messageReturn;
+        const messagesContainer_activites = this.$refs.messages_activities;
+        const messagec_ativites = document.createElement('p');
+        messagec_ativites.insertAdjacentHTML('beforeend', message);
+        messagesContainer_activites.appendChild(messagec_ativites);
+
+      }
+    }
 
   }
 }

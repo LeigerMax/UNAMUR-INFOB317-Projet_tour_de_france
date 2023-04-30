@@ -6,9 +6,20 @@ class Joueur {
     this.nom = nom;
     this.cartes = [];
     this.cyclistes = [];
+    this.points = 0;
   }
 
   getNom() { return this.nom; }
+
+  getPoints() { return this.points; }
+
+  calcul_points() {
+    let totalSeconds = 0;
+    for (let i = 0; i < this.cyclistes.length; i++) {
+      totalSeconds += this.cyclistes[i].getSecondesCompteur();
+    }
+    this.points = totalSeconds;
+  }
 
   /******************************
    *                            *
@@ -43,6 +54,12 @@ class Joueur {
     return this.cyclistes.find(cycliste => cycliste.getNumero() === numero) || null;
   }
 
+  secondes_acc(choixCycliste,numero){
+    const cycliste = this.cyclistes.find(c => c.getNumero() === choixCycliste);
+    console.log(cycliste);
+    cycliste.setSecondesCompteurAdd(numero);
+  }
+
 
   ajouter_cycliste(cycliste) {
     // Vérifier si le joueur a déjà le maximum de cyclistes
@@ -59,7 +76,7 @@ class Joueur {
 
 
 
-  deplacer_cycliste(choixCycliste, choixCarte, plateau,cycliste_chute, belgique_positions, italie_positions, hollande_positions, allemagne_positions) {
+  deplacer_cycliste(choixCycliste, choixCarte, plateau,cycliste_chute,cyclistes_finis, belgique_positions, italie_positions, hollande_positions, allemagne_positions) {
     // Trouver le cycliste dans la liste des cyclistes du joueur
     const cycliste = this.cyclistes.find(c => c.getNumero() === choixCycliste);
 
@@ -70,7 +87,7 @@ class Joueur {
 
 
     // Déplacer le cycliste en fonction de la distance obtenue
-    const messageReturn = cycliste.deplacement(choixCarte, plateau,cycliste_chute, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
+    const messageReturn = cycliste.deplacement(choixCarte, plateau,cycliste_chute,cyclistes_finis, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
 
     console.log(`Le joueur ${this.nom} a déplacé le cycliste ${choixCycliste} avec la carte ${choixCarte}.`);
 

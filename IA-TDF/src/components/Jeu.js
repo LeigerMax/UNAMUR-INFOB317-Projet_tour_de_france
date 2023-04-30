@@ -10,13 +10,14 @@ class Jeu {
     this.joueursList = [];
     this.currentCyclisteIndex = 1; // initialisé à 1 pour le premier cycliste
     this.historiquePositionCycliste = [];
+    this.premierTour = 0;
     this.tour = 0;
     this.cycliste_chute = [];
+    this.cyclistes_finis = [];  
   }
 
-
   // Méthodes pour la logique du jeu
-  debut_jeu(dev) {
+  debut_jeu() {
     console.log("Lancement");
     this.init_joueurs();
     this.init_cartes();
@@ -101,12 +102,25 @@ class Jeu {
 
     // Appel la méthode deplacer_cycliste();
     if(!this.cycliste_fin_course(this.joueur,choixCycliste)) {
-      messageReturn = this.joueur.deplacer_cycliste(choixCycliste, choixCarte, this.plateau,this.cycliste_chute, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
+      messageReturn = this.joueur.deplacer_cycliste(choixCycliste, choixCarte, this.plateau,this.cycliste_chute,this.cyclistes_finis, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
       this.jouer_carte_jeu(this.joueur,choixCarte);
     }
     else {
       messageReturn = "Le cycliste a déjà atteint la ligne d'arrivé";
       console.log(messageReturn);
+      if(this.cyclistes_finis.length === 0) {
+        this.cyclistes_finis.push(this.joueur.getCyclisteTest(choixCycliste));
+      }
+      for (var i = 0; i < this.cyclistes_finis.length; i++) {
+        var cycliste = this.cyclistes_finis[i];
+        console.log("Cycliste fini : " + cycliste);
+
+        const cyclisteACheck = this.joueur.getCyclisteTest(choixCycliste);
+        if (!this.cyclistes_finis.includes(cyclisteACheck)) {
+          this.cyclistes_finis.push(cyclisteACheck);
+          console.log("Ajout cycliste : " + cyclisteACheck);
+        }
+      }
     }
       
 
@@ -153,7 +167,7 @@ class Jeu {
     
 
     // Check si premier tour fini
-    if(this.tour > 11) {
+    if(this.premierTour > 11) {
 
       // Si le tableau d'historique des positions de cyclistes est vide, on récupère les positions de tous les cyclistes du joueur
       if (this.historiquePositionCycliste.length === 0) {
@@ -204,12 +218,27 @@ class Jeu {
   
       // Appel la méthode deplacer_cycliste();
       if(!this.cycliste_fin_course(this.joueur,cyclisteJouer)) {
-        messageReturn = this.joueur.deplacer_cycliste(cyclisteJouer, choixCarte, this.plateau,this.cycliste_chute, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
+        messageReturn = this.joueur.deplacer_cycliste(cyclisteJouer, choixCarte, this.plateau,this.cycliste_chute,this.cyclistes_finis, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
         this.jouer_carte_jeu(this.joueur,choixCarte);
+        this.joueur.secondes_acc(cyclisteJouer,10);
       }
       else {
         messageReturn = "Le cycliste a déjà atteint la ligne d'arrivé";
         console.log(messageReturn);
+        if(this.cyclistes_finis.length === 0) {
+          this.cyclistes_finis.push(this.joueur.getCyclisteTest(cyclisteJouer));
+        }
+        for (var i = 0; i < this.cyclistes_finis.length; i++) {
+          var cycliste = this.cyclistes_finis[i];
+          console.log("Cycliste fini : " + cycliste);
+  
+          const cyclisteACheck = this.joueur.getCyclisteTest(cyclisteJouer);
+          if (!this.cyclistes_finis.includes(cyclisteACheck)) {
+            this.cyclistes_finis.push(cyclisteACheck);
+            console.log("Ajout cycliste : " + cyclisteACheck);
+          }
+        }
+
       }
      
 
@@ -229,15 +258,15 @@ class Jeu {
       this.currentCyclisteIndex = 1;
     }
 
-    this.tour++;
+    this.premierTour++;
 
     return messageReturn;
   }
 
 
   cycliste_fin_course(nom,cyclisteJouer){
-    const cycliste2 = nom.cyclistes.find(cycliste => cycliste.numero === cyclisteJouer);
-    if(cycliste2.getFinCircuit()) {
+    const cyclisteObject = nom.cyclistes.find(cycliste => cycliste.numero === cyclisteJouer);
+    if(cyclisteObject.getFinCircuit()) {
       return true;
     }
     else {
@@ -379,11 +408,56 @@ class Jeu {
 
 
 
+  check_fin_jeu(){
+    if(this.cyclistes_finis.length === 1){
+      return true;
+    }
+    return false;
+  }
+
 
   fin_jeu() {
     console.log("Fin du jeu");
-  }
 
+    var messageReturn = "";
+    
+    // Calcul des points de chaque joueur
+    this.belgique.calcul_points();
+    this.italie.calcul_points();
+    this.hollande.calcul_points();
+    this.allemagne.calcul_points();
+
+    const scoreBelgique = this.belgique.getPoints();
+    const scoreItalie = this.italie.getPoints();
+    const scoreHollande= this.hollande.getPoints();
+    const scoreAllemagne = this.allemagne.getPoints();
+
+    const scores = [
+      { nom: "Belgique", score: scoreBelgique },
+      { nom: "Italie", score: scoreItalie },
+      { nom: "Hollande", score: scoreHollande },
+      { nom: "Allemagne", score: scoreAllemagne },
+    ];
+
+    // Trier le tableau par ordre croissant de score
+    scores.sort((a, b) => a.score - b.score);
+
+    console.log("Belgique ",this.belgique.getPoints());
+    console.log("Italie ",this.italie.getPoints());
+    console.log("Hollande ",this.hollande.getPoints());
+    console.log("Allemagne ",this.allemagne.getPoints());
+    
+
+    // Afficher le classement final
+    
+    console.log("Classement final :");
+    for (let i = 0; i < scores.length; i++) {
+      console.log(`${i+1}. ${scores[i].nom} - ${scores[i].score} points`);
+      messageReturn = messageReturn +` ${i+1}. ${scores[i].nom} - ${scores[i].score} points <br>`;
+    }
+
+    return messageReturn;
+  }
 
 
 }

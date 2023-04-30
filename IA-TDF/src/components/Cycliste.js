@@ -6,6 +6,7 @@ class Cycliste {
     this.numero = numero;
     this.position = new Position(0, 0);
     this.fin_circuit = false;
+    this.secondesCompteur = 102;
   }
 
   getNumero() { return this.numero; }
@@ -18,6 +19,20 @@ class Cycliste {
 
   getFinCircuit() { return this.fin_circuit; }
 
+  setSecondesCompteurAdd(numero) { 
+    this.secondesCompteur = this.secondesCompteur + numero;
+    console.log(this);
+  }
+
+  setSecondesCompteurMinus(numero) { 
+    this.secondesCompteur = this.secondesCompteur - numero;
+    console.log(this);
+  }
+
+  getSecondesCompteur() { 
+    return this.secondesCompteur;
+  }
+
 
 
   afficher_position() {
@@ -25,7 +40,7 @@ class Cycliste {
   }
 
 
-  deplacement(choixCarte, plateau, cycliste_chute, belgique_positions, italie_positions, hollande_positions, allemagne_positions) {
+  deplacement(choixCarte, plateau, cycliste_chute,cyclistes_finis, belgique_positions, italie_positions, hollande_positions, allemagne_positions) {
     var nouvelle_ligne = this.position.getLigne() + parseInt(choixCarte);
     var ancienne_ligne = this.position.getLigne();
     var nouvelle_colonne = 1;
@@ -110,6 +125,7 @@ class Cycliste {
         console.log(`Le cycliste ${this.numero} a terminé le circuit !`);
         this.fin_circuit = true;
         console.log(this);
+        cyclistes_finis.push(this);
       }
   
 
@@ -119,10 +135,14 @@ class Cycliste {
 
       this.position.setLigne(nouvelle_ligne);
       this.position.setColonne(nouvelle_colonne);
+      this.setSecondesCompteurAdd(nouvelle_ligne);
 
       console.log(`Le cycliste ${this.numero} a terminé le circuit !`);
-      this.fin_circuit = true;
       console.log(this);
+      this.fin_circuit = true;
+      cyclistes_finis.push(this);
+      const secondEnMoins = plateau.getNbPointMinus(nouvelle_ligne,nouvelle_colonne);
+      this.setSecondesCompteurMinus(secondEnMoins);
     }
     //Check si case invalide
     else {
@@ -160,7 +180,7 @@ class Cycliste {
 
 
   toString() {
-    return "Nom : " + this.nom + " | Position : " + this.pos;
+    return "Nom : " + this.nom + " | Position : " + this.position;
   }
 
 
