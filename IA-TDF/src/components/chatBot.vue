@@ -4,8 +4,8 @@
       <div class="chatbox_messages_question" ref="messages_question"></div>
     </div>
   </div>
-  <form class="chatbot_question_form" @submit.prevent="handleSubmit({ type: 'question' })">
-    <input class="chatbot_question_input" id="chatbot_question_input" name="chatbot_question_input" type="text" placeholder="Votre question...">
+  <form class="chatbot_question_form"  @submit.prevent="handleSubmit({ type: 'question' })">
+    <input class="chatbot_question_input" id="chatbot_question_input" name="chatbot_question_input" type="text" v-model="message" placeholder="Votre question...">
     <button class="chatbot_question_button" id="chatbot_question_submit" name="chatbot_question_submit" type="submit">Envoyer</button>
   </form>
 
@@ -24,8 +24,23 @@
 export default {
   data() {
     return {
+      socket: null,
       message: '',
+      messages: [],
     }
+  },
+  mounted() {
+    this.socket = new WebSocket('ws://localhost:9999/ws');
+    this.socket.onopen = () => {
+      this.connectionStatus = 'Connected';
+    };
+    this.socket.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      this.messages.push(message);
+    };
+    this.socket.onclose = () => {
+      this.connectionStatus = 'Disconnected';
+    };
   },
   methods: {
     handleSubmit(form) {
@@ -66,6 +81,16 @@ export default {
         chatbot_question_input.value = '';
         console.log(message);
 
+        const sendMessage = {
+          content: this.message,
+        };
+        console.log(this.socket);
+        console.log(this.message);
+        console.log(sendMessage);
+        console.log(JSON.stringify(sendMessage));
+        this.socket.send(JSON.stringify(sendMessage));
+        this.message = '';
+
       }
       else { //Si form game 
 
@@ -103,9 +128,10 @@ export default {
 
         chatbot_game_input.value = '';
         console.log(message);
-        
       }
-    }
+    },
+
+    
 
   }
 }

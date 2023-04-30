@@ -1,4 +1,48 @@
 :- use_module(library(lists)).
+:- use_module(library(http/websocket)).
+:- use_module(library(http/thread_httpd)).
+:- use_module(library(http/http_dispatch)).
+
+
+/* --------------------------------------------------------------------- */
+/*                                                                       */
+/*                            Création Serv                              */
+/*                                                                       */
+/* --------------------------------------------------------------------- */
+
+:- http_handler(root(ws), http_upgrade_to_websocket(echo, []), [spawn([])]).
+
+echo(WebSocket) :-
+    ws_receive(WebSocket, Message, [format(json)]),
+    (   Message.opcode == close
+    ->  true
+    ;   get_response(Message.data, Response),
+        writeln(Response),
+        ws_send(WebSocket, Message),
+        echo(WebSocket)
+    ).
+
+run :-
+    run(9999).
+
+run(Port) :-
+    http_server(http_dispatch, [port(Port)]).
+
+stop :-
+   stop(9999).
+
+stop(Port) :-
+   http_stop_server(Port, []).
+
+%! get_response(+Message, -Response) is det.
+% Pull the message content out of the JSON converted to a prolog dict
+% then add the current time, then pass it back up to be sent to the
+% client
+get_response(Message, Response) :-
+   Response = Message.content.
+
+:- initialization run.
+
 
 /* --------------------------------------------------------------------- */
 /*                                                                       */
@@ -581,3 +625,4 @@ tourdefrance :-
 /* --------------------------------------------------------------------- */
 
 :- tourdefrance.
+
