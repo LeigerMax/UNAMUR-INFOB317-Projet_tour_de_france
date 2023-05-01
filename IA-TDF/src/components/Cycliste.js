@@ -63,12 +63,52 @@ class Cycliste {
   }
 
 
-  deplacement(choixCarte, plateau, cycliste_chute,cyclistes_finis, belgique_positions, italie_positions, hollande_positions, allemagne_positions) {
+  deplacement(choixCarte,choixColonne, plateau, cycliste_chute,cyclistes_finis, belgique_positions, italie_positions, hollande_positions, allemagne_positions) {
     var nouvelle_ligne = this.position.getLigne() + parseInt(choixCarte);
     var ancienne_ligne = this.position.getLigne();
-    var nouvelle_colonne = 1;
+    var nouvelle_colonne = choixColonne;
     var messageReturn = "";
+    var circuit1 = false;
+    var circuit2 = false;
+    var circuit3 = false;
+    var circuit4 = false;
 
+    // Check si la position du cycliste actuel se trouve entre la ligne 24 et 39. Défini ensuite son circuit.
+    if(this.position.getLigne() >= 24 && this.position.getLigne() <= 39 ) {
+      if(this.position.getColonne() == 1 || this.position.getColonne() == 2) {
+        circuit1 = true;
+      }
+      if(this.position.getColonne() == 4) {
+        circuit2 = true;
+        if(nouvelle_ligne <= 39) {
+          nouvelle_colonne = 4;
+        }
+      }
+      else {
+        circuit1 = false;
+        circuit2 = false;
+      }
+    }
+
+     // Check si la position du cycliste actuel se trouve entre la ligne 89 et 102. Défini ensuite son circuit.
+     if(this.position.getLigne() >= 89 && this.position.getLigne() <= 102 ) {
+      if(this.position.getColonne() == 1) {
+        circuit3 = true;
+        if(nouvelle_ligne <= 102) {
+          nouvelle_colonne = 1;
+        }
+      }
+      if(this.position.getColonne() == 3) {
+        circuit4 = true;
+        if(nouvelle_ligne <= 102) {
+          nouvelle_colonne = 3;
+        }
+      }
+      else {
+        circuit3 = false;
+        circuit4 = false;
+      }
+    }
 
 
     // Check si case indisponible 
@@ -80,13 +120,26 @@ class Cycliste {
       ancienne_ligne++
     }
 
+    var first = true;
     
+    // Check si case occupé par un cycliste, si oui place cherche une colonne disponible.
     while (
       belgique_positions.find(pos => pos.ligne === nouvelle_ligne && pos.colonne === nouvelle_colonne) ||
       italie_positions.find(pos => pos.ligne === nouvelle_ligne && pos.colonne === nouvelle_colonne) ||
       hollande_positions.find(pos => pos.ligne === nouvelle_ligne && pos.colonne === nouvelle_colonne) ||
       allemagne_positions.find(pos => pos.ligne === nouvelle_ligne && pos.colonne === nouvelle_colonne)
     ) {
+      if(first) {
+        first=false;
+        nouvelle_colonne = 1;
+      }
+      if(circuit1 && nouvelle_colonne === 2) {
+        break;
+      }
+      if(circuit2) {
+        nouvelle_colonne = 4;
+        break;
+      }
       nouvelle_colonne++;
       console.log("Un cycliste est déjà présent sur la case --> déviation à la case à côté");
       messageReturn = "Un cycliste est déjà présent sur la case --> déviation à la case à côté";
@@ -116,6 +169,12 @@ class Cycliste {
             hollande_positions.find(pos => pos.ligne === nouvelle_ligne && pos.colonne === nouvelle_colonne) ||
             allemagne_positions.find(pos => pos.ligne === nouvelle_ligne && pos.colonne === nouvelle_colonne)
           ) {
+            if(circuit1 && nouvelle_colonne === 2) {
+              break;
+            }
+            if(circuit3 && circuit4) {
+              break;
+            }
             nouvelle_colonne++;
             console.log("Un cycliste est déjà présent sur la case --> déviation à la case à côté");
           }
@@ -133,6 +192,12 @@ class Cycliste {
             hollande_positions.find(pos => pos.ligne === nouvelle_ligne && pos.colonne === nouvelle_colonne) ||
             allemagne_positions.find(pos => pos.ligne === nouvelle_ligne && pos.colonne === nouvelle_colonne)
           ) {
+            if(circuit1 && nouvelle_colonne === 2) {
+              break;
+            }
+            if(circuit3 && circuit4) {
+              break;
+            }
             nouvelle_colonne++;
             console.log("Un cycliste est déjà présent sur la case --> déviation à la case à côté");
           }
@@ -143,6 +208,7 @@ class Cycliste {
           messageReturn = messageReturn + " <br> Le cycliste ne doit pas changer de case.";
         }
       }
+
       this.position.setLigne(nouvelle_ligne);
       this.position.setColonne(nouvelle_colonne);
 

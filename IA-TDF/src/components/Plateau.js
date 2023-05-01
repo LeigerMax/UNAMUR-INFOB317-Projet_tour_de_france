@@ -7,11 +7,11 @@ class Plateau {
             { debut: 1, fin: 8, nbColonnes: 3 },
             { debut: 9, fin: 20, nbColonnes: 2 },
             { debut: 21, fin: 23, nbColonnes: 3 },
-            { debut: 24, fin: 39, nbColonnes: 3 },
+            { debut: 24, fin: 39, nbColonnes: 4 },
             { debut: 40, fin: 77, nbColonnes: 2 },
             { debut: 78, fin: 80, nbColonnes: 1 },
             { debut: 81, fin: 88, nbColonnes: 2 },
-            { debut: 89, fin: 102, nbColonnes: 2 },
+            { debut: 89, fin: 102, nbColonnes: 3 },
         ];
         this.caseSupplementaire = [
             { nbLignes: 103, nbColonnes: 3, nbPointMinus: 0 },
@@ -50,9 +50,9 @@ class Plateau {
         this.caseIndisponible = [
             [10, 1],
             [12, 1],
-            [38, 0],
             [38, 1],
             [38, 2],
+            [38, 3],
             [39, 0],
             [39, 1],
             [39, 2],
@@ -132,7 +132,7 @@ class Plateau {
         }
         return 0;
     }
-    
+
 
 
     /**
@@ -150,6 +150,48 @@ class Plateau {
         }
         return false;
     }
+
+    /**
+     * Renvoie le nombre de colonnes pour une ligne donnée
+     * @param {number} ligne 
+     * @returns {number} nombre de colonnes
+     */
+    getNbColonnes(ligne) {
+        for (const circuit of this.case) {
+            if (ligne >= circuit.debut && ligne <= circuit.fin) {
+                return Array.isArray(circuit.nbColonnes) ? circuit.nbColonnes[0] : circuit.nbColonnes;
+            }
+        }
+        for (const caseSup of this.caseSupplementaire) {
+            if (ligne === caseSup.nbLignes) {
+                return caseSup.nbColonnes;
+            }
+        }
+        for (const caseChance of this.caseChance) {
+            if (ligne === caseChance.nbLignes) {
+                return caseChance.nbColonnes;
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * Renvoie le nombre de colonnes pour une ligne et une colonne donnée 
+     * 
+     * @param {number} ligne 
+     * @param {number} colonne
+     * @returns {number} nombre de colonnes
+     */
+    getNbColonnesCircuit12(ligne, colonne) {
+        if (colonne === 1 || colonne === 2) {
+            return 2;
+        } 
+        else if (colonne === 4) {
+            return 1;
+        }
+    }
+
+
 
 
 }

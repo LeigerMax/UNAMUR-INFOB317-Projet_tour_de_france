@@ -113,7 +113,7 @@ class Joueur {
    * @param {*} allemagne_positions les positions de tout les cyclistes de Allemagne
    * @returns 
    */
-  deplacer_cycliste(choixCycliste, choixCarte, plateau,cycliste_chute,cyclistes_finis, belgique_positions, italie_positions, hollande_positions, allemagne_positions) {
+  deplacer_cycliste(choixCycliste, choixCarte,choixColonne, plateau,cycliste_chute,cyclistes_finis, belgique_positions, italie_positions, hollande_positions, allemagne_positions) {
 
     // Trouver le cycliste dans la liste des cyclistes du joueur
     const cycliste = this.cyclistes.find(c => c.getNumero() === choixCycliste);
@@ -125,7 +125,7 @@ class Joueur {
     }
 
     // Appel la méthode deplacement() de Cycliste.
-    const messageReturn = cycliste.deplacement(choixCarte, plateau, cycliste_chute , cyclistes_finis, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
+    const messageReturn = cycliste.deplacement(choixCarte,choixColonne, plateau, cycliste_chute , cyclistes_finis, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
 
     console.log(`Le joueur ${this.nom} a déplacé le cycliste ${choixCycliste} avec la carte ${choixCarte}.`);
 

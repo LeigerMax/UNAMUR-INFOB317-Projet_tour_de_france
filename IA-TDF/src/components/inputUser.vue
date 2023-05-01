@@ -20,6 +20,12 @@
       <option id="carte5" value="??">??</option>
     </select>
 
+    <select class="combobox" name="choix_colonne" id="choix_colonne-select">
+      <option value="" disabled selected>--Veuillez choisir une colonne--</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+    </select>
 
 
     <button class="deplacer_button" id="deplacer_button_dynamique" @click="deplacer_btn">Déplacer</button>
@@ -52,6 +58,10 @@
       <option id="carte3" value="??">??</option>
       <option id="carte4" value="??">??</option>
       <option id="carte5" value="??">??</option>
+    </select>
+
+    <select class="combobox" name="choix_colonne" id="choix_colonne-select-dev">
+      <option value="" disabled selected>--Veuillez choisir une colonne--</option>
     </select>
 
     <button  class="deplacer_button" id="deplacer_button_dev" @click="deplacer_btn_dev">Déplacer dev</button>
@@ -131,6 +141,7 @@ export default {
       var selectElement = document.getElementById("deplacer_button_dev");
       selectElement.style.backgroundColor = "rgb(234, 211, 66)";
       selectElement.disabled = false;
+      this.nombreColonneDev();
     },
 
 
@@ -161,18 +172,55 @@ export default {
       }
     },
 
+    // Défini le nombre de colonne disponible et modifie le nombre d'option de choix_colonne-select-dev.
+    nombreColonneDev() {
+      const nom = document.getElementById('choix_pays-select-dev').value;
+      const choixCycliste = parseInt(document.getElementById('choix_cycliste-select-dev').value);
+      const choixCarte = parseInt(document.getElementById('choix_cartes-select-dev').value);
+
+      const colonneNbDisponible = this.jeu.check_colonne(nom,choixCycliste,choixCarte);
+
+      const choixColonneSelect = document.getElementById("choix_colonne-select-dev");
+
+      // Effacer toutes les options existantes
+      while (choixColonneSelect.firstChild) {
+        choixColonneSelect.removeChild(choixColonneSelect.firstChild);
+      }
+
+      // Ajouter la nouvelle option
+      const defaultOption = document.createElement("option");
+      defaultOption.value = "";
+      defaultOption.textContent = "--Veuillez choisir une colonne--";
+      defaultOption.disabled = true;
+      defaultOption.selected = true;
+      choixColonneSelect.appendChild(defaultOption);
+
+      // Ajouter les options de colonne en bouclant
+      for (let i = 1; i <= colonneNbDisponible; i++) {
+        if(colonneNbDisponible === 4 && i === 3) continue; // ne pas créer d'option pour la colonne 3
+        const option = document.createElement("option");
+        option.value = i;
+        option.textContent = i;
+        choixColonneSelect.appendChild(option);
+      }
+
+    },
+
     // Déplace le cycliste
     deplacer_btn_dev() {
 
       this.check_fin_jeu();
 
+
       var messageReturn = "";
       const nom = document.getElementById('choix_pays-select-dev').value;
       const choixCycliste = parseInt(document.getElementById('choix_cycliste-select-dev').value);
       const choixCarte = document.getElementById('choix_cartes-select-dev').value;
+      const choixColonne = document.getElementById('choix_colonne-select-dev').value;
+
 
       // Appelle la méthode deplacer_dev() de la classe Jeu
-      messageReturn = this.jeu.deplacer_dev(nom, choixCycliste, choixCarte);
+      messageReturn = this.jeu.deplacer_dev(nom, choixCycliste, choixCarte,choixColonne);
 
       // Récupère la position du cycliste et met à jour sur le frontend
       let positionCycliste = this.jeu.get_position_cycliste(nom, choixCycliste);
@@ -301,6 +349,56 @@ export default {
       var selectElement = document.getElementById("deplacer_button_dynamique");
       selectElement.style.backgroundColor = "rgb(234, 211, 66)";
       selectElement.disabled = false;
+      this.nombreColonne();
+    },
+
+    // Défini le nombre de colonne disponible et modifie le nombre d'option de choix_colonne-select-dev.
+    nombreColonne() {
+
+      // Cherche le joueur qui doit jouer
+      var nom = "";
+      if (this.move_counter <= 3) {
+        nom = "Belgique";
+      }
+      else if (this.move_counter <= 6) {
+        nom = "Italie";
+      }
+      else if (this.move_counter <= 9) {
+        nom = "Hollande";
+      }
+      else {
+        nom = "Allemagne";
+      }
+
+      const choixCycliste = this.jeu.cycliste_qui_doit_jouer(nom);
+      const choixCarte = parseInt(document.getElementById('choix_cartes-select').value);
+
+      const colonneNbDisponible = this.jeu.check_colonne(nom,choixCycliste,choixCarte);
+
+      const choixColonneSelect = document.getElementById("choix_colonne-select");
+
+      // Effacer toutes les options existantes
+      while (choixColonneSelect.firstChild) {
+        choixColonneSelect.removeChild(choixColonneSelect.firstChild);
+      }
+
+      // Ajouter la nouvelle option
+      const defaultOption = document.createElement("option");
+      defaultOption.value = "";
+      defaultOption.textContent = "--Veuillez choisir une colonne--";
+      defaultOption.disabled = true;
+      defaultOption.selected = true;
+      choixColonneSelect.appendChild(defaultOption);
+
+      // Ajouter les options de colonne en bouclant
+      for (let i = 1; i <= colonneNbDisponible; i++) {
+        if(colonneNbDisponible === 4 && i === 3) continue; // ne pas créer d'option pour la colonne 3
+        const option = document.createElement("option");
+        option.value = i;
+        option.textContent = i;
+        choixColonneSelect.appendChild(option);
+      }
+
     },
 
     // Déplace le cycliste
@@ -330,7 +428,8 @@ export default {
 
 
       const choixCarte = document.getElementById('choix_cartes-select').value;
-      messageReturn = this.jeu.deplacer_dynamique(nom, choixCarte);
+      const choixColonne = document.getElementById('choix_colonne-select').value;
+      messageReturn = this.jeu.deplacer_dynamique(nom, choixCarte,choixColonne);
 
 
       this.carte_dynamique();
