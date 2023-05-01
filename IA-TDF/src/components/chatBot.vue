@@ -26,7 +26,7 @@ export default {
     return {
       socket: null,
       message: '',
-      messages: [],
+      messageBack: [],
     }
   },
   mounted() {
@@ -36,7 +36,21 @@ export default {
     };
     this.socket.onmessage = (event) => {
       const message = JSON.parse(event.data);
-      this.messages.push(message);
+      this.messageBack.push(message);
+      const messagesContainer_bot = this.$refs.messages_question;
+      const messageBot = document.createElement('p');
+      messageBot.style.textAlign = "left";
+      messageBot.style.backgroundColor = "#ffffff74";
+      messageBot.style.color = "white";
+      messageBot.style.padding = "10px";
+      messageBot.style.border = "none";
+      messageBot.style.borderRadius = "5px";
+      messageBot.style.margin = "10px";
+      messageBot.style.wordWrap = "break-word";
+      //messageBot.classList.toggle('chatbox_messages_user');
+      messageBot.insertAdjacentHTML('beforeend', " <strong style='font-size: 18px;'>TBot :</strong> <br/>" + this.messageBack.toString().replaceAll(",", " ").replaceAll(" '", "'").replaceAll(" .", ".")); // J'ai tenter de mettre des balises <div class='chatbox__messages_bot'>
+      messagesContainer_bot.appendChild(messageBot);
+      this.messageBack.pop();
     };
     this.socket.onclose = () => {
       this.connectionStatus = 'Disconnected';
@@ -63,31 +77,13 @@ export default {
         messageUser.insertAdjacentHTML('beforeend', "<strong style='font-size: 18px;'>Joueur :</strong> <br/>" + message);
         messagesContainer_user.appendChild(messageUser);
 
-        // Reponse bot
-        const messagesContainer_bot = this.$refs.messages_question;
-        const messageBot = document.createElement('p');
-        messageBot.style.textAlign = "left";
-        messageBot.style.backgroundColor = "#ffffff74";
-        messageBot.style.color = "white";
-        messageBot.style.padding = "10px";
-        messageBot.style.border = "none";
-        messageBot.style.borderRadius = "5px";
-        messageBot.style.margin = "10px";
-        messageBot.style.wordWrap = "break-word";
-        //messageBot.classList.toggle('chatbox_messages_user');
-        messageBot.insertAdjacentHTML('beforeend', " <strong style='font-size: 18px;'>TBot :</strong> <br/>" + "Je ne suis pas connecté"); // J'ai tenter de mettre des balises <div class='chatbox__messages_bot'>
-        messagesContainer_bot.appendChild(messageBot);
-
         chatbot_question_input.value = '';
-        console.log(message);
 
+        var messToProlog = "[" + this.message.split(/[ ,]+/).join(',')+ "]";
         const sendMessage = {
-          content: this.message,
+          content: messToProlog,
         };
-        console.log(this.socket);
-        console.log(this.message);
         console.log(sendMessage);
-        console.log(JSON.stringify(sendMessage));
         this.socket.send(JSON.stringify(sendMessage));
         this.message = '';
 

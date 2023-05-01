@@ -18,7 +18,10 @@ echo(WebSocket) :-
     ->  true
     ;   get_response(Message.data, Response),
         writeln(Response),
-        ws_send(WebSocket, Message),
+        string(Response),
+        produire_reponse(Response, ResponseBot),
+        writeln(ResponseBot),
+        ws_send(WebSocket, json(ResponseBot)),
         echo(WebSocket)
     ).
 
@@ -624,5 +627,4 @@ tourdefrance :-
 /*                                                                       */
 /* --------------------------------------------------------------------- */
 
-:- tourdefrance.
 
