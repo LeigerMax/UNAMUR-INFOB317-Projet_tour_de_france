@@ -18,8 +18,8 @@ echo(WebSocket) :-
     ->  true
     ;   get_response(Message.data, Response),
         writeln(Response),
-        string(Response),
-        produire_reponse(Response, ResponseBot),
+        string_to_atom_list(Response, AtomResponse),
+        produire_reponse(AtomResponse, ResponseBot),
         writeln(ResponseBot),
         ws_send(WebSocket, json(ResponseBot)),
         echo(WebSocket)
@@ -379,15 +379,19 @@ string_to_atomic(String,Atom) :- name(Atom,String).
 %  e.g., " abc def  123 " into [abc,def,123].
 
 extract_atomics(String,ListOfAtomics) :-
-	remove_initial_blanks(String,NewString),
-	extract_atomics_aux(NewString,ListOfAtomics).
+   remove_initial_blanks(String,NewString),
+   extract_atomics_aux(NewString,ListOfAtomics).
 
-extract_atomics_aux([C|Chars],[A|Atomics]) :-
-	extract_word([C|Chars],Rest,Word),
-	string_to_atomic(Word,A),       % <- this is the only change
-	extract_atomics(Rest,Atomics).
+   extract_atomics_aux([C|Chars],[A|Atomics]) :-
+   extract_word([C|Chars],Rest,Word),
+   string_to_atomic(Word,A),       % <- this is the only change
+   extract_atomics(Rest,Atomics).
 
 extract_atomics_aux([],[]).
+
+string_to_atom_list(String, AtomList) :-
+   split_string(String, " ", "", Words),
+   maplist(atom_string, AtomList, Words).
 
 
 /*****************************************************************************/

@@ -79,7 +79,7 @@ export default {
 
         chatbot_question_input.value = '';
 
-        var messToProlog = "[" + this.message.split(/[ ,]+/).join(',')+ "]";
+        var messToProlog =  this.message;
         const sendMessage = {
           content: messToProlog,
         };
