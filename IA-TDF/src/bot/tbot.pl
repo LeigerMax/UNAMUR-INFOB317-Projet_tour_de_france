@@ -1,4 +1,51 @@
 :- use_module(library(lists)).
+:- use_module(library(http/websocket)).
+:- use_module(library(http/thread_httpd)).
+:- use_module(library(http/http_dispatch)).
+
+
+/* --------------------------------------------------------------------- */
+/*                                                                       */
+/*                            Création Serv                              */
+/*                                                                       */
+/* --------------------------------------------------------------------- */
+
+:- http_handler(root(ws), http_upgrade_to_websocket(echo, []), [spawn([])]).
+
+echo(WebSocket) :-
+    ws_receive(WebSocket, Message, [format(json)]),
+    (   Message.opcode == close
+    ->  true
+    ;   get_response(Message.data, Response),
+        writeln(Response),
+        string_to_atom_list(Response, AtomResponse),
+        produire_reponse(AtomResponse, ResponseBot),
+        writeln(ResponseBot),
+        ws_send(WebSocket, json(ResponseBot)),
+        echo(WebSocket)
+    ).
+
+run :-
+    run(9999).
+
+run(Port) :-
+    http_server(http_dispatch, [port(Port)]).
+
+stop :-
+   stop(9999).
+
+stop(Port) :-
+   http_stop_server(Port, []).
+
+%! get_response(+Message, -Response) is det.
+% Pull the message content out of the JSON converted to a prolog dict
+% then add the current time, then pass it back up to be sent to the
+% client
+get_response(Message, Response) :-
+   Response = Message.content.
+
+:- initialization run.
+
 
 /* --------------------------------------------------------------------- */
 /*                                                                       */
@@ -332,15 +379,19 @@ string_to_atomic(String,Atom) :- name(Atom,String).
 %  e.g., " abc def  123 " into [abc,def,123].
 
 extract_atomics(String,ListOfAtomics) :-
-	remove_initial_blanks(String,NewString),
-	extract_atomics_aux(NewString,ListOfAtomics).
+   remove_initial_blanks(String,NewString),
+   extract_atomics_aux(NewString,ListOfAtomics).
 
-extract_atomics_aux([C|Chars],[A|Atomics]) :-
-	extract_word([C|Chars],Rest,Word),
-	string_to_atomic(Word,A),       % <- this is the only change
-	extract_atomics(Rest,Atomics).
+   extract_atomics_aux([C|Chars],[A|Atomics]) :-
+   extract_word([C|Chars],Rest,Word),
+   string_to_atomic(Word,A),       % <- this is the only change
+   extract_atomics(Rest,Atomics).
 
 extract_atomics_aux([],[]).
+
+string_to_atom_list(String, AtomList) :-
+   split_string(String, " ", "", Words),
+   maplist(atom_string, AtomList, Words).
 
 
 /*****************************************************************************/
@@ -580,4 +631,4 @@ tourdefrance :-
 /*                                                                       */
 /* --------------------------------------------------------------------- */
 
-:- tourdefrance.
+
