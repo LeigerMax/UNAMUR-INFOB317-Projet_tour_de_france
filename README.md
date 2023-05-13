@@ -34,8 +34,8 @@
 
 ## 🛠 Build with
 - [Prolog](https://www.swi-prolog.org/)
-- [VueJS](https://www.swi-prolog.org](https://vuejs.org/))
-- [JavaScript](https://www.javascript.com/)) 
+- [VueJS](https://vuejs.org/)
+- [JavaScript](https://www.javascript.com/) 
 
 
 
