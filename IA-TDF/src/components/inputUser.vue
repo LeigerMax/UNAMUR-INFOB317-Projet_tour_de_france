@@ -113,12 +113,17 @@ export default {
       // Bloque/Débloque inputs
       var selectElement = document.getElementById('choix_cartes-select');
       selectElement.disabled = true;
+      selectElement = document.getElementById("choix_colonne-select");
+      selectElement.disabled = true;
       selectElement = document.getElementById('choix_cycliste-select-dev');
       selectElement.disabled = false;
       selectElement = document.getElementById('choix_pays-select-dev');
       selectElement.disabled = false;
       selectElement = document.getElementById("choix_cartes-select-dev");
       selectElement.disabled = false;
+      selectElement = document.getElementById("choix_colonne-select-dev");
+      selectElement.disabled = false;
+      
 
       var selectElementB = document.getElementById("deplacer_button_dev");
       selectElementB.style.backgroundColor = "#989795";
@@ -278,11 +283,15 @@ export default {
       // Bloque/Débloque inputs
       var selectElement = document.getElementById('choix_cartes-select');
       selectElement.disabled = false;
+      selectElement = document.getElementById("choix_colonne-select");
+      selectElement.disabled = false;
       selectElement = document.getElementById('choix_cycliste-select-dev');
       selectElement.disabled = true;
       selectElement = document.getElementById('choix_pays-select-dev');
       selectElement.disabled = true;
       selectElement = document.getElementById("choix_cartes-select-dev");
+      selectElement.disabled = true;
+      selectElement = document.getElementById("choix_colonne-select-dev");
       selectElement.disabled = true;
 
       // Bloque bouton déplacer

@@ -14,10 +14,7 @@
       <div class="chatbox_messages_game" ref="messages_game"></div>
     </div>
   </div>
-  <form class="chatbot_game_form" @submit.prevent="handleSubmit({ type: 'game' })">
-    <input class="chatbot_game_input" id="chatbot_game_input" name="chatbot_game_input" type="text" placeholder="Donner une directive ...">
-    <button class="chatbot_game_button" id="chatbot_game_submit" name="chatbot_game_submit" type="submit">Envoyer</button>
-  </form>
+
 </template>
 
 <script>
