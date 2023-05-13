@@ -10,7 +10,8 @@
   "dependencies": {
     "tau-prolog": "^0.3.4",
     "vue": "^3.2.47",
-    "vue-router": "^4.1.6"
+    "vue-router": "^4.1.6",
+    "vue-scrollto": "^2.20.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.0.0",

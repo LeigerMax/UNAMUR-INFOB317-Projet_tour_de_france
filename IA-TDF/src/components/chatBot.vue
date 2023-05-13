@@ -142,13 +142,13 @@ export default {
   padding-left: 20px;
   padding-top: 10px;
   padding-bottom: 10px;
-  color: rgb(255, 229, 84);
+  color: rgb(234, 211, 66);
   font-family: "Calibri", "Copperplate", fantasy;
   font-size: 14px;
   background-image: url('../assets/BotChat.png');
   background-size: fill;
   width: 700px;
-  height: 390px;
+  height: 250px;
   border: 10px solid black;
   border-top-right-radius: 25px;
   border-top-left-radius: 25px;
@@ -169,7 +169,7 @@ export default {
   position: fixed;
   right: 0;
   margin-right: 40px;
-  margin-top: 390px;
+  margin-top: 260px;
   width: 700px;
 }
 
@@ -183,8 +183,8 @@ export default {
 
 
 .chatbot_question_button {
-  background-color: #c58a13;
-  color: white;
+  background-color: rgb(234, 211, 66);
+  color: rgb(10, 10, 10);
   border: none;
   border-bottom-right-radius: 5px;
   padding: 10px;
@@ -192,60 +192,9 @@ export default {
   cursor: pointer;
 }
 
-/* CHATBOT GAME */
-
-.chatbot_game {
-  background-size: left;
-  padding-left: 20px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  color: rgb(255, 229, 84);
-  font-family: "Calibri", "Copperplate", fantasy;
-  font-size: 14px;
-  background-image: url('../assets/BotChat.png');
-  background-size: fill;
-  width: 700px;
-  height: 390px;
-  border: 10px solid black;
-  border-top-right-radius: 25px;
-  border-top-left-radius: 25px;
-  display: flex;
-  flex-direction: column-reverse;
-  align-items: right;
-  position: fixed;
-  right: 0;
-  margin-right: 40px;
-  margin-top: 500px;
-  overflow: auto;
-}
-
-.chatbot_game_form {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: fixed;
-  right: 0;
-  margin-right: 40px;
-  margin-top: 880px;
-  width: 700px;
-}
-
-.chatbot_game_input {
-  flex: 1;
-  padding: 10px;
-  border: none;
-  border-bottom-left-radius: 5px;
-  font-size: 16px;
-}
-
-.chatbot_game_button {
-  background-color: #c58a13;
-  color: white;
-  border: none;
-  border-bottom-right-radius: 5px;
-  padding: 10px;
-  font-size: 16px;
-  cursor: pointer;
+.chatbot_question_button:hover {
+  background-color: rgb(221, 168, 22);
+  transition: color 0.5s, background-color 0.5s;
 }
 
 /* CHATBOX */

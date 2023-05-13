@@ -1,5 +1,8 @@
 <template>
-    <div class="map">
+    <div class="map" >
+      <div class="image-zoom">
+        <img :src="map" alt="Carte">
+      </div>
   </div>
   <div class="cardbox">
   </div>
@@ -21,7 +24,6 @@
     background-size: cover;
     width: 1000px;
     height: 660px;
-    background-image: url('../assets/carte.png');
     border: 10px solid black;
     border-radius: 20px;
     display: flex;
@@ -32,4 +34,14 @@
     margin-left: 100px;
     margin-top: 20px;
   }
+
+  .map img {
+  width: 100%; /* Pour que l'image remplisse le conteneur */
+  height: 100%; /* Pour que l'image remplisse le conteneur */
+  object-fit: cover; /* Pour que l'image conserve son aspect ratio et remplisse le conteneur */
+  transition: transform .1s;
+}
+
+
+
 </style>
