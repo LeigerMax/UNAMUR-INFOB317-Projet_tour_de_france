@@ -1,5 +1,5 @@
 
-![Generic badge](https://img.shields.io/badge/STATUT-DEV-blue.svg)   ![Generic badge](https://img.shields.io/badge/VERSION-0.0-green.svg) ![Generic badge](https://img.shields.io/badge/SCHOOL_PROJET-UNamur-green.svg)
+![Generic badge](https://img.shields.io/badge/STATUT-DEV-blue.svg)   ![Generic badge](https://img.shields.io/badge/VERSION-1.0-green.svg) ![Generic badge](https://img.shields.io/badge/SCHOOL_PROJET-UNamur-green.svg)
 
 
 # UNamur- Projet IA - Tour de France
@@ -18,6 +18,11 @@
 
 ## About The Projet
 
+## Installation
+1. Download the Project
+2. Start TBot with swipl ```swipl .\tbot.pl``` 
+3. Install NPM ``` npm install ```
+4. Run environment ``` npm run dev ```
 
     
 ## Authors
@@ -29,6 +34,8 @@
 
 ## 🛠 Build with
 - [Prolog](https://www.swi-prolog.org/)
+- [VueJS](https://vuejs.org/)
+- [JavaScript](https://www.javascript.com/) 
 
 
 
