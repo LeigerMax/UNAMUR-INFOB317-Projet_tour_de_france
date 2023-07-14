@@ -78,10 +78,84 @@ export default {
   name: 'inputUser',
   data() {
     return {
-      cartes: [] // Cartes du joueur
+      cartes: [], // Cartes du joueur
+      socket: null
     }
   },
-  methods: {
+  mounted() {
+   
+  },
+  created() {
+  // Crée une seule instance de la connexion WebSocket
+  this.socket = new WebSocket('ws://localhost:9999/card_ws'); 
+
+  this.socket.onopen = () => {
+    console.log('Connexion WebSocket établie jeu');
+  };
+
+  this.socket.onmessage = (event) => {
+    const message = JSON.parse(event.data);
+    // Traiter le message Prolog reçu du serveur
+    this.processPrologMessage(message);
+  };
+
+  this.socket.onclose = (event) => {
+    console.log('Connexion fermée avec code : ' + event.code);
+  };
+},
+methods: {
+  /************************
+   *                      *
+   *     WebStocket       *
+   *                      *
+   ***********************/
+
+  // Méthode pour envoyer les cartes du joueur via WebSocket
+  sendPlayerCards(cards, playerId) {
+    if (cards && cards.length > 0) {
+      // Convertir les cartes en format Prolog
+      const prologCards = cards.map(card => {
+        // Effectuer la conversion appropriée pour chaque carte
+        // par exemple, si chaque carte est un objet avec une propriété "valeur"
+        return card.valeur;
+      });
+
+      // Créer un objet contenant les informations des cartes du joueur
+      const message = {
+        playerId: playerId,
+        cards: prologCards
+      };
+
+      console.log(message);
+      if (this.socket.readyState === WebSocket.OPEN) {
+        this.socket.send(JSON.stringify(message));
+      } else {
+        console.log('WebSocket connection is not open.');
+      }
+    }
+  },
+
+
+  processPrologMessage(message) {
+    // Traiter le message Prolog reçu du serveur
+    // Vous pouvez effectuer ici les actions nécessaires en fonction du type de message
+
+    // Exemple : Afficher les cartes du joueur
+    if (message.type === 'playerCards') {
+      const playerId = message.playerId;
+      const cards = message.cards;
+
+      console.log(`Cartes du joueur ${playerId}:`, cards);
+
+    }
+    else {
+      console.log(`Ok`);
+    }
+  },
+
+
+
+
 
     /************************
      *                      *
@@ -133,6 +207,7 @@ export default {
       this.init_visuel_cartes();
       this.init_visuel_positions();
 
+
     },
 
 
@@ -173,7 +248,14 @@ export default {
           i++;
         }
 
+
+        // Appel de la méthode sendPlayerCards avec les cartes et l'ID du joueur
+        this.sendPlayerCards(this.cartes, nom);
+
         this.init_visuel_cartes();
+
+        
+
       }
     },
 
@@ -303,6 +385,7 @@ export default {
       this.init_visuel_positions();
       this.carte_dynamique();
 
+
     },
 
 
@@ -350,7 +433,12 @@ export default {
         i++;
       }
 
+      // Appel de la méthode sendPlayerCards avec les cartes et l'ID du joueur
+      this.sendPlayerCards(this.cartes, nom);
+
+
       this.init_visuel_cartes();
+
     },
 
     // Appelée lorsqu'une carte est sélectionné dans le menu déroulant. débloque le bouton déplacer.
@@ -471,7 +559,6 @@ export default {
       var selectElement = document.getElementById("deplacer_button_dynamique");
       selectElement.style.backgroundColor = "#989795";
       selectElement.disabled = true;
-
 
     },
 
@@ -607,6 +694,7 @@ export default {
           i++;
         }
       }
+      
     },
 
     // check si fin jeu
