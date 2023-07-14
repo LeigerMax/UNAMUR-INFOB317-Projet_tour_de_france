@@ -87,7 +87,7 @@ export default {
   },
   created() {
   // Crée une seule instance de la connexion WebSocket
-  this.socket = new WebSocket('ws://localhost:9999/card_ws'); 
+  this.socket = new WebSocket('ws://localhost:9999/jeu_ws'); 
 
   this.socket.onopen = () => {
     console.log('Connexion WebSocket établie jeu');
@@ -122,6 +122,7 @@ methods: {
 
       // Créer un objet contenant les informations des cartes du joueur
       const message = {
+        type: "playerCards",
         playerId: playerId,
         cards: prologCards
       };
@@ -130,30 +131,62 @@ methods: {
       if (this.socket.readyState === WebSocket.OPEN) {
         this.socket.send(JSON.stringify(message));
       } else {
-        console.log('WebSocket connection is not open.');
+        console.log('WebSocket connection pas ouverte.');
       }
     }
   },
 
+  sendPlayerPlay(playerId) {
+    if (this.socket.readyState === WebSocket.OPEN) {
+      const message = {
+        type: "playerWhoPlay",
+        playerId: playerId
+      };
+      this.socket.send(JSON.stringify(message));
+    } else {
+      console.log('WebSocket connection pas ouverte.');
+    }
+  },
 
+  sendCyclistePosition(playerId, cyclistId, positionCycliste) {
+  if (this.socket.readyState === WebSocket.OPEN) {
+    const message = {
+      type: "cyclistePosition",
+      playerId: playerId,
+      cyclistId: cyclistId,
+      positionCycliste: positionCycliste
+    };
+    this.socket.send(JSON.stringify(message));
+  } else {
+    console.log('WebSocket connection pas ouverte.');
+  }
+},
+
+
+  // Traiter le message Prolog reçu du serveur
   processPrologMessage(message) {
-    // Traiter le message Prolog reçu du serveur
-    // Vous pouvez effectuer ici les actions nécessaires en fonction du type de message
-
-    // Exemple : Afficher les cartes du joueur
-    if (message.type === 'playerCards') {
+    if (message.type === "playerCards") {
       const playerId = message.playerId;
       const cards = message.cards;
 
       console.log(`Cartes du joueur ${playerId}:`, cards);
 
     }
+    else if (message.type === "playerWhoPlay") {
+      const playerId = message.playerId;
+      console.log(`Joueur qui doit jouer : ${playerId}`);
+    }
+    else if (message.type === "cyclistePosition") {
+      const playerId = message.playerId;
+      const cyclistId = message.cyclistId;
+      const positionCycliste = message.positionCycliste;
+      //const [ligne, colonne] = message.positionCycliste.replace(/\s/g, "").split(",");
+      console.log(`Joueur : ${playerId}, Cycliste : ${cyclistId}, positionCycliste : ${positionCycliste}}`);
+    }
     else {
-      console.log(`Ok`);
+      console.log(`Type incorrect`);
     }
   },
-
-
 
 
 
@@ -206,6 +239,12 @@ methods: {
 
       this.init_visuel_cartes();
       this.init_visuel_positions();
+
+       // Envoie les cartes de chaque joueur au serveur via WebSocket
+      const joueurs = [this.italie, this.hollande, this.belgique, this.allemagne];
+      for (const joueur of joueurs) {
+        this.sendPlayerCards(joueur.cartes, joueur.nom);
+      }
 
 
     },
@@ -385,6 +424,18 @@ methods: {
       this.init_visuel_positions();
       this.carte_dynamique();
 
+      // Envoie les cartes de chaque joueur au serveur via WebSocket
+      const joueurs = [
+        { nom: "Italie", cartes: this.jeu.getCartes_du_joueur("Italie") },
+        { nom: "Hollande", cartes: this.jeu.getCartes_du_joueur("Hollande") },
+        { nom: "Belgique", cartes: this.jeu.getCartes_du_joueur("Belgique") },
+        { nom: "Allemagne", cartes: this.jeu.getCartes_du_joueur("Allemagne") }
+      ];
+
+      for (const joueur of joueurs) {
+        this.sendPlayerCards(joueur.cartes, joueur.nom);
+      }
+
 
     },
 
@@ -414,6 +465,7 @@ methods: {
       const selectElementQuiJoue = document.getElementById("texte_qui_joue");
       selectElementQuiJoue.textContent = "C'est à "+nom+" de sélectionner une carte : ";
 
+     
 
       // Récupère les cartes du joueur
       this.cartes = this.jeu.getCartes_du_joueur(nom);
@@ -433,6 +485,8 @@ methods: {
         i++;
       }
 
+      // Envoie le joueur qui doit jouer au serveur via WebSocket
+      this.sendPlayerPlay(nom);
       // Appel de la méthode sendPlayerCards avec les cartes et l'ID du joueur
       this.sendPlayerCards(this.cartes, nom);
 
@@ -533,9 +587,12 @@ methods: {
       this.init_visuel_cartes();
 
 
-      for (var i = 0; i <= 3; i++) {
+      for (var i = 0; i <= 3; i++) { //todo: Mettre i = 1 ?
         let positionCycliste = this.jeu.get_position_cycliste(nom, i);
         this.visuel_position(nom, positionCycliste, i);
+
+        // Envoie les positions des cyclistes via WebSocket
+        this.sendCyclistePosition(nom, i, positionCycliste);
       }
 
       // Affiche message activitiés

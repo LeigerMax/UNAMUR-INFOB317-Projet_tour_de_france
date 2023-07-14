@@ -2,6 +2,7 @@ import Joueur from './Joueur';
 import Cycliste from './Cycliste';
 import Carte from './Carte';
 import Plateau from './Plateau';
+import InputUser from './InputUser.vue';
 
 class Jeu {
   constructor() {
@@ -476,13 +477,18 @@ class Jeu {
    */
   distribuer_cartes_debut_jeu() {
     const joueurs = [this.italie, this.hollande, this.belgique, this.allemagne];
+    const playerCards = [];
     for (const joueur of joueurs) {
       console.log(`Cartes distribuées à ${joueur.nom}:`);
       for (let i = 0; i < 5; i++) {
         const carte = this.cartes.pop();
         joueur.recevoir_cartes([carte]);
+        playerCards.push(carte.valeur);
         console.log(`Carte ${i + 1}: ${carte.valeur}`);
       }
+
+      // Envoyer les cartes du joueur via WebSocket
+      //inputUser.sendPlayerCards(playerCards, joueur.nom);
     }
   }
 

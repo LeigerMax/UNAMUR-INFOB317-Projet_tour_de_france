@@ -54,28 +54,50 @@ get_response(Message, Response) :-
 /*                                                                       */
 /* --------------------------------------------------------------------- */
 
-:- http_handler(root(card_ws), http_upgrade_to_websocket(card_echo, []), [spawn([])]).
+:- http_handler(root(jeu_ws), http_upgrade_to_websocket(card_echo, []), [spawn([])]).
 
 card_echo(WebSocket) :-
     ws_receive(WebSocket, Message, [format(json)]),
     (   Message.opcode == close
     ->  true
-    ;   process_card_message(Message.data, Response),
+    ;   process_message(Message.data, Response),
         ws_send(WebSocket, json(Response)),
         card_echo(WebSocket)
     ).
 
-process_card_message(_{playerId: PlayerId, cards: Cards}, Response) :-
-    writeln(PlayerId), % Afficher la valeur de PlayerId
-    writeln(Cards),    % Afficher la valeur de Cards
+/**************************** Cartes ****************************/
+process_message(_{type: "playerCards", playerId: PlayerId, cards: Cards}, Response) :-
+    writeln("playerCards"), 
+    writeln(PlayerId), 
+    writeln(Cards),    
     !,
     process_player_cards(PlayerId, Cards, Response).
 
 process_player_cards(PlayerId, Cards, Response) :-
-    Response = json{status: 'success', message: 'Cards received'}.
+    Response = json{status: 'success', message: 'Cards received',type: "playerCards", playerId: PlayerId, cards: Cards}.
       
-        
 
-
+/**************************** Joueur qui doit jouer  ****************************/  
+process_message(_{type: "playerWhoPlay", playerId: PlayerId}, Response) :-
+    writeln("playerWhoPlay"),
+    writeln(PlayerId),
+    !,
+    process_player_play(PlayerId, Response).
     
+process_player_play(PlayerId, Response) :-
+    Response = json{status: 'success', message: 'Player find',type: "playerWhoPlay", playerId: PlayerId}.
+    
+
+/**************************** Position cyclistes ****************************/
+process_message(_{type: "cyclistePosition", playerId: PlayerId, cyclistId: CyclistId, positionCycliste: PositionCycliste}, Response) :-
+    writeln("cyclistePosition"),
+    writeln(PlayerId),
+    writeln(CyclistId),
+    writeln(PositionCycliste),
+    !,
+    process_player_cyclistePosition(PlayerId, CyclistId, PositionCycliste, Response).
+
+process_player_cyclistePosition(PlayerId, CyclistId, PositionCycliste, Response) :-
+    Response = json{status: 'success', message: 'Cycliste Position', type: "cyclistePosition", playerId: PlayerId, cyclistId: CyclistId, positionCycliste: PositionCycliste}.
+
 

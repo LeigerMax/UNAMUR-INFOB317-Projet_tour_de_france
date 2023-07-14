@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "tau-prolog": "^0.3.4",
-    "vue": "^3.2.47",
+    "vue": "^3.3.4",
     "vue-router": "^4.1.6",
     "vue-scrollto": "^2.20.0"
   },
