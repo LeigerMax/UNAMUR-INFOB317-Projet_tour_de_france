@@ -175,6 +175,23 @@ methods: {
     else if (message.type === "playerWhoPlay") {
       const playerId = message.playerId;
       console.log(`Joueur qui doit jouer : ${playerId}`);
+
+      if(playerId === "Italie") {
+        // Sélectionnez les éléments de combobox par leur ID
+        console.log("BOT A JOUER");
+        const choixCarteSelect = document.getElementById('choix_cartes-select');
+        const choixColonneSelect = document.getElementById('choix_colonne-select');
+
+        choixCarteSelect.options[1].selected = true;
+
+        var selectElement = document.getElementById("deplacer_button_dynamique");
+        selectElement.style.backgroundColor = "rgb(234, 211, 66)";
+        selectElement.disabled = false;
+
+        var boutonDeplacerBot = document.querySelector('.deplacer_button');
+        boutonDeplacerBot.click();
+    
+      }
     }
     else if (message.type === "cyclistePosition") {
       const playerId = message.playerId;
@@ -182,6 +199,7 @@ methods: {
       const positionCycliste = message.positionCycliste;
       //const [ligne, colonne] = message.positionCycliste.replace(/\s/g, "").split(",");
       console.log(`Joueur : ${playerId}, Cycliste : ${cyclistId}, positionCycliste : ${positionCycliste}}`);
+      
     }
     else {
       console.log(`Type incorrect`);
@@ -189,6 +207,9 @@ methods: {
   },
 
 
+  // Click automatique bouton
+  //var boutonJouerDev = document.querySelector('.jouer_button_dev');
+  //boutonJouerDev.click();
 
     /************************
      *                      *
@@ -587,7 +608,7 @@ methods: {
       this.init_visuel_cartes();
 
 
-      for (var i = 0; i <= 3; i++) { //todo: Mettre i = 1 ?
+      for (var i = 1; i <= 3; i++) { //todo: Mettre i = 1 ?
         let positionCycliste = this.jeu.get_position_cycliste(nom, i);
         this.visuel_position(nom, positionCycliste, i);
 

@@ -194,6 +194,8 @@ class Jeu {
    * @returns  {number} cycliste qui doit jouer
    */
   cycliste_qui_doit_jouer(nom) {
+    var numeroCyclisteAJouer;
+    
     // Check le nom du joeuur
     switch (nom) {
       case "Belgique":
@@ -251,10 +253,10 @@ class Jeu {
   deplacer_dynamique(nom, choixCarte, choixColonne) {
     var messageReturn;
     var lowestPositionIndex = 0;
-    var numeroCyclisteAJouer;
     var cyclisteJouer;
     var elemDelete;
     var elemCyclisteDelete;
+    var numeroCyclisteAJouer;
 
 
     // Check le nom du joeuur
