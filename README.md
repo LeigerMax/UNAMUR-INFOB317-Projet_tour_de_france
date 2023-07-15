@@ -27,7 +27,6 @@
     
 ## Authors
 - [@LeigerMax](https://github.com/LeigerMax) 
-- [@sdourte](https://github.com/sdourte) 
 - [@BenjaminPans](https://github.com/BenjaminPans) 
 - [@PastoriLucas](https://github.com/PastoriLucas) 
 

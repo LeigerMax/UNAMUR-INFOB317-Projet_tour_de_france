@@ -76,6 +76,7 @@ get_response(Message, Response) :-
 produire_reponse([fin],[L1]) :-
    L1 = [merci, de, m, '\'', avoir, consulte], !.    
 
+
 produire_reponse(L,Rep) :-
    mFind(M,L,Variant),
    replace(L,Variant,M, NewPhrase),
@@ -136,15 +137,32 @@ nb_equipes(4).
 /* --------------------------------------------------------------------- */
 
 mclef(but,10).
+mclef(carte,10).
 mclef(commence,10).
-mclef(chute,10).
-mclef(depasser,10).
-mclef(deplacer,10).
-mclef(equipe,5).
 mclef(chance,10).
-mclef(montee,10).
+mclef(chute,10).
 mclef(descente,10).
+mclef(depasser,10).
+
+mclef(deplacer,10).
+mclef(deplacer,9).
+mclef(deplacer,8).
+mclef(deplacer,7).
+mclef(deplacer,6).
+mclef(deplacer,5).
+
+mclef(equipe,5).
 mclef(help,5).
+mclef(montee,10).
+mclef(score,10).
+
+
+mclef(plateau, 10).
+mclef(plateau, 11).
+mclef(plateau, 12).
+
+mclef(point,10).
+
 
 
 /* --------------------------------------------------------------------- */
@@ -164,6 +182,13 @@ regle_rep(but,5,
    ]]
   ).
 
+
+% ----------------------------------------------------------------%
+
+regle_rep(carte,10,
+   [ [ combien ], 4, [ carte ] ],
+   [ [ "Le", jeu, est, compose, de, 96, cartes, secondes, numerotees, de, 1, "à", "12.", "Une", fois, que, toutes, les, cartes, du, paquet, ont, "été" ,jouees, le, paquet, est, melange, "à", "nouveau."] ] ).
+
 % ----------------------------------------------------------------%
 
 
@@ -175,6 +200,12 @@ regle_rep(commence,5,
 
 % ----------------------------------------------------------------%
 
+regle_rep(chance,10,
+  [ [quoi], 2 ,[chance] ],
+  [ ["Lorsqu'une", case, chance, est, atteinte, un, chiffre, est, selectionne, de, maniere, aleatoire, dans, la, plage, de, -3, a, "3.", si, le, chiffre, est, negatif, le, cycliste, recule, 
+  du, nombre, de, cases, "indique.", "S'il", est, positif, il, avance, du, nombre, de, cases, "correspondant.", enfin, si, le, chiffre, est, 0, le, cycliste, reste, sur, "place."] ]).
+
+% ----------------------------------------------------------------%
 
 regle_rep(chute,10,
   [ [ comment ], 2 ,[ chute ], 3 ,[ arriver ] ],
@@ -184,17 +215,42 @@ regle_rep(chute,10,
 
 % ----------------------------------------------------------------%
 
-regle_rep(depasser,5,
+regle_rep(descente,10, 
+  [ [descente] ],
+  [ [la, regle, "n'est", pas, implementee, dans, notre, version, du, "jeu."] ]).
+
+% ----------------------------------------------------------------%
+
+regle_rep(depasser,5, 
   [ [ depasser ], 5, [ groupe ]],
-  [ [ oui, il, est, permis, de, depasser, par, le, bas-cote, de, la, route, pour, autant, que, le, coureur, arrive, sur, une, case, non, "occupee.", si, ce, "n'est", pas, le, cas, le, coureur, chute, et, entraine, dans, sa, chute, le, groupe, de, coureurs, "qu'il", voulait ,"depasser."] ]).
+  [ [ oui, il, est, permis, de, depasser, par, le, "bas-cote", de, la, route, pour, autant, que, le, coureur, arrive, sur, une, case, non, "occupee.", si, ce, "n'est", pas, le, cas, le, coureur, chute, et, entraine, dans, sa, chute, le, groupe, de, coureurs, "qu'il", voulait ,"depasser."] ]).
    
 
 % ----------------------------------------------------------------%
 
-regle_rep(deplacer,5,
+regle_rep(deplacer,10,
   [ [ deplacer ], 2, [ coureur ], 4 ,[ occupee ] ],
-  [ [ non ]]).
+  [ [ non, ce "n'est", pas, un, mouvement, "autorise." ]]).
 
+regle_rep(deplacer,8,
+  [ [ deplacer ], 2, [ coureur ], 3 ,[ diagonal ] ], 
+  [ [ oui, "c'est", "possible.", les, deplacements, se, font, toujours, de, "l'avant.", et, cela, fonctionne, donc, sur, une, case, "diagonale." ]]).
+   
+ regle_rep(deplacer,8,
+  [ [ deplacer ], 2, [ coureur ], 3 ,[ adjacente ] ], 
+  [ [ oui, "c'est", "possible.", les, deplacements, se, font, toujours, de, "l'avant.", et, cela, fonctionne, donc, sur, une, case, "adjacente." ]]).
+ 
+ regle_rep(deplacer,8,
+  [ [ deplacer ], 2, [ coureur ], 3,[ arriere ] ],
+  [ [ non, ce, "n'est", pas, un, mouvement, "autorise." ]]).
+   
+ regle_rep(deplacer,6,
+  [ [ deplacer ], 5 ,[ double ]], 
+  [ [ les, double, case, comptent, pour, deux, "cases.", elles, sont, disponibles, dans, les, virages, et , permettent, de, faire, le, choix, entre, une, case, chance, ou, un, chemin, plus, "long." ]]).
+
+regle_rep(deplacer,5,
+  [ [ carte ], 2, [ deplacer ] ],
+  [ [ les, cartes, comportent, un, certain, nombre, de, "secondes,", le, nombre, de, seconde, determine, le, nombre, de, case, que, le, coureur, peut, "avancer." ]]).
 
 % ----------------------------------------------------------------%
 
@@ -206,32 +262,44 @@ regle_rep(equipe,5,
 
 % ----------------------------------------------------------------%
 
-regle_rep(chance,10,
-  [ [chance] ],
-  [ [a, remplir] ]).
+regle_rep(help,10,
+  [ [ help ] ],
+  [ [voici, quelques, exemples, de, questions, que, vous, pouvez, me, "poser.", "Qui", commence, la, "partie ?", "Quelle", est, le, but, du, "jeu ?" ] ] ).
+
 
 % ----------------------------------------------------------------%
 
 regle_rep(montee,10,
   [ [montee]  ],
   [ [les, cases, situees, en, montee, sont, marquees, par, des, fleches, "rouges.", pour, determiner, la, vitesse, "d'un", coureur, en, montee, divisez, par, deux, la, valeur, 
-  de, la, carte, jouee, et, arrondissez, au, plus, "bas.", un, coureur, en, montee, ne, peut, pas, profiter, du, phenomene, "d'aspiration" ] ]).
+  de, la, carte, jouee, et, arrondissez, au, plus, "bas.", un, coureur, en, montee, ne, peut, pas, profiter, du, phenomene, "d'aspiration." ] ]).
 
 % ----------------------------------------------------------------%
 
-regle_rep(descente,10,
-  [ [descente] ],
-  [ [les,cases,situees,en,descente,sont,marquees,par,des,fleches,"bleues.",en,descente,les,regles,sont,les,memes,que,sur,une,etape,de,plaine,à,"l'exception",du,phenomene,"d'aspiration",":",
-  la,prise,de,vitesse,equivaut,alors,a,"2",secondes,au,lieu,"d'1","seconde.",autre,difference,importante,":",en,utilisant,une,prise,de,vitesse,de,"2",secondes,
-  vous,pouvez,depasser,le,coureur,"d'1",case,maximum,et,prendre,la,tete,de,la,"course.",comme,pour,les,etapes,de,plaine,vous,"n'êtes",pas,oblige,"d'utiliser",la,prise,de,"vitesse.";
-  vous,pouvez,donc,avancer,"d'1",seconde,au,lieu,de,"2",secondes,si,cela,"s'avère",plus,"prioritaire."] ]).
+regle_rep(plateau,10,
+  [ [ commence ], 2, [ plateau ] ],
+  [ [ le, plateau, commence, a, la, case, 0, pour, tout, les, "joueurs." ]]).
+  
+regle_rep(plateau,11,
+  [ [ termine ], 2, [ plateau ] ],
+  [ [ le, plateau, se, termine, a, la, case, 103, pour, tout, les, "joueurs.", les, cases, suivant, cette, case, sont, des, cases, "bonus." ]]).
 
+regle_rep(plateau,12, 
+  [ [ plateau ], 2, [ divise ] ],
+  [ [ quand, le, plateau, se, divise, en, deux, vous, etes, libre, de, choisir, le, chemin, qui, vous ,avantage, le, "mieux." ]]).
 
 % ----------------------------------------------------------------%
 
-regle_rep(help,10,
-   [ [ help ] ],
-   [ [voici, quelques, exemples, de, questions, que, vous, pouvez, me, poser ] ] ).
+regle_rep(score,10,
+  [ [comment],3, [ score ] ],
+  [ [ "Le", calcul, du, score, "s'effectue", de, la, maniere, suivante, ":", chaque, cycliste, possede, un, nombre, de, points, et, les, points, de, chaque, cycliste, "d'une", equipe, sont, "additionnes.", "L'eéquipe", qui,
+   obtient, le, moins, de, points, remporte, la, "partie." ] ] ).
+
+% ----------------------------------------------------------------%
+
+regle_rep(point,10,
+  [ [comment],4, [ point ] ],
+  [ [ "A", chaque, fois, "qu'un", cycliste, joue, son, tour, il, gagne, 10, points, "supplementaires."] ] ).
 
 
 /* --------------------------------------------------------------------- */
@@ -546,10 +614,30 @@ mSelecter(L, M1, M2, Mchoice):-
    (P1 < P2, Mchoice = M1 ; (P2 < P1, Mchoice = M2)).
  
 
+ % Définition des synonymes pour les mots-clés
+synonymes(chance, [opportunite]).
+synonymes(but, [objectif]).
+synonymes(commence, [debute, demarre]).
+synonymes(chute, [crash, carambolage]).
+synonymes(depasser, [devancer, distancer]).
+synonymes(deplacer, [bouger, mouvoir]).
+synonymes(equipe, [team]).
+synonymes(help, [aide]).
+synonymes(score, [classement]).
+synonymes(plateau, [map]).
+
+% Modification du prédicat mFind/3 pour rechercher des synonymes
+mFind(M, L, Variant) :-
+   mclef(M,_),
+   (member(Variant,L), verif_distance(Variant, M)) ;  % Vérification du mot lui-même
+   (synonymes(M, Synonymes), member(Synonym, Synonymes), member(Variant, L), verif_distance(Variant, Synonym)).  % Vérification des synonymes
+
+
+/*
 mFind(M, L, Variant) :-
    mclef(M,_),
    member(Variant,L), 
-   verif_distance(Variant, M).
+   verif_distance(Variant, M).*/
 
 pFind([P], Lmots, Variant) :-
    member(Variant,Lmots),
