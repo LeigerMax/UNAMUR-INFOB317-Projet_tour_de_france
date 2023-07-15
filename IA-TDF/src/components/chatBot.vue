@@ -29,7 +29,8 @@ export default {
   mounted() {
     this.socket = new WebSocket('ws://localhost:9999/ws');
     this.socket.onopen = () => {
-      this.connectionStatus = 'Connected';
+      this.connectionStatus = 'Connexion WebSocket établie chat';
+      console.log('Connexion WebSocket établie chat');
     };
     this.socket.onmessage = (event) => {
       const message = JSON.parse(event.data);
@@ -50,7 +51,8 @@ export default {
       this.messageBack.pop();
     };
     this.socket.onclose = () => {
-      this.connectionStatus = 'Disconnected';
+      this.connectionStatus = 'Connexion WebSocket fermée chat';
+      console.log('Connexion WebSocket fermée chat');
     };
   },
   methods: {

@@ -78,10 +78,138 @@ export default {
   name: 'inputUser',
   data() {
     return {
-      cartes: [] // Cartes du joueur
+      cartes: [], // Cartes du joueur
+      socket: null
     }
   },
-  methods: {
+  mounted() {
+   
+  },
+  created() {
+  // Crée une seule instance de la connexion WebSocket
+  this.socket = new WebSocket('ws://localhost:9999/jeu_ws'); 
+
+  this.socket.onopen = () => {
+    console.log('Connexion WebSocket établie jeu');
+  };
+
+  this.socket.onmessage = (event) => {
+    const message = JSON.parse(event.data);
+    // Traiter le message Prolog reçu du serveur
+    this.processPrologMessage(message);
+  };
+
+  this.socket.onclose = (event) => {
+    console.log('Connexion fermée avec code : ' + event.code);
+  };
+},
+methods: {
+  /************************
+   *                      *
+   *     WebStocket       *
+   *                      *
+   ***********************/
+
+  // Méthode pour envoyer les cartes du joueur via WebSocket
+  sendPlayerCards(cards, playerId) {
+    if (cards && cards.length > 0) {
+      // Convertir les cartes en format Prolog
+      const prologCards = cards.map(card => {
+        // Effectuer la conversion appropriée pour chaque carte
+        // par exemple, si chaque carte est un objet avec une propriété "valeur"
+        return card.valeur;
+      });
+
+      // Créer un objet contenant les informations des cartes du joueur
+      const message = {
+        type: "playerCards",
+        playerId: playerId,
+        cards: prologCards
+      };
+
+      console.log(message);
+      if (this.socket.readyState === WebSocket.OPEN) {
+        this.socket.send(JSON.stringify(message));
+      } else {
+        console.log('WebSocket connection pas ouverte.');
+      }
+    }
+  },
+
+  sendPlayerPlay(playerId) {
+    if (this.socket.readyState === WebSocket.OPEN) {
+      const message = {
+        type: "playerWhoPlay",
+        playerId: playerId
+      };
+      this.socket.send(JSON.stringify(message));
+    } else {
+      console.log('WebSocket connection pas ouverte.');
+    }
+  },
+
+  sendCyclistePosition(playerId, cyclistId, positionCycliste) {
+  if (this.socket.readyState === WebSocket.OPEN) {
+    const message = {
+      type: "cyclistePosition",
+      playerId: playerId,
+      cyclistId: cyclistId,
+      positionCycliste: positionCycliste
+    };
+    this.socket.send(JSON.stringify(message));
+  } else {
+    console.log('WebSocket connection pas ouverte.');
+  }
+},
+
+
+  // Traiter le message Prolog reçu du serveur
+  processPrologMessage(message) {
+    if (message.type === "playerCards") {
+      const playerId = message.playerId;
+      const cards = message.cards;
+
+      console.log(`Cartes du joueur ${playerId}:`, cards);
+
+    }
+    else if (message.type === "playerWhoPlay") {
+      const playerId = message.playerId;
+      console.log(`Joueur qui doit jouer : ${playerId}`);
+
+      if(playerId === "Italie") {
+        // Sélectionnez les éléments de combobox par leur ID
+        console.log("BOT A JOUER");
+        const choixCarteSelect = document.getElementById('choix_cartes-select');
+        const choixColonneSelect = document.getElementById('choix_colonne-select');
+
+        choixCarteSelect.options[1].selected = true;
+
+        var selectElement = document.getElementById("deplacer_button_dynamique");
+        selectElement.style.backgroundColor = "rgb(234, 211, 66)";
+        selectElement.disabled = false;
+
+        var boutonDeplacerBot = document.querySelector('.deplacer_button');
+        boutonDeplacerBot.click();
+    
+      }
+    }
+    else if (message.type === "cyclistePosition") {
+      const playerId = message.playerId;
+      const cyclistId = message.cyclistId;
+      const positionCycliste = message.positionCycliste;
+      //const [ligne, colonne] = message.positionCycliste.replace(/\s/g, "").split(",");
+      console.log(`Joueur : ${playerId}, Cycliste : ${cyclistId}, positionCycliste : ${positionCycliste}}`);
+      
+    }
+    else {
+      console.log(`Type incorrect`);
+    }
+  },
+
+
+  // Click automatique bouton
+  //var boutonJouerDev = document.querySelector('.jouer_button_dev');
+  //boutonJouerDev.click();
 
     /************************
      *                      *
@@ -133,6 +261,13 @@ export default {
       this.init_visuel_cartes();
       this.init_visuel_positions();
 
+       // Envoie les cartes de chaque joueur au serveur via WebSocket
+      const joueurs = [this.italie, this.hollande, this.belgique, this.allemagne];
+      for (const joueur of joueurs) {
+        this.sendPlayerCards(joueur.cartes, joueur.nom);
+      }
+
+
     },
 
 
@@ -173,7 +308,14 @@ export default {
           i++;
         }
 
+
+        // Appel de la méthode sendPlayerCards avec les cartes et l'ID du joueur
+        this.sendPlayerCards(this.cartes, nom);
+
         this.init_visuel_cartes();
+
+        
+
       }
     },
 
@@ -303,6 +445,19 @@ export default {
       this.init_visuel_positions();
       this.carte_dynamique();
 
+      // Envoie les cartes de chaque joueur au serveur via WebSocket
+      const joueurs = [
+        { nom: "Italie", cartes: this.jeu.getCartes_du_joueur("Italie") },
+        { nom: "Hollande", cartes: this.jeu.getCartes_du_joueur("Hollande") },
+        { nom: "Belgique", cartes: this.jeu.getCartes_du_joueur("Belgique") },
+        { nom: "Allemagne", cartes: this.jeu.getCartes_du_joueur("Allemagne") }
+      ];
+
+      for (const joueur of joueurs) {
+        this.sendPlayerCards(joueur.cartes, joueur.nom);
+      }
+
+
     },
 
 
@@ -331,6 +486,7 @@ export default {
       const selectElementQuiJoue = document.getElementById("texte_qui_joue");
       selectElementQuiJoue.textContent = "C'est à "+nom+" de sélectionner une carte : ";
 
+     
 
       // Récupère les cartes du joueur
       this.cartes = this.jeu.getCartes_du_joueur(nom);
@@ -350,7 +506,14 @@ export default {
         i++;
       }
 
+      // Envoie le joueur qui doit jouer au serveur via WebSocket
+      this.sendPlayerPlay(nom);
+      // Appel de la méthode sendPlayerCards avec les cartes et l'ID du joueur
+      this.sendPlayerCards(this.cartes, nom);
+
+
       this.init_visuel_cartes();
+
     },
 
     // Appelée lorsqu'une carte est sélectionné dans le menu déroulant. débloque le bouton déplacer.
@@ -445,9 +608,12 @@ export default {
       this.init_visuel_cartes();
 
 
-      for (var i = 0; i <= 3; i++) {
+      for (var i = 1; i <= 3; i++) { //todo: Mettre i = 1 ?
         let positionCycliste = this.jeu.get_position_cycliste(nom, i);
         this.visuel_position(nom, positionCycliste, i);
+
+        // Envoie les positions des cyclistes via WebSocket
+        this.sendCyclistePosition(nom, i, positionCycliste);
       }
 
       // Affiche message activitiés
@@ -471,7 +637,6 @@ export default {
       var selectElement = document.getElementById("deplacer_button_dynamique");
       selectElement.style.backgroundColor = "#989795";
       selectElement.disabled = true;
-
 
     },
 
@@ -607,6 +772,7 @@ export default {
           i++;
         }
       }
+      
     },
 
     // check si fin jeu
