@@ -171,27 +171,29 @@ methods: {
 
       console.log(`Cartes du joueur ${playerId}:`, cards);
 
+
     }
     else if (message.type === "playerWhoPlay") {
       const playerId = message.playerId;
+      const maxCard = message.maxCard;
       console.log(`Joueur qui doit jouer : ${playerId}`);
 
-      if(playerId === "Italie") {
-        // Sélectionnez les éléments de combobox par leur ID
+      //if(playerId === "Italie") {
         console.log("BOT A JOUER");
         const choixCarteSelect = document.getElementById('choix_cartes-select');
         const choixColonneSelect = document.getElementById('choix_colonne-select');
-
-        choixCarteSelect.options[1].selected = true;
+        choixCarteSelect.value = maxCard; // Sélectionnez la plus grande carte
+        choixColonneSelect.options[0].selected = true;
 
         var selectElement = document.getElementById("deplacer_button_dynamique");
         selectElement.style.backgroundColor = "rgb(234, 211, 66)";
         selectElement.disabled = false;
 
         var boutonDeplacerBot = document.querySelector('.deplacer_button');
+        boutonDeplacerBot.disabled = false;
         boutonDeplacerBot.click();
     
-      }
+     // }
     }
     else if (message.type === "cyclistePosition") {
       const playerId = message.playerId;
@@ -308,13 +310,12 @@ methods: {
           i++;
         }
 
-
-        // Appel de la méthode sendPlayerCards avec les cartes et l'ID du joueur
-        this.sendPlayerCards(this.cartes, nom);
-
+      
         this.init_visuel_cartes();
 
-        
+        // Appel de la méthode sendPlayerCards avec les cartes et l'ID du joueur
+        //this.sendPlayerCards(this.cartes, nom);
+
 
       }
     },
@@ -457,6 +458,9 @@ methods: {
         this.sendPlayerCards(joueur.cartes, joueur.nom);
       }
 
+       // Envoie le joueur qui doit jouer au serveur via WebSocket
+       this.sendPlayerPlay("Belgique");
+
 
     },
 
@@ -505,12 +509,6 @@ methods: {
         selectElement.appendChild(optionElement);
         i++;
       }
-
-      // Envoie le joueur qui doit jouer au serveur via WebSocket
-      this.sendPlayerPlay(nom);
-      // Appel de la méthode sendPlayerCards avec les cartes et l'ID du joueur
-      this.sendPlayerCards(this.cartes, nom);
-
 
       this.init_visuel_cartes();
 
@@ -582,21 +580,18 @@ methods: {
       // Cherche le joueur qui doit jouer
       var nom = "";
       if (this.move_counter <= 3) {
-        this.move_counter++;
         nom = "Belgique";
       }
       else if (this.move_counter <= 6) {
-        this.move_counter++;
         nom = "Italie";
       }
       else if (this.move_counter <= 9) {
-        this.move_counter++;
         nom = "Hollande";
       }
       else {
-        this.move_counter++;
         nom = "Allemagne";
       }
+      this.move_counter++;
 
 
       const choixCarte = document.getElementById('choix_cartes-select').value;
@@ -613,7 +608,7 @@ methods: {
         this.visuel_position(nom, positionCycliste, i);
 
         // Envoie les positions des cyclistes via WebSocket
-        this.sendCyclistePosition(nom, i, positionCycliste);
+        //this.sendCyclistePosition(nom, i, positionCycliste);
       }
 
       // Affiche message activitiés
@@ -638,6 +633,20 @@ methods: {
       selectElement.style.backgroundColor = "#989795";
       selectElement.disabled = true;
 
+      this.sendPlayerCards(this.cartes, nom);
+      if (this.move_counter <= 3) {
+        nom = "Belgique";
+      }
+      else if (this.move_counter <= 6) {
+        nom = "Italie";
+      }
+      else if (this.move_counter <= 9) {
+        nom = "Hollande";
+      }
+      else {
+        nom = "Allemagne";
+      }
+      this.sendPlayerPlay(nom);
     },
 
 

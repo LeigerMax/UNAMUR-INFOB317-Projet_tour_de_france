@@ -35,7 +35,7 @@ class Cycliste {
    */
   setSecondesCompteurAdd(numero) { 
     this.secondesCompteur = this.secondesCompteur + numero;
-    console.log(this);
+    //console.log(this);
   }
 
   /**
@@ -44,7 +44,7 @@ class Cycliste {
    */
   setSecondesCompteurMinus(numero) { 
     this.secondesCompteur = this.secondesCompteur - numero;
-    console.log(this);
+    //console.log(this);
   }
 
   /**

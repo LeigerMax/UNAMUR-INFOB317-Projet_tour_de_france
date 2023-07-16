@@ -4,7 +4,11 @@
 :- use_module(library(lists)).
 :- use_module(library(http/websocket)).
 
+
 :- consult('tbot.pl').
+:- consult('gamebot.pl').
+:- consult('minimax.pl').
+
 
 /* --------------------------------------------------------------------- */
 /*                                                                       */
@@ -50,7 +54,7 @@ get_response(Message, Response) :-
 
 /* --------------------------------------------------------------------- */
 /*                                                                       */
-/*                           Nouvel écho de cartes                        */
+/*                           Nouvel écho de jeu                          */
 /*                                                                       */
 /* --------------------------------------------------------------------- */
 
@@ -67,26 +71,31 @@ card_echo(WebSocket) :-
 
 /**************************** Cartes ****************************/
 process_message(_{type: "playerCards", playerId: PlayerId, cards: Cards}, Response) :-
-    writeln("playerCards"), 
-    writeln(PlayerId), 
-    writeln(Cards),    
-    !,
     process_player_cards(PlayerId, Cards, Response).
 
+
+
 process_player_cards(PlayerId, Cards, Response) :-
-    Response = json{status: 'success', message: 'Cards received',type: "playerCards", playerId: PlayerId, cards: Cards}.
-      
+    set_player_cards(PlayerId, Cards),  % Enregistre les cartes du joueur
+    get_max_card(Cards, MaxCard), % Get la plus grande carte de la main
+    Response = json{status: 'success', message: 'Cards received', type: "playerCards", playerId: PlayerId, cards: Cards, maxCard: MaxCard}.
+
 
 /**************************** Joueur qui doit jouer  ****************************/  
 process_message(_{type: "playerWhoPlay", playerId: PlayerId}, Response) :-
     writeln("playerWhoPlay"),
     writeln(PlayerId),
     !,
+    sleep(2),
     process_player_play(PlayerId, Response).
     
 process_player_play(PlayerId, Response) :-
-    Response = json{status: 'success', message: 'Player find',type: "playerWhoPlay", playerId: PlayerId}.
-    
+    get_player_cards(PlayerId, Cards), % Get les cartes du joueur
+    writeln('Cartes du joueur : ' + Cards),
+    get_max_card(Cards, MaxCard), % Get la plus grande carte de la main
+    writeln('Carte maximale : ' + MaxCard),
+    Response = json{status: 'success', message: 'Player find',type: "playerWhoPlay", playerId: PlayerId, maxCard: MaxCard}.
+
 
 /**************************** Position cyclistes ****************************/
 process_message(_{type: "cyclistePosition", playerId: PlayerId, cyclistId: CyclistId, positionCycliste: PositionCycliste}, Response) :-

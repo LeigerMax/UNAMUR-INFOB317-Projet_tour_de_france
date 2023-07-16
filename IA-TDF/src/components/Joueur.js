@@ -73,7 +73,7 @@ class Joueur {
    */
   secondes_acc(choixCycliste,numero){
     const cycliste = this.cyclistes.find(c => c.getNumero() === choixCycliste);
-    console.log(cycliste);
+    //console.log(cycliste);
     cycliste.setSecondesCompteurAdd(numero);
   }
 
@@ -87,14 +87,14 @@ class Joueur {
   ajouter_cycliste(cycliste) {
     // Vérifier si le joueur a déjà le maximum de cyclistes
     if (this.cyclistes.length >= 3) {
-      console.log("Le joueur " + this.nom + " a déjà le maximum de cyclistes.");
+      //console.log("Le joueur " + this.nom + " a déjà le maximum de cyclistes.");
       return;
     }
 
     // Ajouter le cycliste à la liste des cyclistes du joueur
     this.cyclistes.push(cycliste);
 
-    console.log("Le cycliste " + cycliste.numero + " a été ajouté à la liste des cyclistes du joueur " + this.nom + ".");
+   // console.log("Le cycliste " + cycliste.numero + " a été ajouté à la liste des cyclistes du joueur " + this.nom + ".");
   }
 
 
@@ -127,7 +127,7 @@ class Joueur {
     // Appel la méthode deplacement() de Cycliste.
     const messageReturn = cycliste.deplacement(choixCarte,choixColonne, plateau, cycliste_chute , cyclistes_finis, belgique_positions, italie_positions, hollande_positions, allemagne_positions);
 
-    console.log(`Le joueur ${this.nom} a déplacé le cycliste ${choixCycliste} avec la carte ${choixCarte}.`);
+    //console.log(`Le joueur ${this.nom} a déplacé le cycliste ${choixCycliste} avec la carte ${choixCarte}.`);
 
     return messageReturn;
 

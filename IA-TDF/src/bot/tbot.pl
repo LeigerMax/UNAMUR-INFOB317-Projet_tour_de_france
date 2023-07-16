@@ -145,7 +145,7 @@ regle_rep(but,5,
 
 regle_rep(carte,10,
    [ [ combien ], 4, [ carte ] ],
-   [ [ "Le", jeu, est, compose, de, 96, cartes, secondes, numerotees, de, 1, "à", "12.", "Une", fois, que, toutes, les, cartes, du, paquet, ont, "été" ,jouees, le, paquet, est, melange, "à", "nouveau."] ] ).
+   [ [ "Le", jeu, est, compose, de, 96, cartes, secondes, numerotees, de, 1, a, "12.", "Une", fois, que, toutes, les, cartes, du, paquet, ont, ete ,jouees, le, paquet, est, melange, a, "nouveau."] ] ).
 
 % ----------------------------------------------------------------%
 
