@@ -86,7 +86,7 @@ process_message(_{type: "playerWhoPlay", playerId: PlayerId}, Response) :-
     writeln("playerWhoPlay"),
     writeln(PlayerId),
     !,
-    sleep(2),
+    sleep(1),
     process_player_play(PlayerId, Response).
     
 process_player_play(PlayerId, Response) :-

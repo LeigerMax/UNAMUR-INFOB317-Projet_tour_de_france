@@ -178,12 +178,12 @@ methods: {
       const maxCard = message.maxCard;
       console.log(`Joueur qui doit jouer : ${playerId}`);
 
-      //if(playerId === "Italie") {
+    //if(playerId === "Hollande" || playerId === "Allemagne") {
         console.log("BOT A JOUER");
         const choixCarteSelect = document.getElementById('choix_cartes-select');
         const choixColonneSelect = document.getElementById('choix_colonne-select');
         choixCarteSelect.value = maxCard; // Sélectionnez la plus grande carte
-        choixColonneSelect.options[0].selected = true;
+        choixColonneSelect.options[1].selected = true;
 
         var selectElement = document.getElementById("deplacer_button_dynamique");
         selectElement.style.backgroundColor = "rgb(234, 211, 66)";
@@ -193,8 +193,8 @@ methods: {
         boutonDeplacerBot.disabled = false;
         boutonDeplacerBot.click();
     
-     // }
-    }
+      }
+    //}
     else if (message.type === "cyclistePosition") {
       const playerId = message.playerId;
       const cyclistId = message.cyclistId;
@@ -633,7 +633,7 @@ methods: {
       selectElement.style.backgroundColor = "#989795";
       selectElement.disabled = true;
 
-      this.sendPlayerCards(this.cartes, nom);
+      
       if (this.move_counter <= 3) {
         nom = "Belgique";
       }
@@ -646,6 +646,7 @@ methods: {
       else {
         nom = "Allemagne";
       }
+      this.sendPlayerCards(this.cartes, nom);
       this.sendPlayerPlay(nom);
     },
 

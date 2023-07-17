@@ -285,8 +285,6 @@ class Jeu {
     var hollande_positions = this.hollande.get_positions_cyclistes();
     var allemagne_positions = this.allemagne.get_positions_cyclistes();
 
-
-
     // Check si premier tour fini
     if (this.premierTour > 11) {
 
