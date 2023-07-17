@@ -160,8 +160,18 @@ methods: {
   } else {
     console.log('WebSocket connection pas ouverte.');
   }
-},
+  },
 
+  sendEndGame(){
+    if (this.socket.readyState === WebSocket.OPEN) {
+      const message = {
+        type: "endGame",
+      };
+      this.socket.send(JSON.stringify(message));
+    } else {
+      console.log('WebSocket connection pas ouverte.');
+    }
+  },
 
   // Traiter le message Prolog reçu du serveur
   processPrologMessage(message) {
@@ -193,8 +203,8 @@ methods: {
         boutonDeplacerBot.disabled = false;
         boutonDeplacerBot.click();
     
-      }
-    //}
+     // }
+    }
     else if (message.type === "cyclistePosition") {
       const playerId = message.playerId;
       const cyclistId = message.cyclistId;
@@ -203,15 +213,15 @@ methods: {
       console.log(`Joueur : ${playerId}, Cycliste : ${cyclistId}, positionCycliste : ${positionCycliste}}`);
       
     }
+    else if(message.type === "endGame") {
+      console.log("Game finished");
+    }
     else {
       console.log(`Type incorrect`);
     }
   },
 
 
-  // Click automatique bouton
-  //var boutonJouerDev = document.querySelector('.jouer_button_dev');
-  //boutonJouerDev.click();
 
     /************************
      *                      *
@@ -608,7 +618,7 @@ methods: {
         this.visuel_position(nom, positionCycliste, i);
 
         // Envoie les positions des cyclistes via WebSocket
-        //this.sendCyclistePosition(nom, i, positionCycliste);
+        this.sendCyclistePosition(nom, i, positionCycliste);
       }
 
       // Affiche message activitiés
@@ -792,6 +802,8 @@ methods: {
       // Si fin du jeu
       if(this.jeu.check_fin_jeu())
       {
+        this.sendEndGame();
+        
         messageReturn = this.jeu.fin_jeu();
 
         // Bloquer les inputs
@@ -810,6 +822,8 @@ methods: {
         const messagec_ativites = document.createElement('p');
         messagec_ativites.insertAdjacentHTML('beforeend', message);
         messagesContainer_activites.appendChild(messagec_ativites);
+
+       
 
       }
     }

@@ -206,17 +206,17 @@ class Cycliste {
       // Check si case indisponible 
       nouvelle_ligne = this.checkIndisponibleCase(plateau,ancienne_ligne, nouvelle_ligne, nouvelle_colonne);
 
-      /*
-      console.log("nouvelle_ligne "+ typeof nouvelle_ligne);
-      console.log("nouvelle_colonne "+ typeof nouvelle_colonne);
+      
+      //console.log("nouvelle_ligne "+ typeof nouvelle_ligne);
+      //console.log("nouvelle_colonne "+ typeof nouvelle_colonne);
 
       nouvelle_ligne = parseInt(nouvelle_ligne);
       nouvelle_colonne = parseInt(nouvelle_colonne);
 
-      console.log("belgique_positions", JSON.stringify(belgique_positions));
-      console.log("italie_positions", JSON.stringify(italie_positions));
-      console.log("hollande_positions", JSON.stringify(hollande_positions));
-      console.log("allemagne_positions", JSON.stringify(allemagne_positions));*/
+      //console.log("belgique_positions", JSON.stringify(belgique_positions));
+      //console.log("italie_positions", JSON.stringify(italie_positions));
+      //console.log("hollande_positions", JSON.stringify(hollande_positions));
+      //console.log("allemagne_positions", JSON.stringify(allemagne_positions));
 
       // Check si autre joueur case, si oui +1 colonne
       while (
@@ -265,7 +265,14 @@ class Cycliste {
 
     }
     //Check si case supplementaire
-    else if(plateau.check_case_supplementaire_plateau(parseInt(nouvelle_ligne),parseInt(nouvelle_colonne))){
+    else if(plateau.check_case_supplementaire_plateau(parseInt(nouvelle_ligne),parseInt(nouvelle_colonne) || parseInt(nouvelle_ligne) > 112)){
+
+      // Si nouvelle_ligne supérieur à 112.
+      while (parseInt(nouvelle_ligne) > 112) {
+        nouvelle_ligne = parseInt(nouvelle_ligne) - 1;
+      }
+      
+      nouvelle_ligne = parseInt(nouvelle_ligne);
 
       this.position.setLigne(nouvelle_ligne);
       this.position.setColonne(nouvelle_colonne);

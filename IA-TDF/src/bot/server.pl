@@ -74,7 +74,6 @@ process_message(_{type: "playerCards", playerId: PlayerId, cards: Cards}, Respon
     process_player_cards(PlayerId, Cards, Response).
 
 
-
 process_player_cards(PlayerId, Cards, Response) :-
     set_player_cards(PlayerId, Cards),  % Enregistre les cartes du joueur
     get_max_card(Cards, MaxCard), % Get la plus grande carte de la main
@@ -99,14 +98,20 @@ process_player_play(PlayerId, Response) :-
 
 /**************************** Position cyclistes ****************************/
 process_message(_{type: "cyclistePosition", playerId: PlayerId, cyclistId: CyclistId, positionCycliste: PositionCycliste}, Response) :-
-    writeln("cyclistePosition"),
-    writeln(PlayerId),
-    writeln(CyclistId),
-    writeln(PositionCycliste),
-    !,
+    set_cyclist_position(PlayerId, CyclistId, PositionCycliste),
     process_player_cyclistePosition(PlayerId, CyclistId, PositionCycliste, Response).
 
 process_player_cyclistePosition(PlayerId, CyclistId, PositionCycliste, Response) :-
+    get_cyclist_position(PlayerId, CyclistId, PositionCycliste),
     Response = json{status: 'success', message: 'Cycliste Position', type: "cyclistePosition", playerId: PlayerId, cyclistId: CyclistId, positionCycliste: PositionCycliste}.
 
 
+
+/**************************** End Game ****************************/
+process_message(_{type: "endGame"}, Response) :-
+    process_end_game(Response).
+
+process_end_game(Response) :-
+    % Traitement de la fin du jeu
+    stop,
+    Response = json{status: 'success', message: 'End Game', type: "endGame"}.
