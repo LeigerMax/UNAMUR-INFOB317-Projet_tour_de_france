@@ -8,6 +8,7 @@
 :- consult('tbot.pl').
 :- consult('gamebot.pl').
 :- consult('minimax.pl').
+:- consult('plateau.pl).
 
 
 /* --------------------------------------------------------------------- */
@@ -85,7 +86,7 @@ process_message(_{type: "playerWhoPlay", playerId: PlayerId}, Response) :-
     writeln("playerWhoPlay"),
     writeln(PlayerId),
     !,
-    sleep(1),
+    sleep(3),
     process_player_play(PlayerId, Response).
     
 process_player_play(PlayerId, Response) :-
@@ -94,17 +95,16 @@ process_player_play(PlayerId, Response) :-
     get_max_card(Cards, MaxCard), % Get la plus grande carte de la main
     writeln('Carte maximale : ' + MaxCard),
     Response = json{status: 'success', message: 'Player find',type: "playerWhoPlay", playerId: PlayerId, maxCard: MaxCard}.
-
+    
 
 /**************************** Position cyclistes ****************************/
-process_message(_{type: "cyclistePosition", playerId: PlayerId, cyclistId: CyclistId, positionCycliste: PositionCycliste}, Response) :-
-    set_cyclist_position(PlayerId, CyclistId, PositionCycliste),
-    process_player_cyclistePosition(PlayerId, CyclistId, PositionCycliste, Response).
-
-process_player_cyclistePosition(PlayerId, CyclistId, PositionCycliste, Response) :-
-    get_cyclist_position(PlayerId, CyclistId, PositionCycliste),
-    Response = json{status: 'success', message: 'Cycliste Position', type: "cyclistePosition", playerId: PlayerId, cyclistId: CyclistId, positionCycliste: PositionCycliste}.
-
+process_message(_{type: "cyclistePosition", playerId: PlayerId, cyclistId: CyclistId, ligne: Ligne, colonne: Colonne}, Response) :-
+    set_cyclist_position(PlayerId, CyclistId, Ligne, Colonne),
+    process_player_cyclistePosition(PlayerId, CyclistId, Ligne, Colonne, Response).
+ 
+ process_player_cyclistePosition(PlayerId, CyclistId, Ligne, Colonne, Response) :-
+    get_cyclist_position(PlayerId, CyclistId, Ligne, Colonne),
+    Response = json{status: 'success', message: 'Cycliste Position', type: "cyclistePosition", playerId: PlayerId, cyclistId: CyclistId, ligne: Ligne, colonne: Colonne}.
 
 
 /**************************** End Game ****************************/

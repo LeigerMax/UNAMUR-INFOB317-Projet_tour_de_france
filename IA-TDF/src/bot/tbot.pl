@@ -96,6 +96,8 @@ nb_equipes(4).
 
 mclef(but,10).
 mclef(carte,10).
+mclef(carte,11).
+mclef(carte,12).
 mclef(commence,10).
 mclef(chance,10).
 mclef(chute,10).
@@ -149,12 +151,30 @@ regle_rep(carte,10,
 
 % ----------------------------------------------------------------%
 
+regle_rep(carte,11, 
+   [[ quelle ], 4, [ carte ], 4, [ belgique]], [Ligne]) :-
+   PlayerId = "Belgique",
+   get_player_cards(PlayerId, Cards),
+   [Carte | _] = Cards,
+   get_max_card(Cards, MaxCard),
+   Ligne = ['Vous devriez jouer la carte ', MaxCard, '.'].
+
+regle_rep(carte,12, 
+   [[ quelle ], 4, [ carte ], 4, [ italie]], [Ligne]) :-
+   PlayerId = "Italie",
+   get_player_cards(PlayerId, Cards),
+   [Carte | _] = Cards,
+   get_max_card(Cards, MaxCard),
+   Ligne = ['Vous devriez jouer la carte ', MaxCard, '.'].
+
+% ----------------------------------------------------------------%
+
 
 regle_rep(commence,5,
   [ [ commence ], 4 , [ partie ] ],
   [ [ des, X, equipes, "c'est", au, joueur, ayant, la, plus, haute, carte, secondes, de, "commencer." ] ] ):-
-
      nb_equipes(X).
+
 
 % ----------------------------------------------------------------%
 
@@ -259,6 +279,30 @@ regle_rep(point,10,
   [ [comment],4, [ point ] ],
   [ [ "A", chaque, fois, "qu'un", cycliste, joue, son, tour, il, gagne, 10, points, "supplementaires."] ] ).
 
+
+/* --------------------------------------------------------------------- */
+/*                                                                       */
+/*                             Tbot lien jeu                             */
+/*                                                                       */
+/* --------------------------------------------------------------------- */
+/*
+% Prédicat pour récupérer les cartes du joueur à partir du serveur
+get_player_cards(PlayerId, Cards) :-
+   gamebot:get_player_cards(PlayerId, Cards).
+
+
+% Prédicat pour obtenir la plus grande carte de la main du joueur
+get_max_card(PlayerId, MaxCard) :-
+   get_player_cards(PlayerId, Cards),
+   get_max_card(Cards, MaxCard).
+
+% Exemple d'utilisation du prédicat get_max_card/2 dans produire_reponse/2
+produire_reponse([quelle, carte, je, dois, jouer], [Ligne]) :-
+% Récupérer l'identifiant du joueur (par exemple, à partir de la question ou d'un état interne)
+PlayerId = "Belgique",
+get_max_card(PlayerId, Carte),
+Ligne = ['Vous devriez jouer la carte ', Carte, '.'].
+*/
 
 /* --------------------------------------------------------------------- */
 /*                                                                       */
