@@ -148,13 +148,14 @@ methods: {
     }
   },
 
-  sendCyclistePosition(playerId, cyclistId, positionCycliste) {
+  sendCyclistePosition(playerId, cyclistId, ligne,colonne) {
   if (this.socket.readyState === WebSocket.OPEN) {
     const message = {
       type: "cyclistePosition",
       playerId: playerId,
       cyclistId: cyclistId,
-      positionCycliste: positionCycliste
+      ligne: ligne,
+      colonne: colonne
     };
     this.socket.send(JSON.stringify(message));
   } else {
@@ -188,7 +189,7 @@ methods: {
       const maxCard = message.maxCard;
       console.log(`Joueur qui doit jouer : ${playerId}`);
 
-    //if(playerId === "Hollande" || playerId === "Allemagne") {
+    if(playerId === "Hollande" || playerId === "Allemagne") {
         console.log("BOT A JOUER");
         const choixCarteSelect = document.getElementById('choix_cartes-select');
         const choixColonneSelect = document.getElementById('choix_colonne-select');
@@ -203,14 +204,14 @@ methods: {
         boutonDeplacerBot.disabled = false;
         boutonDeplacerBot.click();
     
-     // }
+     }
     }
     else if (message.type === "cyclistePosition") {
       const playerId = message.playerId;
       const cyclistId = message.cyclistId;
-      const positionCycliste = message.positionCycliste;
-      //const [ligne, colonne] = message.positionCycliste.replace(/\s/g, "").split(",");
-      console.log(`Joueur : ${playerId}, Cycliste : ${cyclistId}, positionCycliste : ${positionCycliste}}`);
+      const ligne = message.ligne;
+      const colonne = message.colonne;
+      console.log(`Joueur : ${playerId}, Cycliste : ${cyclistId}, (ligne : ${ligne} , colonne : ${colonne})`);
       
     }
     else if(message.type === "endGame") {
@@ -382,7 +383,9 @@ methods: {
 
       // Récupère la position du cycliste et met à jour sur le frontend
       let positionCycliste = this.jeu.get_position_cycliste(nom, choixCycliste);
-      this.visuel_position(nom, positionCycliste, choixCycliste);
+      let ligne = positionCycliste.ligne;
+      let colonne = positionCycliste.colonne;
+      this.visuel_position(nom, ligne,colonne, choixCycliste);
 
       // Affiche message activitiés
       const message = messageReturn;
@@ -615,10 +618,12 @@ methods: {
 
       for (var i = 1; i <= 3; i++) { //todo: Mettre i = 1 ?
         let positionCycliste = this.jeu.get_position_cycliste(nom, i);
-        this.visuel_position(nom, positionCycliste, i);
+        let ligne = positionCycliste.ligne;
+        let colonne = positionCycliste.colonne;
+        this.visuel_position(nom, ligne,colonne, i);
 
         // Envoie les positions des cyclistes via WebSocket
-        this.sendCyclistePosition(nom, i, positionCycliste);
+        this.sendCyclistePosition(nom, i, ligne, colonne);
       }
 
       // Affiche message activitiés
@@ -700,62 +705,62 @@ methods: {
     },
 
     // Modification des positions des cyclistes frondend
-    visuel_position(nom, positionCycliste, choixCycliste) {
+    visuel_position(nom, ligne,colonne, choixCycliste) {
       let liCycliste = "";
       if (nom === "Belgique") {
         if (choixCycliste === 1) {
           liCycliste = document.querySelector('.cardbox-equipe1 .position ul li:nth-child(1)');
-          liCycliste.textContent = `Cycliste 1 en position (${positionCycliste})`;
+          liCycliste.textContent = `Cycliste 1 en position (${ligne} , ${colonne})`;
         }
         else if (choixCycliste === 2) {
           liCycliste = document.querySelector('.cardbox-equipe1 .position ul li:nth-child(2)');
-          liCycliste.textContent = `Cycliste 2 en position (${positionCycliste})`;
+          liCycliste.textContent = `Cycliste 2 en position  (${ligne} , ${colonne})`;
         }
         else if (choixCycliste === 3) {
           liCycliste = document.querySelector('.cardbox-equipe1 .position ul li:nth-child(3)');
-          liCycliste.textContent = `Cycliste 3 en position (${positionCycliste})`;
+          liCycliste.textContent = `Cycliste 3 en position  (${ligne} , ${colonne})`;
         }
       }
       else if (nom === "Italie") {
         if (choixCycliste === 1) {
           liCycliste = document.querySelector('.cardbox-equipe2 .position ul li:nth-child(1)');
-          liCycliste.textContent = `Cycliste 1 en position (${positionCycliste})`;
+          liCycliste.textContent = `Cycliste 1 en position  (${ligne} , ${colonne})`;
         }
         else if (choixCycliste === 2) {
           liCycliste = document.querySelector('.cardbox-equipe2 .position ul li:nth-child(2)');
-          liCycliste.textContent = `Cycliste 2 en position (${positionCycliste})`;
+          liCycliste.textContent = `Cycliste 2 en position  (${ligne} , ${colonne})`;
         }
         else if (choixCycliste === 3) {
           liCycliste = document.querySelector('.cardbox-equipe2 .position ul li:nth-child(3)');
-          liCycliste.textContent = `Cycliste 3 en position (${positionCycliste})`;
+          liCycliste.textContent = `Cycliste 3 en position  (${ligne} , ${colonne})`;
         }
       }
       else if (nom === "Hollande") {
         if (choixCycliste === 1) {
           liCycliste = document.querySelector('.cardbox-equipe3 .position ul li:nth-child(1)');
-          liCycliste.textContent = `Cycliste 1 en position (${positionCycliste})`;
+          liCycliste.textContent = `Cycliste 1 en position  (${ligne} , ${colonne})`;
         }
         else if (choixCycliste === 2) {
           liCycliste = document.querySelector('.cardbox-equipe3 .position ul li:nth-child(2)');
-          liCycliste.textContent = `Cycliste 2 en position (${positionCycliste})`;
+          liCycliste.textContent = `Cycliste 2 en position  (${ligne} , ${colonne})`;
         }
         else if (choixCycliste === 3) {
           liCycliste = document.querySelector('.cardbox-equipe3 .position ul li:nth-child(3)');
-          liCycliste.textContent = `Cycliste 3 en position (${positionCycliste})`;
+          liCycliste.textContent = `Cycliste 3 en position  (${ligne} , ${colonne})`;
         }
       }
       else if (nom === "Allemagne") {
         if (choixCycliste === 1) {
           liCycliste = document.querySelector('.cardbox-equipe4 .position ul li:nth-child(1)');
-          liCycliste.textContent = `Cycliste 1 en position (${positionCycliste})`;
+          liCycliste.textContent = `Cycliste 1 en position  (${ligne} , ${colonne})`;
         }
         else if (choixCycliste === 2) {
           liCycliste = document.querySelector('.cardbox-equipe4 .position ul li:nth-child(2)');
-          liCycliste.textContent = `Cycliste 2 en position (${positionCycliste})`;
+          liCycliste.textContent = `Cycliste 2 en position  (${ligne} , ${colonne})`;
         }
         else if (choixCycliste === 3) {
           liCycliste = document.querySelector('.cardbox-equipe4 .position ul li:nth-child(3)');
-          liCycliste.textContent = `Cycliste 3 en position (${positionCycliste})`;
+          liCycliste.textContent = `Cycliste 3 en position  (${ligne} , ${colonne})`;
         }
       }
 
