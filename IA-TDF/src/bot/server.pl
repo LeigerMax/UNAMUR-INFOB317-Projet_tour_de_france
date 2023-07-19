@@ -8,7 +8,7 @@
 :- consult('tbot.pl').
 :- consult('gamebot.pl').
 :- consult('minimax.pl').
-:- consult('plateau.pl).
+:- consult('plateau.pl').
 
 
 /* --------------------------------------------------------------------- */
@@ -82,18 +82,18 @@ process_player_cards(PlayerId, Cards, Response) :-
 
 
 /**************************** Joueur qui doit jouer  ****************************/  
-process_message(_{type: "playerWhoPlay", playerId: PlayerId}, Response) :-
+process_message(_{type: "playerWhoPlay", playerId: PlayerId, cyclistId: CyclistId}, Response) :-
     writeln("playerWhoPlay"),
     writeln(PlayerId),
+    writeln(CyclistId),
     !,
-    sleep(3),
-    process_player_play(PlayerId, Response).
+    sleep(2),
+    process_player_play(PlayerId, CyclistId, Response).
     
-process_player_play(PlayerId, Response) :-
+process_player_play(PlayerId, CyclistId, Response) :-
     get_player_cards(PlayerId, Cards), % Get les cartes du joueur
     writeln('Cartes du joueur : ' + Cards),
-    get_max_card(Cards, MaxCard), % Get la plus grande carte de la main
-    writeln('Carte maximale : ' + MaxCard),
+    get_card_play(PlayerId, CyclistId, Cards, MaxCard), % Get la plus grande carte de la main
     Response = json{status: 'success', message: 'Player find',type: "playerWhoPlay", playerId: PlayerId, maxCard: MaxCard}.
     
 
@@ -102,9 +102,11 @@ process_message(_{type: "cyclistePosition", playerId: PlayerId, cyclistId: Cycli
     set_cyclist_position(PlayerId, CyclistId, Ligne, Colonne),
     process_player_cyclistePosition(PlayerId, CyclistId, Ligne, Colonne, Response).
  
- process_player_cyclistePosition(PlayerId, CyclistId, Ligne, Colonne, Response) :-
+process_player_cyclistePosition(PlayerId, CyclistId, Ligne, Colonne, Response) :-
     get_cyclist_position(PlayerId, CyclistId, Ligne, Colonne),
     Response = json{status: 'success', message: 'Cycliste Position', type: "cyclistePosition", playerId: PlayerId, cyclistId: CyclistId, ligne: Ligne, colonne: Colonne}.
+
+
 
 
 /**************************** End Game ****************************/
