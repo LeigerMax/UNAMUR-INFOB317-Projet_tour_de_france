@@ -1,3 +1,5 @@
+
+
 plateau([
 
     /* 
@@ -235,9 +237,91 @@ bougerCyclisteUnique((LignPos, ColPos), NbMouvement, UniqueOutcomes) :-
     setof((LignTarget, ColTarget), bougerCycliste((LignPos, ColPos), NbMouvement, (LignTarget, ColTarget)), UniqueOutcomes).
 
 
-    
+% Prédicat pour vérifier si une case est présente dans le plateau
+/*
+chute_possible(Cycliste, Ligne) :-
+    case_presente(Ligne, _), % Vérifier si la ligne existe dans le plateau
+    case_disponible(Ligne), % Vérifier si au moins une colonne est disponible sur la ligne
+    get_cyclist_position(_, Cycliste, Ligne, _). % Vérifier si le cycliste est sur la ligne actuelle
+
+chute_possible(Cycliste, Ligne, Card) :-
+    case_presente(Ligne, _), % Vérifier si la ligne existe dans le plateau
+    case_disponible(Ligne), % Vérifier si au moins une colonne est disponible sur la ligne
+    get_cyclist_position(_, Cycliste, Ligne, _), % Vérifier si le cycliste est sur la ligne actuelle
+    get_max_card(_, MaxCard), % Récupérer la plus grande carte du joueur
+    Card > MaxCard. % Vérifier si la carte donnée est plus grande que la plus grande carte du joueur
+
+case_disponible(Ligne) :-
+    plateau(Plateau),
+    member([Ligne, _, _, true], Plateau).
+*/
+
+% Prédicat pour vérifier si une case existe dans le plateau
+case_presente(Ligne, Colonne) :-
+    plateau(Plateau),
+    member([Ligne, Colonne, _, _], Plateau),
+    writeln('Case presente : Ligne ' + Ligne + ', Colonne ' + Colonne).
+
+% Prédicat pour vérifier si une case est disponible (aucun cycliste présent)
+case_disponible(Ligne, Colonne) :-
+    case_presente(Ligne, Colonne),
+    writeln('Check : Ligne ' + Ligne + ', Colonne ' + Colonne),
+    Players = ["Belgique", "Italie", "Hollande", "Allemagne"],
+    Cyclists = [1, 2, 3],
+    forall(
+        member(PlayerId, Players),
+        forall(
+            member(CyclistId, Cyclists),
+            (
+                get_cyclist_position(PlayerId, CyclistId, LigneCycliste, ColonneCycliste),
+                (LigneCycliste \= Ligne ; ColonneCycliste \= Colonne),
+                !
+            )
+        )
+    ),
+    writeln('Case disponible : Ligne ' + Ligne + ', Colonne ' + Colonne).
 
 
+% Prédicat pour simuler l'avancée d'un cycliste avec une carte donnée et vérifier si la case d'arrivée est disponible ou non
+avancer_cycliste(PlayerId, CyclisteId, Card, Chute) :-
+    get_cyclist_position(PlayerId, CyclisteId, LigneActuelle, ColonneActuelle),
+    LigneArrivee is LigneActuelle + Card,
+    ColonneArrive is 1,
+    case_disponible(LigneArrivee, ColonneArrive),
+    writeln('Le cycliste ' + PlayerId + ' - ' + CyclisteId + ' avancera a la case (' + LigneArrivee + ', ' + ColonneArrive + ').'),
+    Chute is 0.
+
+avancer_cycliste(PlayerId, CyclisteId, Card, Chute) :-
+    get_cyclist_position(PlayerId, CyclisteId, LigneActuelle, ColonneActuelle),
+    LigneArrivee is LigneActuelle + Card,
+    ColonneArrive is 2,
+    case_disponible(LigneArrivee, ColonneArrive),
+    writeln('Le cycliste ' + PlayerId + ' - ' + CyclisteId + ' avancera a la case (' + LigneArrivee + ', ' + ColonneArrive + ').'),
+    Chute is 0.
+
+avancer_cycliste(PlayerId, CyclisteId, Card, Chute) :-
+    get_cyclist_position(PlayerId, CyclisteId, LigneActuelle, ColonneActuelle),
+    LigneArrivee is LigneActuelle + Card,
+    ColonneArrive is 3,
+    case_disponible(LigneArrivee, ColonneArrive),
+    writeln('Le cycliste ' + PlayerId + ' - ' + CyclisteId + ' avancera a la case (' + LigneArrivee + ', ' + ColonneArrive + ').'),
+    Chute is 0.
+
+avancer_cycliste(PlayerId, CyclisteId, Card, Chute) :-
+    get_cyclist_position(PlayerId, CyclisteId, LigneActuelle, ColonneActuelle),
+    LigneArrivee is LigneActuelle + Card,
+    ColonneArrive is 4,
+    case_disponible(LigneArrivee, ColonneArrive),
+    writeln('Le cycliste ' + PlayerId + ' - ' + CyclisteId + ' avancera a la case (' + LigneArrivee + ', ' + ColonneArrive + ').'),
+    Chute is 0.
+
+avancer_cycliste(PlayerId, CyclisteId, Card, Chute) :-
+    get_cyclist_position(PlayerId, CyclisteId, LigneActuelle, ColonneActuelle),
+    LigneArrivee is LigneActuelle + Card,
+    ColonneArrive is 1,
+    \+ case_disponible(LigneArrivee, ColonneArrive),
+    writeln('Le cycliste est tombe sur une case non disponible : (' + LigneArrivee + ', ' + ColonneArrive + ').'),
+    Chute is 1.
 
 
 

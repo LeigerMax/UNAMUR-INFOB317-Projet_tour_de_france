@@ -62,9 +62,7 @@ class Jeu {
     else {
       colonneNbDisponible = this.plateau.getNbColonnes(positionApres);
     }
-    //console.log("Position init : " + positionInitLigne);
-    //console.log("Position après : " + positionApres);
-    //console.log("Colonne disponible : " + colonneNbDisponible);
+
 
     return colonneNbDisponible;
   }
@@ -120,7 +118,7 @@ class Jeu {
   *******************************/
 
   /**
-   * DEV : Permet de faire dépalcer un cycliste.
+   * DEV : Permet de faire déplacer un cycliste.
    * 
    * @param {string} nom du joueur
    * @param {number} choixCycliste numéro du cycliste
@@ -211,12 +209,13 @@ class Jeu {
         this.joueur = this.allemagne;
         break;
       default:
-        //console.log("Joueur non trouvé.");
+        console.log("Joueur non trouvé.");
         break;
     }
 
     // Check si premier tour fini
     if (this.premierTour > 11) {
+      
       // Si le tableau d'historique des positions de cyclistes est vide, on récupère les positions de tous les cyclistes du joueur
       if (this.historiquePositionCycliste.length === 0) {
         var positions = this.joueur.get_positions_cyclistes();
@@ -229,12 +228,13 @@ class Jeu {
 
       // Chercher le Cycliste avec la position la plus basse du tableau (à savoir la nbligne plus petite)
       for (var i = 0; i < this.historiquePositionCycliste.length; i++) {
-        if (this.historiquePositionCycliste[i].ligne < this.historiquePositionCycliste[lowestPositionIndex].ligne) {
+        if (this.historiquePositionCycliste[i].ligne <= this.historiquePositionCycliste[lowestPositionIndex].ligne) {
           lowestPositionIndex = i;
           numeroCyclisteAJouer = this.historiquePositionCycliste[i].numero;
         }
       }
 
+      
       return numeroCyclisteAJouer;
     }
     else {
@@ -397,17 +397,6 @@ class Jeu {
       return false;
     }
   }
-
-
-
-  /*
-  afficher_position_cycliste() {
-    console.log("Positions de tous les cyclistes :");
-    this.belgique.afficher_positions_cyclistes();
-    this.italie.afficher_positions_cyclistes();
-    this.hollande.afficher_positions_cyclistes();
-    this.allemagne.afficher_positions_cyclistes();
-  }*/
 
 
   /**

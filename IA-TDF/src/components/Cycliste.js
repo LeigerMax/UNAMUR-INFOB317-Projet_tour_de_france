@@ -497,8 +497,8 @@ class Cycliste {
     // Fixe la colonne des cyclistes tombés sur 0
     cycliste_chute.forEach(cycliste => {
       //console.log(cycliste);
+      cycliste.position.setLigne(nouvelle_ligne);
       cycliste.position.setColonne(1);
-      //console.log(cycliste);
     });
 
     console.log(`Les cyclistes suivants sont tombés: ${nums_chutes.join(', ')}`);

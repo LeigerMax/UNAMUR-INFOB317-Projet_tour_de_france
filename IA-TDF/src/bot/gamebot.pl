@@ -1,3 +1,5 @@
+:- consult('plateau.pl').
+
 /* --------------------------------------------------------------------- */
 /*                                                                       */
 /*                                Règles                                 */
@@ -19,7 +21,7 @@ get_player_cards(PlayerId, Cards) :-
     player_cards(PlayerId, Cards),
     !.
 get_player_cards(PlayerId, []) :-
-    writeln('Cartes du joueur non trouvées : ' + PlayerId).
+    writeln('Cartes du joueur non trouvees : ' + PlayerId).
 
 
 /******* POSITION CYCLISTES *******/
@@ -28,14 +30,18 @@ get_player_cards(PlayerId, []) :-
 
 % Prédicat pour enregistrer la position d'un cycliste
 set_cyclist_position(PlayerId, CyclistId, Ligne, Colonne) :-
-   retractall(cyclist_position(PlayerId, CyclistId, _, _)),
-   assertz(cyclist_position(PlayerId, CyclistId, Ligne, Colonne)).
+    retractall(cyclist_position(PlayerId, CyclistId, _, _)),
+    assertz(cyclist_position(PlayerId, CyclistId, Ligne, Colonne)).
 
 % Prédicat pour récupérer la position d'un cycliste
 get_cyclist_position(PlayerId, CyclistId, Ligne, Colonne) :-
    cyclist_position(PlayerId, CyclistId, Ligne, Colonne),
-   writeln('Position du cycliste  : ' + PlayerId + ' - ' + CyclistId + ' - (' + Ligne + ' ' + Colonne + ')'),
+   writeln('Position du cycliste : ' + PlayerId + ' - ' + CyclistId + ' - (' + Ligne + ' ' + Colonne + ')'),
    !.
 get_cyclist_position(PlayerId, CyclistId, _, _) :-
-   writeln('Position du cycliste non trouvée : ' + PlayerId + ' - ' + CyclistId + '.').
+   writeln('Position du cycliste non trouvee : ' + PlayerId + ' - ' + CyclistId + '.').
+
+
+/******* CHUTE *******/
+
 
