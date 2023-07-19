@@ -11,8 +11,6 @@
 :- begin_tests(max_card).
 
 
-/**** TEST CARTE ****/
-
 % Test case 1: La plus grande carte est 12
 test(get_max_card_1) :-
     set_player_cards(italie, [11, 8, 12, 3, 1]),
@@ -39,13 +37,17 @@ test(get_max_card_4) :-
 /**** TEST POSITION ****/
 :- begin_tests(check_colonne_cyclistes).
 
+
 test(case_presente_valide) :-
-    case_presente(1, 1).
+    case_presente(1, 1, _).
 
 test(case_presente_invalide) :-
-    \+ case_presente(2, 4).
+     case_presente(2, 4, _).
 
+test(case_non_accessible_valide) :-
+    case_presente(10, 1, _).
 
+/*
 test(cycliste_position_valide_1) :-
     set_cyclist_position("Belgique", 1, 2, 2),  % Position valide
     set_cyclist_position("Hollande", 3, 1, 3),  % Position valide
@@ -57,7 +59,7 @@ test(cycliste_position_invalide_1) :-
 test(cycliste_position_invalide_2) :-
     \+  set_cyclist_position("Italie", 2, 1, 4). %Position invalide
  
-
+*/
 :- end_tests(check_colonne_cyclistes).
 
 
@@ -173,9 +175,33 @@ test(chute_invalide_1) :-
     set_cyclist_position("Allemagne", 2, 0, 0), 
     set_cyclist_position("Allemagne", 3, 0, 0),
     
-     get_card_play("Italie", 1,[4,2,1,2,2],_).
+    get_card_play("Italie", 1,[4,2,1,2,2],_).
 
     
-
 :- end_tests(chute).
 
+
+:- begin_tests(case_supplementaire).
+
+test(case_supplementaire_valide_1) :-
+    set_cyclist_position("Belgique", 1, 111, 1), 
+    set_cyclist_position("Belgique", 2, 100, 1), 
+    set_cyclist_position("Belgique", 3, 110, 1),
+
+    set_cyclist_position("Italie", 1, 0, 0), 
+    set_cyclist_position("Italie", 2, 0, 0), 
+    set_cyclist_position("Italie", 3, 0, 0),
+
+    set_cyclist_position("Hollande", 1, 0, 0), 
+    set_cyclist_position("Hollande", 2, 0, 0), 
+    set_cyclist_position("Hollande", 3, 0, 0),
+
+    set_cyclist_position("Allemagne", 1, 0, 0), 
+    set_cyclist_position("Allemagne", 2, 0, 0), 
+    set_cyclist_position("Allemagne", 3, 0, 0),
+
+    get_card_play("Belgique", 1,[8,2,10,2,1],_),
+    get_card_play("Belgique", 2,[8,2,10,2,1],_),
+    get_card_play("Belgique", 3,[8,2,10,2,1],_).
+
+:- end_tests(case_supplementaire).

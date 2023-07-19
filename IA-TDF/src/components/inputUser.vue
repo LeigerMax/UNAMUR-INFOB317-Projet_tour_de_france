@@ -190,7 +190,7 @@ methods: {
       const maxCard = message.maxCard;
       console.log(`Joueur qui doit jouer : ${playerId}`);
 
-    if(playerId === "" || playerId === "") {
+    //if(playerId === "" || playerId === "") {
         console.log("BOT A JOUER");
         const choixCarteSelect = document.getElementById('choix_cartes-select');
         const choixColonneSelect = document.getElementById('choix_colonne-select');
@@ -205,7 +205,7 @@ methods: {
         boutonDeplacerBot.disabled = false;
         boutonDeplacerBot.click();
     
-     }
+     //}
     }
     else if (message.type === "cyclistePosition") {
       const playerId = message.playerId;
