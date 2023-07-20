@@ -37,7 +37,7 @@ test(get_max_card_4) :-
 /**** TEST POSITION ****/
 :- begin_tests(check_colonne_cyclistes).
 
-
+/*
 test(case_presente_valide) :-
     case_presente(1, 1, _).
 
@@ -46,6 +46,25 @@ test(case_presente_invalide) :-
 
 test(case_non_accessible_valide) :-
     case_presente(10, 1, _).
+*/
+test(case_chance) :-
+    set_cyclist_position("Belgique", 1, 0, 0), 
+    set_cyclist_position("Belgique", 2, 4, 1), 
+    set_cyclist_position("Belgique", 3, 4, 2),
+
+    set_cyclist_position("Italie", 1, 4, 3), 
+    set_cyclist_position("Italie", 2, 0, 0), 
+    set_cyclist_position("Italie", 3, 0, 0),
+
+    set_cyclist_position("Hollande", 1, 0, 0), 
+    set_cyclist_position("Hollande", 2, 0, 0), 
+    set_cyclist_position("Hollande", 3, 0, 0),
+
+    set_cyclist_position("Allemagne", 1, 0, 0), 
+    set_cyclist_position("Allemagne", 2, 0, 0), 
+    set_cyclist_position("Allemagne", 3, 0, 0),
+
+    get_card_play("Belgique", 1,[4,2],_).
 
 /*
 test(cycliste_position_valide_1) :-

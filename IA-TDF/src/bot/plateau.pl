@@ -251,6 +251,16 @@ bougerCyclisteUnique((LignPos, ColPos), NbMouvement, UniqueOutcomes) :-
         case_presente(NextLigne, Colonne, NewLigne).
 */
 
+% Prédicat pour vérifier si c'est une case chance
+case_chance(Ligne, Colonne) :-
+    plateau(Plateau),
+    member([Ligne, Colonne, true, _], Plateau),
+    writeln('Case chance : Ligne ' + Ligne + ', Colonne ' + Colonne).
+
+% Prédicat auxiliaire pour déterminer la valeur de Chance
+determine_chance(Ligne, Colonne, Chance) :-
+    (case_chance(Ligne, Colonne) -> Chance = 1 ; Chance = 0).
+
 % Prédicat pour vérifier si une case existe dans le plateau
 case_presente(Ligne, Colonne, Ligne, Colonne) :-
     plateau(Plateau),
@@ -269,8 +279,9 @@ case_presente(Ligne, Colonne, NewLigne, NewColonne) :-
     
 
 % Prédicat pour vérifier si une case est disponible (aucun cycliste présent)
-case_disponible(Ligne, Colonne, NewLigne, NewColonne ) :-
+case_disponible(Ligne, Colonne, NewLigne, NewColonne, Chance ) :-
     case_presente(Ligne, Colonne, NewLigne,NewColonne),
+    determine_chance(NewLigne, NewColonne, Chance),
     writeln('Check : Ligne ' + NewLigne + ', Colonne ' + Colonne),
     Players = ["Belgique", "Italie", "Hollande", "Allemagne"],
     Cyclists = [1, 2, 3],
@@ -288,46 +299,66 @@ case_disponible(Ligne, Colonne, NewLigne, NewColonne ) :-
     writeln('Case disponible : Ligne ' + NewLigne + ', Colonne ' + NewColonne).
 
 % Prédicat pour simuler l'avancée d'un cycliste avec une carte donnée et vérifier si la case d'arrivée est disponible ou non
-avancer_cycliste(PlayerId, CyclisteId, Card, Chute) :-
+avancer_cycliste(PlayerId, CyclisteId, Card, ColonneChoix, Chute, Chance) :-
     get_cyclist_position(PlayerId, CyclisteId, LigneActuelle, ColonneActuelle),
     LigneArrivee is LigneActuelle + Card,
     ColonneArrive is 1,
-    case_disponible(LigneArrivee, ColonneArrive, NewLigne, NewColonne),
-    
-    writeln('Le cycliste ' + PlayerId + ' - ' + CyclisteId + ' avancera a la case (' + NewLigne + ', ' + NewColonne + ').'),
-    Chute is 0.
+    case_disponible(LigneArrivee, ColonneArrive, NewLigne, NewColonne, Chance),
+    (Chance = 1
+    ->  (ColonneArrive is 2,
+        case_disponible(LigneArrivee, ColonneArrive, NewLigne, NewColonne, Chance))
+    ;   writeln('Le cycliste ' + PlayerId + ' - ' + CyclisteId + ' avancera a la case (' + NewLigne + ', ' + NewColonne + ').')),
+    Chute is 0,
+    ColonneChoix = NewColonne.
 
-avancer_cycliste(PlayerId, CyclisteId, Card, Chute) :-
+
+avancer_cycliste(PlayerId, CyclisteId, Card,ColonneChoix, Chute, Chance) :-
     get_cyclist_position(PlayerId, CyclisteId, LigneActuelle, ColonneActuelle),
     LigneArrivee is LigneActuelle + Card,
     ColonneArrive is 2,
-    case_disponible(LigneArrivee, ColonneArrive, NewLigne, NewColonne),
-    writeln('Le cycliste ' + PlayerId + ' - ' + CyclisteId + ' avancera a la case (' + NewLigne + ', ' + NewColonne + ').'),
-    Chute is 0.
+    case_disponible(LigneArrivee, ColonneArrive, NewLigne, NewColonne, Chance),
+    (Chance = 1
+        ->  (ColonneArrive is 2,
+            case_disponible(LigneArrivee, ColonneArrive, NewLigne, NewColonne, Chance)),
+        ;
+        writeln('Le cycliste ' + PlayerId + ' - ' + CyclisteId + ' avancera a la case (' + NewLigne + ', ' + NewColonne + ').')),
+    Chute is 0,
+    ColonneChoix = NewColonne.
 
-avancer_cycliste(PlayerId, CyclisteId, Card, Chute) :-
+avancer_cycliste(PlayerId, CyclisteId, Card,ColonneChoix, Chute, Chance) :-
     get_cyclist_position(PlayerId, CyclisteId, LigneActuelle, ColonneActuelle),
     LigneArrivee is LigneActuelle + Card,
     ColonneArrive is 3,
-    case_disponible(LigneArrivee, ColonneArrive, NewLigne, NewColonne),
-    writeln('Le cycliste ' + PlayerId + ' - ' + CyclisteId + ' avancera a la case (' + NewLigne + ', ' + NewColonne + ').'),
-    Chute is 0.
+    case_disponible(LigneArrivee, ColonneArrive, NewLigne, NewColonne, Chance),
+    (Chance = 1
+        ->  (ColonneArrive is 2,
+            case_disponible(LigneArrivee, ColonneArrive, NewLigne, NewColonne, Chance)),
+        ;
+        writeln('Le cycliste ' + PlayerId + ' - ' + CyclisteId + ' avancera a la case (' + NewLigne + ', ' + NewColonne + ').')),
+    Chute is 0,
+    ColonneChoix = NewColonne.
 
-avancer_cycliste(PlayerId, CyclisteId, Card, Chute) :-
+avancer_cycliste(PlayerId, CyclisteId, Card,ColonneChoix, Chute, Chance) :-
     get_cyclist_position(PlayerId, CyclisteId, LigneActuelle, ColonneActuelle),
     LigneArrivee is LigneActuelle + Card,
     ColonneArrive is 4,
-    case_disponible(LigneArrivee, ColonneArrive, NewLigne, NewColonne),
-    writeln('Le cycliste ' + PlayerId + ' - ' + CyclisteId + ' avancera a la case (' + NewLigne + ', ' + NewColonne + ').'),
-    Chute is 0.
+    case_disponible(LigneArrivee, ColonneArrive, NewLigne, NewColonne, Chance),
+    (Chance = 1
+        ->  (ColonneArrive is 2,
+            case_disponible(LigneArrivee, ColonneArrive, NewLigne, NewColonne, Chance)),
+        ;
+        writeln('Le cycliste ' + PlayerId + ' - ' + CyclisteId + ' avancera a la case (' + NewLigne + ', ' + NewColonne + ').')),
+    Chute is 0,
+    ColonneChoix = NewColonne.
 
-avancer_cycliste(PlayerId, CyclisteId, Card, Chute) :-
+avancer_cycliste(PlayerId, CyclisteId, Card,ColonneChoix, Chute, Chance) :-
     get_cyclist_position(PlayerId, CyclisteId, LigneActuelle, ColonneActuelle),
     LigneArrivee is LigneActuelle + Card,
     ColonneArrive is 1,
-    \+ case_disponible(LigneArrivee, ColonneArrive, NewLigne, NewColonne),
+    \+ case_disponible(LigneArrivee, ColonneArrive, NewLigne, NewColonne, Chance),
     writeln('Le cycliste est tombe sur une case non disponible : (' + NewLigne + ', ' + NewColonne + ').'),
-    Chute is 1.
+    Chute is 1,
+    ColonneChoix = NewColonne.
 
 
 

@@ -188,14 +188,16 @@ methods: {
     else if (message.type === "playerWhoPlay") {
       const playerId = message.playerId;
       const maxCard = message.maxCard;
+      const colonne = message.colonne;
       console.log(`Joueur qui doit jouer : ${playerId}`);
 
     //if(playerId === "" || playerId === "") {
         console.log("BOT A JOUER");
         const choixCarteSelect = document.getElementById('choix_cartes-select');
         const choixColonneSelect = document.getElementById('choix_colonne-select');
-        choixCarteSelect.value = maxCard; // Sélectionnez la plus grande carte
-        choixColonneSelect.options[1].selected = true;
+        choixCarteSelect.value = maxCard; // Sélectionne la plus grande carte
+        choixColonneSelect.value = colonne; // Sélectionne la colonne
+        //choixColonneSelect.options[1].selected = true;
 
         var selectElement = document.getElementById("deplacer_button_dynamique");
         selectElement.style.backgroundColor = "rgb(234, 211, 66)";

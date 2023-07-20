@@ -87,14 +87,14 @@ process_message(_{type: "playerWhoPlay", playerId: PlayerId, cyclistId: CyclistI
     writeln(PlayerId),
     writeln(CyclistId),
     !,
-    sleep(2),
+    sleep(5),
     process_player_play(PlayerId, CyclistId, Response).
     
 process_player_play(PlayerId, CyclistId, Response) :-
     get_player_cards(PlayerId, Cards), % Get les cartes du joueur
     writeln('Cartes du joueur : ' + Cards),
-    get_card_play(PlayerId, CyclistId, Cards, MaxCard), % Get la plus grande carte de la main
-    Response = json{status: 'success', message: 'Player find',type: "playerWhoPlay", playerId: PlayerId, maxCard: MaxCard}.
+    get_card_play(PlayerId, CyclistId, Cards, MaxCard, Colonne), % Get la plus grande carte de la main
+    Response = json{status: 'success', message: 'Player find',type: "playerWhoPlay", playerId: PlayerId, maxCard: MaxCard, colonne: Colonne}.
     
 
 /**************************** Position cyclistes ****************************/
