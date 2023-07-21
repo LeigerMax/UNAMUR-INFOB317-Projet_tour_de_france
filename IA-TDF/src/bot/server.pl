@@ -87,7 +87,7 @@ process_message(_{type: "playerWhoPlay", playerId: PlayerId, cyclistId: CyclistI
     writeln(PlayerId),
     writeln(CyclistId),
     !,
-    sleep(5),
+    sleep(2),
     process_player_play(PlayerId, CyclistId, Response).
     
 process_player_play(PlayerId, CyclistId, Response) :-

@@ -8,219 +8,237 @@
 /*                                                                       */
 /* --------------------------------------------------------------------- */
 
-:- begin_tests(max_card).
+/**** TEST CARTE ****/
+
+:- begin_tests(get_card_play).
+
+    test(get_card_play_valide_1) :-
+        set_cyclist_position("Belgique", 1, 4, 1), 
+        set_cyclist_position("Belgique", 2, 4, 2), 
+        set_cyclist_position("Belgique", 3, 4, 3),
+
+        set_cyclist_position("Italie", 1, 0, 0), 
+        set_cyclist_position("Italie", 2, 0, 0), 
+        set_cyclist_position("Italie", 3, 0, 0),
+
+        set_cyclist_position("Hollande", 1, 0, 0), 
+        set_cyclist_position("Hollande", 2, 0, 0), 
+        set_cyclist_position("Hollande", 3, 0, 0),
+
+        set_cyclist_position("Allemagne", 1, 0, 0), 
+        set_cyclist_position("Allemagne", 2, 0, 0), 
+        set_cyclist_position("Allemagne", 3, 0, 0),
+        
+        get_card_play("Italie", 1,[4,2,1,2,2], _, _). % Doit jouer carte 2 et se rendre (2,1)
 
 
-% Test case 1: La plus grande carte est 12
-test(get_max_card_1) :-
-    set_player_cards(italie, [11, 8, 12, 3, 1]),
-    get_max_card(italie, 12).
 
-% Test case 2: La plus grande carte est 12
-test(get_max_card_2) :-
-    set_player_cards(italie, [12, 8, 11, 5, 6]),
-    get_max_card(italie, 12).
+    test(get_card_play_valide_2) :-
+        set_cyclist_position("Belgique", 1, 4, 1), 
+        set_cyclist_position("Belgique", 2, 4, 2), 
+        set_cyclist_position("Belgique", 3, 5, 1),
 
-% Test case 3: La plus grande carte est 10
-test(get_max_card_3) :-
-    set_player_cards(italie, [2, 3, 10, 7, 4]),
-    get_max_card(italie, 10).
+        set_cyclist_position("Italie", 1, 0, 0), 
+        set_cyclist_position("Italie", 2, 0, 0), 
+        set_cyclist_position("Italie", 3, 0, 0),
 
-% Test case 4: Aucune carte, la plus grande carte est null
-test(get_max_card_4) :-
-    set_player_cards(italie, []),
-    get_max_card(italie, null).
+        set_cyclist_position("Hollande", 1, 0, 0), 
+        set_cyclist_position("Hollande", 2, 0, 0), 
+        set_cyclist_position("Hollande", 3, 0, 0),
 
-:- end_tests(max_card).
+        set_cyclist_position("Allemagne", 1, 0, 0), 
+        set_cyclist_position("Allemagne", 2, 0, 0), 
+        set_cyclist_position("Allemagne", 3, 0, 0),
+        
+        get_card_play("Italie", 1,[4,2,1,2,2],_,_). %Doit jouer carte 9 et se rendre (4,3)
 
+    test(get_card_play_valide_3) :-
+        set_cyclist_position("Belgique", 1, 11, 2), 
+        set_cyclist_position("Belgique", 2, 4, 2), 
+        set_cyclist_position("Belgique", 3, 5, 1),
 
-/**** TEST POSITION ****/
-:- begin_tests(check_colonne_cyclistes).
+        set_cyclist_position("Italie", 1, 0, 0), 
+        set_cyclist_position("Italie", 2, 0, 0), 
+        set_cyclist_position("Italie", 3, 0, 0),
 
-/*
-test(case_presente_valide) :-
-    case_presente(1, 1, _).
+        set_cyclist_position("Hollande", 1, 0, 0), 
+        set_cyclist_position("Hollande", 2, 0, 0), 
+        set_cyclist_position("Hollande", 3, 0, 0),
 
-test(case_presente_invalide) :-
-     case_presente(2, 4, _).
+        set_cyclist_position("Allemagne", 1, 0, 0), 
+        set_cyclist_position("Allemagne", 2, 0, 0), 
+        set_cyclist_position("Allemagne", 3, 0, 0),
+        
+        get_card_play("Italie", 1,[4,11,1,2,2],_,_). %Doit jouer carte 4 et se rendre (4,1)
 
-test(case_non_accessible_valide) :-
-    case_presente(10, 1, _).
-*/
-test(case_chance) :-
-    set_cyclist_position("Belgique", 1, 0, 0), 
-    set_cyclist_position("Belgique", 2, 4, 1), 
-    set_cyclist_position("Belgique", 3, 4, 2),
+    test(get_card_play_valide_4) :-
+        set_cyclist_position("Belgique", 1, 4, 3), 
+        set_cyclist_position("Belgique", 2, 4, 2), 
+        set_cyclist_position("Belgique", 3, 4, 1),
 
-    set_cyclist_position("Italie", 1, 4, 3), 
-    set_cyclist_position("Italie", 2, 0, 0), 
-    set_cyclist_position("Italie", 3, 0, 0),
+        set_cyclist_position("Italie", 1, 0, 0), 
+        set_cyclist_position("Italie", 2, 1, 1), 
+        set_cyclist_position("Italie", 3, 0, 0),
 
-    set_cyclist_position("Hollande", 1, 0, 0), 
-    set_cyclist_position("Hollande", 2, 0, 0), 
-    set_cyclist_position("Hollande", 3, 0, 0),
+        set_cyclist_position("Hollande", 1, 0, 0), 
+        set_cyclist_position("Hollande", 2, 0, 0), 
+        set_cyclist_position("Hollande", 3, 0, 0),
 
-    set_cyclist_position("Allemagne", 1, 0, 0), 
-    set_cyclist_position("Allemagne", 2, 0, 0), 
-    set_cyclist_position("Allemagne", 3, 0, 0),
+        set_cyclist_position("Allemagne", 1, 0, 0), 
+        set_cyclist_position("Allemagne", 2, 0, 0), 
+        set_cyclist_position("Allemagne", 3, 0, 0),
+        
+        get_card_play("Italie", 1,[1,4,4],_,_). % Doit jouer carte 1 et se rendre (1,2) 
 
-    get_card_play("Belgique", 1,[4,2],_).
+    test(get_card_play_valide_5) :-
+        set_cyclist_position("Belgique", 1, 4, 3), 
+        set_cyclist_position("Belgique", 2, 4, 2), 
+        set_cyclist_position("Belgique", 3, 4, 1),
 
-/*
-test(cycliste_position_valide_1) :-
-    set_cyclist_position("Belgique", 1, 2, 2),  % Position valide
-    set_cyclist_position("Hollande", 3, 1, 3),  % Position valide
-    set_cyclist_position("Hollande", 2, 10, 2).  % Position valide
+        set_cyclist_position("Italie", 1, 0, 0), 
+        set_cyclist_position("Italie", 2, 1, 1), 
+        set_cyclist_position("Italie", 3, 0, 0),
 
-test(cycliste_position_invalide_1) :-
-    \+ set_cyclist_position("Italie", 1, 10, 1). %Position invalide
+        set_cyclist_position("Hollande", 1, 0, 0), 
+        set_cyclist_position("Hollande", 2, 0, 0), 
+        set_cyclist_position("Hollande", 3, 0, 0),
 
-test(cycliste_position_invalide_2) :-
-    \+  set_cyclist_position("Italie", 2, 1, 4). %Position invalide
- 
-*/
-:- end_tests(check_colonne_cyclistes).
-
-
-/**** Cyclistes ****/
-:- begin_tests(position).
-
-test(position_valide_1) :-
-    set_cyclist_position("Hollande", 1, 1, 1), 
-    set_cyclist_position("Hollande", 2, 1, 2), 
-    set_cyclist_position("Hollande", 3, 1, 3).
+        set_cyclist_position("Allemagne", 1, 0, 0), 
+        set_cyclist_position("Allemagne", 2, 0, 0), 
+        set_cyclist_position("Allemagne", 3, 0, 0),
+        
+        get_card_play("Italie", 1,[9,2],_,_). % Doit jouer carte 9 et se rendre (9,2)
 
 
-test(position_invalide_1) :-
-    set_cyclist_position("Belgique", 1, 2, 1), 
-    set_cyclist_position("Belgique", 2, 2, 2), 
-    set_cyclist_position("Belgique", 3, 2, 3), 
-    \+ set_cyclist_position("Italie", 1, 2, 4).
+    test(get_card_play_valide_6) :-
+        set_cyclist_position("Belgique", 1, 4, 3), 
+        set_cyclist_position("Belgique", 2, 4, 2), 
+        set_cyclist_position("Belgique", 3, 5, 1),
 
-:- end_tests(position).
+        set_cyclist_position("Italie", 1, 0, 0), 
+        set_cyclist_position("Italie", 2, 1, 1), 
+        set_cyclist_position("Italie", 3, 0, 0),
+
+        set_cyclist_position("Hollande", 1, 0, 0), 
+        set_cyclist_position("Hollande", 2, 0, 0), 
+        set_cyclist_position("Hollande", 3, 0, 0),
+
+        set_cyclist_position("Allemagne", 1, 0, 0), 
+        set_cyclist_position("Allemagne", 2, 0, 0), 
+        set_cyclist_position("Allemagne", 3, 0, 0),
+        
+        get_card_play("Italie", 1,[4,2],_,_). % Doit jouer carte 4 et se rendre (4,1)
+
+:- end_tests(get_card_play).
 
 
-:- begin_tests(chute).
-test(chute_valide_1) :-
-    set_cyclist_position("Belgique", 1, 4, 1), 
-    set_cyclist_position("Belgique", 2, 4, 2), 
-    set_cyclist_position("Belgique", 3, 4, 3),
+:- begin_tests(get_max_min_card).
 
-    set_cyclist_position("Italie", 1, 0, 0), 
-    set_cyclist_position("Italie", 2, 0, 0), 
-    set_cyclist_position("Italie", 3, 0, 0),
+    test(get_max_card_1) :-
+        set_player_cards(italie, [11, 8, 12, 3, 1]),
+        get_max_card(italie, 12).
 
-    set_cyclist_position("Hollande", 1, 0, 0), 
-    set_cyclist_position("Hollande", 2, 0, 0), 
-    set_cyclist_position("Hollande", 3, 0, 0),
+    test(get_max_card_2) :-
+        set_player_cards(italie, [12, 8, 11, 5, 6]),
+        get_max_card(italie, 12).
 
-    set_cyclist_position("Allemagne", 1, 0, 0), 
-    set_cyclist_position("Allemagne", 2, 0, 0), 
-    set_cyclist_position("Allemagne", 3, 0, 0),
-    
-    get_card_play("Italie", 1,[5,2,1,2,2],_).
+    test(get_max_card_3) :-
+        set_player_cards(italie, [2, 3, 10, 7, 4]),
+        get_max_card(italie, 10).
 
-test(chute_valide_2) :-
-    set_cyclist_position("Belgique", 1, 4, 1), 
-    set_cyclist_position("Belgique", 2, 4, 2), 
-    set_cyclist_position("Belgique", 3, 5, 1),
+    test(get_max_card_4) :-
+        set_player_cards(italie, []),
+        get_max_card(italie, null).
 
-    set_cyclist_position("Italie", 1, 0, 0), 
-    set_cyclist_position("Italie", 2, 0, 0), 
-    set_cyclist_position("Italie", 3, 0, 0),
+    test(get_min_card_1) :-
+        set_player_cards(italie, [4, 2, 10, 7, 4]),
+        get_min_card(italie, 2).
+        
+:- end_tests(get_max_min_card).
 
-    set_cyclist_position("Hollande", 1, 0, 0), 
-    set_cyclist_position("Hollande", 2, 0, 0), 
-    set_cyclist_position("Hollande", 3, 0, 0),
 
-    set_cyclist_position("Allemagne", 1, 0, 0), 
-    set_cyclist_position("Allemagne", 2, 0, 0), 
-    set_cyclist_position("Allemagne", 3, 0, 0),
-    
-    get_card_play("Italie", 1,[4,2,1,2,2],_).
 
-test(chute_valide_3) :-
-    set_cyclist_position("Belgique", 1, 4, 1), 
-    set_cyclist_position("Belgique", 2, 4, 2), 
-    set_cyclist_position("Belgique", 3, 4, 3),
+/**** TEST CASE ****/
 
-    set_cyclist_position("Italie", 1, 5, 1), 
-    set_cyclist_position("Italie", 2, 5, 2), 
-    set_cyclist_position("Italie", 3, 5, 3),
+:- begin_tests(check_case_chance).
 
-    set_cyclist_position("Hollande", 1, 0, 0), 
-    set_cyclist_position("Hollande", 2, 0, 0), 
-    set_cyclist_position("Hollande", 3, 0, 0),
+    test(case_chance_valide) :-
+        case_chance(9, 1).
 
-    set_cyclist_position("Allemagne", 1, 0, 0), 
-    set_cyclist_position("Allemagne", 2, 0, 0), 
-    set_cyclist_position("Allemagne", 3, 0, 0),
-    
-    get_card_play("Hollande", 1,[5,4,1,2,2],_).
+    test(case_chance_invalide) :-
+        \+ case_chance(1, 2).
 
-test(chute_valide_4) :-
-    set_cyclist_position("Belgique", 1, 24, 1), 
-    set_cyclist_position("Belgique", 2, 24, 2), 
-    set_cyclist_position("Belgique", 3, 4, 3),
+    test(case_chance_invalide) :-
+        \+ case_chance(5, 1).
 
-    set_cyclist_position("Italie", 1, 5, 1), 
-    set_cyclist_position("Italie", 2, 5, 2), 
-    set_cyclist_position("Italie", 3, 5, 3),
+:- end_tests(check_case_chance).
 
-    set_cyclist_position("Hollande", 1, 20, 1), 
-    set_cyclist_position("Hollande", 2, 0, 0), 
-    set_cyclist_position("Hollande", 3, 0, 0),
+:- begin_tests(check_case_presente).
 
-    set_cyclist_position("Allemagne", 1, 0, 0), 
-    set_cyclist_position("Allemagne", 2, 0, 0), 
-    set_cyclist_position("Allemagne", 3, 0, 0),
-    
-    get_card_play("Hollande", 1,[3,4,1,2,2],_).
+    test(case_presente_valide) :-
+        case_presente(1, 1).
 
-test(chute_invalide_1) :-
-    set_cyclist_position("Belgique", 1, 4, 1), 
-    set_cyclist_position("Belgique", 2, 4, 2), 
-    set_cyclist_position("Belgique", 3, 4, 3),
+    test(case_presente_invalide) :-
+        \+ case_presente(2, 4).
 
-    set_cyclist_position("Italie", 1, 0, 0), 
-    set_cyclist_position("Italie", 2, 0, 0), 
-    set_cyclist_position("Italie", 3, 0, 0),
+    test(case_presente_invalide) :-
+        \+ case_presente(10, 1).
 
-    set_cyclist_position("Hollande", 1, 0, 0), 
-    set_cyclist_position("Hollande", 2, 0, 0), 
-    set_cyclist_position("Hollande", 3, 0, 0),
-
-    set_cyclist_position("Allemagne", 1, 0, 0), 
-    set_cyclist_position("Allemagne", 2, 0, 0), 
-    set_cyclist_position("Allemagne", 3, 0, 0),
-    
-    get_card_play("Italie", 1,[4,2,1,2,2],_).
-
-    
-:- end_tests(chute).
+:- end_tests(check_case_presente).
 
 
 :- begin_tests(case_supplementaire).
 
-test(case_supplementaire_valide_1) :-
-    set_cyclist_position("Belgique", 1, 111, 1), 
-    set_cyclist_position("Belgique", 2, 100, 1), 
-    set_cyclist_position("Belgique", 3, 110, 1),
+    test(case_supplementaire_valide_1) :-
+        is_case_supplementaire(105).
 
-    set_cyclist_position("Italie", 1, 0, 0), 
-    set_cyclist_position("Italie", 2, 0, 0), 
-    set_cyclist_position("Italie", 3, 0, 0),
+    test(case_supplementaire_valide_2) :-
+        set_cyclist_position("Belgique", 1, 111, 1), 
+        set_cyclist_position("Belgique", 2, 100, 1), 
+        set_cyclist_position("Belgique", 3, 110, 1),
 
-    set_cyclist_position("Hollande", 1, 0, 0), 
-    set_cyclist_position("Hollande", 2, 0, 0), 
-    set_cyclist_position("Hollande", 3, 0, 0),
+        set_cyclist_position("Italie", 1, 0, 0), 
+        set_cyclist_position("Italie", 2, 0, 0), 
+        set_cyclist_position("Italie", 3, 0, 0),
 
-    set_cyclist_position("Allemagne", 1, 0, 0), 
-    set_cyclist_position("Allemagne", 2, 0, 0), 
-    set_cyclist_position("Allemagne", 3, 0, 0),
+        set_cyclist_position("Hollande", 1, 0, 0), 
+        set_cyclist_position("Hollande", 2, 0, 0), 
+        set_cyclist_position("Hollande", 3, 0, 0),
 
-    get_card_play("Belgique", 1,[8,2,10,2,1],_),
-    get_card_play("Belgique", 2,[8,2,10,2,1],_),
-    get_card_play("Belgique", 3,[8,2,10,2,1],_).
+        set_cyclist_position("Allemagne", 1, 0, 0), 
+        set_cyclist_position("Allemagne", 2, 0, 0), 
+        set_cyclist_position("Allemagne", 3, 0, 0),
+
+        get_card_play("Belgique", 1, [8,2,10,2,1], _, _),
+        get_card_play("Belgique", 2, [8,2,10,2,1], _, _),
+        get_card_play("Belgique", 3, [8,2,10,2,1], _, _).
+
+        test(case_supplementaire_invalide_1) :-
+            \+ is_case_supplementaire(50).
 
 :- end_tests(case_supplementaire).
+
+
+/**** TEST POSITION ****/
+
+:- begin_tests(set_cyclist_position).
+
+    test(position_valide_1) :-
+        set_cyclist_position("Hollande", 1, 1, 1), 
+        set_cyclist_position("Hollande", 2, 1, 2), 
+        set_cyclist_position("Hollande", 3, 1, 3).
+
+    test(position_valide_2) :-
+        set_cyclist_position("Belgique", 1, 2, 1), 
+        set_cyclist_position("Belgique", 2, 2, 2), 
+        set_cyclist_position("Belgique", 3, 2, 3), 
+        set_cyclist_position("Belgique", 1, 5, 1).
+
+    %test(position_invalide_1) :-
+    %    \+  set_cyclist_position("Italie", 2, 1, 4). 
+
+
+:- end_tests(set_cyclist_position).
+
+
+
