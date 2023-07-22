@@ -92,8 +92,17 @@ get_card_play(PlayerId, CyclistId, Cards, Card, ColonneChoix, CardsSave) :-
         writeln('Carte maximale : ' + MaxCard),
         avancer_cycliste(PlayerId, CyclistId, MaxCard, ColonneChoix, Chute), % Vérifier si la carte provoque une chute 
         (Chute = 1
-        ->  (Cards = [_|RestCards], get_card_play(PlayerId, CyclistId, RestCards, Card, ColonneChoix, CardsSave)) % Essayer la carte suivante
+        ->  (remove_card(MaxCard, Cards, RestCards), % Retirer la carte MaxCard de la liste Cards
+             get_card_play(PlayerId, CyclistId, RestCards, Card, ColonneChoix, CardsSave)) % Essayer la carte suivante
         ;   writeln('La carte ne provoque pas de chute et pas une case chance.'), Card = MaxCard)). % La carte sélectionnée ne provoque pas de chute
+
+
+% Retire un élément de la liste
+% Entrées : Element, Liste, NouvelleListe
+% Sorties : NouvelleListe avec Element retiré
+remove_card(Element, [Element|Rest], Rest).
+remove_card(Element, [X|Rest], [X|NewRest]) :-
+    remove_card(Element, Rest, NewRest).
 
 
 % Vérifie si c'est une case supplemantaire
