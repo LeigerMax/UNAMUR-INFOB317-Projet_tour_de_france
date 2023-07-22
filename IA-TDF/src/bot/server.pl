@@ -93,7 +93,7 @@ process_message(_{type: "playerWhoPlay", playerId: PlayerId, cyclistId: CyclistI
 process_player_play(PlayerId, CyclistId, Response) :-
     get_player_cards(PlayerId, Cards), % Get les cartes du joueur
     writeln('Cartes du joueur : ' + Cards),
-    get_card_play(PlayerId, CyclistId, Cards, MaxCard, Colonne), % Get la plus grande carte de la main
+    get_card_play(PlayerId, CyclistId, Cards, MaxCard, Colonne, Cards), % Get la plus grande carte de la main
     Response = json{status: 'success', message: 'Player find',type: "playerWhoPlay", playerId: PlayerId, maxCard: MaxCard, colonne: Colonne}.
     
 

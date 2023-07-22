@@ -61,17 +61,26 @@ compare_cards_min(Card, MinRest, Min) :-
 
 get_card_play([], null, _, _, ColonneChoix).
 
-% Joue la dernière carte du paquet
-% Entrées : PlayerId, CyclistId, [Card]
+
+% Vérifie si le paquet est vide
+% Entrées : []
+% Sorties : true si paquet vide
+paquet_vide([]).
+
+% Si toutes les cartes ont été jouer, on joue la plus petite du paquet
+% Entrées : PlayerId, CyclistId, [Card],CardsSave
 % Sorties : Card, ColonneChoix
-get_card_play(PlayerId, CyclistId, [Card], Card, ColonneChoix) :- % Cas où il ne reste qu'une seule carte
-    writeln('Derniere carte disponible : ' + Card),
+get_card_play(PlayerId, CyclistId, [], Card, ColonneChoix, CardsSave) :- % Cas où il ne reste qu'une seule carte
+    get_min_card(CardsSave, MinCard), % Obtenir la plus petite carte
+    writeln('Carte minimale : ' + MinCard),
+    Card = MinCard,
     ColonneChoix is 1.
+
 
 % Joue la meilleur carte
 % Entrées : PlayerId, CyclistId, [Card]
 % Sorties : Card, ColonneChoix
-get_card_play(PlayerId, CyclistId, Cards, Card, ColonneChoix) :-
+get_card_play(PlayerId, CyclistId, Cards, Card, ColonneChoix, CardsSave) :-
     get_cyclist_position(PlayerId, CyclistId, Ligne, Colonne),
     (is_case_supplementaire(Ligne) % Vérifier si le joueur est dans une case spéciale
     ->  get_min_card(Cards, MinCard), % Obtenir la plus petite carte
@@ -83,7 +92,7 @@ get_card_play(PlayerId, CyclistId, Cards, Card, ColonneChoix) :-
         writeln('Carte maximale : ' + MaxCard),
         avancer_cycliste(PlayerId, CyclistId, MaxCard, ColonneChoix, Chute), % Vérifier si la carte provoque une chute 
         (Chute = 1
-        ->  (Cards = [_|RestCards], get_card_play(PlayerId, CyclistId, RestCards, Card, ColonneChoix)) % Essayer la carte suivante
+        ->  (Cards = [_|RestCards], get_card_play(PlayerId, CyclistId, RestCards, Card, ColonneChoix, CardsSave)) % Essayer la carte suivante
         ;   writeln('La carte ne provoque pas de chute et pas une case chance.'), Card = MaxCard)). % La carte sélectionnée ne provoque pas de chute
 
 
