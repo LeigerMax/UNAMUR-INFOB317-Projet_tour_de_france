@@ -237,52 +237,37 @@ bougerCyclisteUnique((LignPos, ColPos), NbMouvement, UniqueOutcomes) :-
     setof((LignTarget, ColTarget), bougerCycliste((LignPos, ColPos), NbMouvement, (LignTarget, ColTarget)), UniqueOutcomes).
 
 
+/**********************************************************************/
 
 
-% Prédicat pour vérifier si une case existe dans le plateau
-/*
-    case_presente(Ligne, Colonne, Ligne) :-
-        plateau(Plateau),
-        member([Ligne, Colonne, _, true], Plateau),
-        writeln('Case presente : Ligne ' + Ligne + ', Colonne ' + Colonne).
+% Vérifie si une case est présente dans le plateau
+% Entrées : Ligne, Colonne
+case_presente(Ligne, Colonne) :-
+    plateau(Plateau),
+    member([Ligne, Colonne, _, true], Plateau),
+    writeln('Case presente : Ligne ' + Ligne + ', Colonne ' + Colonne).
 
-    case_presente(Ligne, Colonne, NewLigne) :-
-        NextLigne is Ligne + 1,
-        case_presente(NextLigne, Colonne, NewLigne).
-*/
 
-% Prédicat pour vérifier si c'est une case chance
+% Vérifie si une case est une case chance
+% Entrées : Ligne, Colonne
 case_chance(Ligne, Colonne) :-
     plateau(Plateau),
     member([Ligne, Colonne, true, _], Plateau),
     writeln('Case chance : Ligne ' + Ligne + ', Colonne ' + Colonne).
 
-% Prédicat auxiliaire pour déterminer la valeur de Chance
-determine_chance(Ligne, Colonne, Chance) :-
-    (case_chance(Ligne, Colonne) -> Chance = 1 ; Chance = 0).
+% Vérifie si une case est une case chance, et détermine la nouvelle colonne en conséquence.
+% Entrées : Ligne, Colonne
+% Sorties : NewColonne
+case_chance2(Ligne,Colonne,NewColonne) :-
+    (case_chance(Ligne, Colonne) % Vérifier si c'est une case chance
+        -> NewColonne is 2
+        ; writeln('Pas une case chance, on reste colonne 1'),
+            NewColonne is 1
+    ).
 
-% Prédicat pour vérifier si une case existe dans le plateau
-case_presente(Ligne, Colonne, Ligne, Colonne) :-
-    plateau(Plateau),
-    member([Ligne, Colonne, _, true], Plateau),
-    writeln('Case presente : Ligne ' + Ligne + ', Colonne ' + Colonne).
-
-case_presente(Ligne, Colonne, NewLigne, NewColonne) :-
-    Colonne < 4,
-    NextColonne is Colonne + 1,
-    case_presente(Ligne, NextColonne, NewLigne, NewColonne).
-
-case_presente(Ligne, Colonne, NewLigne, NewColonne) :-
-    Colonne =:= 4,
-    NextLigne is Ligne + 1,
-    case_presente(NextLigne, 1, NewLigne, NewColonne).
-    
-
-% Prédicat pour vérifier si une case est disponible (aucun cycliste présent)
-case_disponible(Ligne, Colonne, NewLigne, NewColonne, Chance ) :-
-    case_presente(Ligne, Colonne, NewLigne,NewColonne),
-    determine_chance(NewLigne, NewColonne, Chance),
-    writeln('Check : Ligne ' + NewLigne + ', Colonne ' + Colonne),
+% Vérifie si une case est disponible (aucun cycliste présent)
+% Entrées : Ligne, Colonne
+case_disponible(Ligne, Colonne) :-
     Players = ["Belgique", "Italie", "Hollande", "Allemagne"],
     Cyclists = [1, 2, 3],
     forall(
@@ -291,74 +276,114 @@ case_disponible(Ligne, Colonne, NewLigne, NewColonne, Chance ) :-
             member(CyclistId, Cyclists),
             (
                 get_cyclist_position(PlayerId, CyclistId, LigneCycliste, ColonneCycliste),
-                (LigneCycliste \= NewLigne ; ColonneCycliste \= NewColonne),
+                (LigneCycliste \= Ligne ; ColonneCycliste \= Colonne),
                 !
             )
         )
     ),
-    writeln('Case disponible : Ligne ' + NewLigne + ', Colonne ' + NewColonne).
+    writeln('Case disponible : Ligne ' + Ligne + ', Colonne ' + Colonne).
 
-% Prédicat pour simuler l'avancée d'un cycliste avec une carte donnée et vérifier si la case d'arrivée est disponible ou non
-avancer_cycliste(PlayerId, CyclisteId, Card, ColonneChoix, Chute, Chance) :-
+
+% Vérifie si une case est disponible (aucun cycliste présent)
+% Entrées : Ligne, Colonne
+case_disponible2(Ligne, Colonne) :-
+    (case_disponible(Ligne, Colonne) % Vérifier si la case est disponible
+        -> writeln('Case disponible')
+        ; writeln('Case non disponible')
+    ).
+
+% Vérifie si une case est disponible, présente sur le plateau, et accessible dans l'une des 4 colonnes possibles
+% Entrées : LigneArrivee, ColonneChoix, Chute
+case_disponible_et_presente(LigneArrivee, 1, Chute,ColonneChoix, Disponible) :-
+    % Vérifier pour la première colonne
+    ColonneArrive1 is 1,
+    (case_disponible(LigneArrivee, ColonneArrive1), case_presente(LigneArrivee, ColonneArrive1)
+        -> ColonneChoix is ColonneArrive1, Chute is 0, writeln('Youpi ' + ColonneArrive1), Disponible is 1
+        ;   % Vérifier pour la deuxième colonne
+            ColonneArrive2 is 2,
+            (case_disponible(LigneArrivee, ColonneArrive2), case_presente(LigneArrivee, ColonneArrive2)
+                -> ColonneChoix is ColonneArrive2, Chute is 0, writeln('Youpi ' + ColonneArrive2), Disponible is 1
+                ;   % Vérifier pour la troisième colonne
+                    ColonneArrive3 is 3,
+                    (case_disponible(LigneArrivee, ColonneArrive3), case_presente(LigneArrivee, ColonneArrive3)
+                        -> ColonneChoix is ColonneArrive3, Chute is 0, writeln('Youpi ' + ColonneArrive3), Disponible is 1
+                        ;   % Vérifier pour la quatrième colonne
+                            ColonneArrive4 is 4,
+                            (case_disponible(LigneArrivee, ColonneArrive4), case_presente(LigneArrivee, ColonneArrive4)
+                                -> ColonneChoix is ColonneArrive4, Chute is 0, writeln('Youpi ' + ColonneArrive4), Disponible is 1
+                                ;   writeln('KO'), Chute is 1, Disponible is 0
+                            )
+                    )
+            )
+    ).
+
+    case_disponible_et_presente(LigneArrivee, 2, Chute,ColonneChoix, Disponible) :-
+        % Vérifier pour la première colonne
+        ColonneArrive1 is 2,
+        (case_disponible(LigneArrivee, ColonneArrive1), case_presente(LigneArrivee, ColonneArrive1)
+            -> ColonneChoix is ColonneArrive1, Chute is 0, writeln('Youpi ' + ColonneArrive1), Disponible is 1
+            ;   % Vérifier pour la deuxième colonne
+                ColonneArrive2 is 2,
+                (case_disponible(LigneArrivee, ColonneArrive2), case_presente(LigneArrivee, ColonneArrive2)
+                    -> ColonneChoix is ColonneArrive2, Chute is 0, writeln('Youpi ' + ColonneArrive2), Disponible is 1
+                    ;   % Vérifier pour la troisième colonne
+                        ColonneArrive3 is 3,
+                        (case_disponible(LigneArrivee, ColonneArrive3), case_presente(LigneArrivee, ColonneArrive3)
+                            -> ColonneChoix is ColonneArrive3, Chute is 0, writeln('Youpi ' + ColonneArrive3), Disponible is 1
+                            ;   % Vérifier pour la quatrième colonne
+                                ColonneArrive4 is 4,
+                                (case_disponible(LigneArrivee, ColonneArrive4), case_presente(LigneArrivee, ColonneArrive4)
+                                    -> ColonneChoix is ColonneArrive4, Chute is 0, writeln('Youpi ' + ColonneArrive4), Disponible is 1
+                                    ;   writeln('KO dans case_disponible_et_presente'), Chute is 1, Disponible is 0
+                                )
+                        )
+                )
+        ).
+
+
+avancer_cycliste(PlayerId, CyclisteId, Card, ColonneChoix, Chute) :-
     get_cyclist_position(PlayerId, CyclisteId, LigneActuelle, ColonneActuelle),
     LigneArrivee is LigneActuelle + Card,
-    ColonneArrive is 1,
-    case_disponible(LigneArrivee, ColonneArrive, NewLigne, NewColonne, Chance),
-    (Chance = 1
-    ->  (ColonneArrive is 2,
-        case_disponible(LigneArrivee, ColonneArrive, NewLigne, NewColonne, Chance))
-    ;   writeln('Le cycliste ' + PlayerId + ' - ' + CyclisteId + ' avancera a la case (' + NewLigne + ', ' + NewColonne + ').')),
-    Chute is 0,
-    ColonneChoix = NewColonne.
+    case_chance2(LigneArrivee,1,ColonneArrive ),
+    writeln('Nouvelle Colonne apres case chance ('  + LigneArrivee + ', ' + ColonneArrive +')'),
+    case_disponible_et_presente(LigneArrivee, ColonneArrive, Chute, ColonneChoix, Disponible),
+    ( Disponible = 1
+    -> writeln('OK')
+    ; writeln('KO avancer_cycliste')
+    ),
+    writeln('Le cycliste ' + PlayerId + ' - ' + CyclisteId + ' avancera a la case (' + LigneArrivee + ', ' + ColonneChoix + ').'). 
 
 
-avancer_cycliste(PlayerId, CyclisteId, Card,ColonneChoix, Chute, Chance) :-
+/*
+% Simule l'avancée d'un cycliste avec une carte donnée et vérifier si la case d'arrivée valide ou non
+% Entrées : PlayerId, CyclisteId, Card (carte jouer)
+% Sorties : ColonneChoix, Chute
+avancer_cycliste(PlayerId, CyclisteId, Card, ColonneChoix, Chute) :-
     get_cyclist_position(PlayerId, CyclisteId, LigneActuelle, ColonneActuelle),
     LigneArrivee is LigneActuelle + Card,
-    ColonneArrive is 2,
-    case_disponible(LigneArrivee, ColonneArrive, NewLigne, NewColonne, Chance),
-    (Chance = 1
-        ->  (ColonneArrive is 2,
-            case_disponible(LigneArrivee, ColonneArrive, NewLigne, NewColonne, Chance)),
-        ;
-        writeln('Le cycliste ' + PlayerId + ' - ' + CyclisteId + ' avancera a la case (' + NewLigne + ', ' + NewColonne + ').')),
-    Chute is 0,
-    ColonneChoix = NewColonne.
+    case_chance2(LigneArrivee,1,ColonneArrive ),
+    writeln('Nouvelle Colonne apres case chance ('  + LigneArrivee + ', ' + ColonneArrive +')'),
+    (case_disponible(LigneArrivee, ColonneArrive)
+        -> ColonneArrive is ColonneArrive,
+            Chute is 0,
+            writeln('Youpi '+ ColonneArrive)
+        ; NewColonneArrive is 2, 
+            (case_disponible(LigneArrivee, NewColonneArrive)
+                ->  ColonneArrive is NewColonneArrive,
+                    Chute is 0,
+                    writeln('Youpi '+ ColonneArrive)
+                ; NewColonneArrive2 is 3,
+                (case_disponible(LigneArrivee, NewColonneArrive2)
+                    ->  ColonneArrive is NewColonneArrive2,
+                        Chute is 0,
+                        writeln('Youpi '+ ColonneArrive)
+                    ;   writeln('KO'),
+                        Chute is 1
+                )
+            )
+    ),
+    ColonneChoix is ColonneArrive,
 
-avancer_cycliste(PlayerId, CyclisteId, Card,ColonneChoix, Chute, Chance) :-
-    get_cyclist_position(PlayerId, CyclisteId, LigneActuelle, ColonneActuelle),
-    LigneArrivee is LigneActuelle + Card,
-    ColonneArrive is 3,
-    case_disponible(LigneArrivee, ColonneArrive, NewLigne, NewColonne, Chance),
-    (Chance = 1
-        ->  (ColonneArrive is 2,
-            case_disponible(LigneArrivee, ColonneArrive, NewLigne, NewColonne, Chance)),
-        ;
-        writeln('Le cycliste ' + PlayerId + ' - ' + CyclisteId + ' avancera a la case (' + NewLigne + ', ' + NewColonne + ').')),
-    Chute is 0,
-    ColonneChoix = NewColonne.
-
-avancer_cycliste(PlayerId, CyclisteId, Card,ColonneChoix, Chute, Chance) :-
-    get_cyclist_position(PlayerId, CyclisteId, LigneActuelle, ColonneActuelle),
-    LigneArrivee is LigneActuelle + Card,
-    ColonneArrive is 4,
-    case_disponible(LigneArrivee, ColonneArrive, NewLigne, NewColonne, Chance),
-    (Chance = 1
-        ->  (ColonneArrive is 2,
-            case_disponible(LigneArrivee, ColonneArrive, NewLigne, NewColonne, Chance)),
-        ;
-        writeln('Le cycliste ' + PlayerId + ' - ' + CyclisteId + ' avancera a la case (' + NewLigne + ', ' + NewColonne + ').')),
-    Chute is 0,
-    ColonneChoix = NewColonne.
-
-avancer_cycliste(PlayerId, CyclisteId, Card,ColonneChoix, Chute, Chance) :-
-    get_cyclist_position(PlayerId, CyclisteId, LigneActuelle, ColonneActuelle),
-    LigneArrivee is LigneActuelle + Card,
-    ColonneArrive is 1,
-    \+ case_disponible(LigneArrivee, ColonneArrive, NewLigne, NewColonne, Chance),
-    writeln('Le cycliste est tombe sur une case non disponible : (' + NewLigne + ', ' + NewColonne + ').'),
-    Chute is 1,
-    ColonneChoix = NewColonne.
-
-
-
+    %case_presente(LigneArrivee, ColonneArrive), % Vérifier si la case existe
+    writeln('Le cycliste ' + PlayerId + ' - ' + CyclisteId + ' avancera a la case (' + LigneArrivee + ', ' + ColonneChoix + ').'). 
+*/
