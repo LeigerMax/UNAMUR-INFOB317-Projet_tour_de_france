@@ -1,6 +1,7 @@
-:- consult('minimax.pl').
+:- consult('minmax.pl').
 :- consult('plateau.pl').
 :- consult('gamebot.pl').
+:- consult('etat.pl').
 
 /* --------------------------------------------------------------------- */
 /*                                                                       */
@@ -266,3 +267,90 @@ test(get_card_play_valide_2) :-
     avancer_cycliste("Italie",1,4,_,_).
 
 :- end_tests(tests).
+
+
+/**** TEST MAXMAX ****/
+
+:- begin_tests(state_init).
+
+
+
+    test(stateInit) :-
+        set_cyclist_position("Belgique", 1, 4, 1), 
+        set_cyclist_position("Belgique", 2, 4, 2), 
+        set_cyclist_position("Belgique", 3, 5, 1),
+
+        set_cyclist_position("Italie", 1, 0, 0), 
+        set_cyclist_position("Italie", 2, 0, 0), 
+        set_cyclist_position("Italie", 3, 0, 0),
+
+        set_cyclist_position("Hollande", 1, 0, 0), 
+        set_cyclist_position("Hollande", 2, 0, 0), 
+        set_cyclist_position("Hollande", 3, 0, 0),
+
+        set_cyclist_position("Allemagne", 1, 0, 0), 
+        set_cyclist_position("Allemagne", 2, 0, 0), 
+        set_cyclist_position("Allemagne", 3, 0, 0),
+
+        set_player_cards("Belgique", [1, 2, 4 ,8]),
+        set_player_cards("Italie", [4, 5, 6]),
+        set_player_cards("Hollande", [7, 8, 9]),
+        set_player_cards("Allemagne", [10, 11, 12]),
+
+        %Val1 = 0, Val2 = 10, Val3 = 34, Val4 = 48,
+
+        stateInit("Belgique", [Be1, Be2, Be3], Cards1),
+        stateInit("Italie", [It1, It2, It3], Cards2),
+        stateInit("Hollande", [Hol1, Hol2, Hol3], Cards3),
+        stateInit("Allemagne", [All1, All2, All3], Cards4),
+
+        player(Belgique, Vald),
+        writeln(Belgique),
+        writeln(Vald).    
+
+
+
+    % Test de cyclist_eval pour une case chance
+    test(cyclist_eval_case_chance) :-
+        Cards = [1, 2, 4 ,8],
+        cyclist_eval((9, 1), Cards, Val),
+        assertion(Val =:= 6). % Le résultat attendu est 9 - 3 = 6
+
+  
+    % Test de cyclist_eval pour une case non chance
+    test(cyclist_eval_non_case_chance) :-
+        Cards = [1, 2, 4 ,8],
+        cyclist_eval((5, 2), Cards, Val),
+        assertion(Val =:= 0). % Le résultat attendu est 0 car ce n'est pas une case chance
+  
+  
+    % Test de player_eval pour un joueur avec des coureurs en case chance
+    test(player_eval_case_chance) :-
+        Cards = [1, 2, 4 ,8],
+        player_eval([[(9, 1), (4, 2), (11, 1)], Cards], Val),
+        assertion(Val =:= 6 + 0 + 8). % Le résultat attendu est la somme des évaluations des coureurs
+
+
+    % Test de player_eval pour un joueur avec des coureurs en case non chance
+    test(player_eval_non_case_chance) :-
+        Cards = [1, 2, 4 ,8],
+        player_eval([[(5, 2), (5, 3), (6, 1)], Cards], Val),
+        assertion(Val =:= 0). % Le résultat attendu est 0 car ce ne sont pas des cases chance
+
+    % Test de player_eval pour un joueur avec un cycliste sur la  case 102
+    test(player_eval_case_102) :-
+        Cards = [1, 2, 4 ,8],
+        cyclist_eval((102, 1), Cards, Val),
+        assertion(Val =:= 20). % Le résultat attendu est 20 car se trouve à la case 102
+    
+    % Test de player_eval pour un joueur avec un cycliste sur une case supplémentaire 
+    test(player_eval_case_supp) :-
+        Cards = [1, 2, 4 ,8],
+        cyclist_eval((105, 1), Cards, Val),
+        assertion(Val =:= 105). % Le résultat attendu est 105 car se trouve à la case 105
+
+
+        
+:- end_tests(state_init).
+
+%bite

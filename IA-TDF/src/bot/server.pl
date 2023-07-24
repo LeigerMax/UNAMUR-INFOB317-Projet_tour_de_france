@@ -7,8 +7,10 @@
 
 :- consult('tbot.pl').
 :- consult('gamebot.pl').
-:- consult('minimax.pl').
+:- consult('minmax.pl').
 :- consult('plateau.pl').
+:- consult('etat.pl').
+:- consult('alphabeta.pl').
 
 
 /* --------------------------------------------------------------------- */
