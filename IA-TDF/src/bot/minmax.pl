@@ -26,7 +26,7 @@
 
 
 /******* BEST MOVE *******/
-% bestMove(State, Depth, BestValue)
+% bestMove([Noeud], State, Depth, BestValue)
 % State : l'état actuel du jeu
 % Depth : profondeur (3)
 % BestValue: meilleur valeur parmi les valeurs
@@ -35,6 +35,8 @@
 % Si c'est un état terminal, évaluer l'état en utilisant une fonction d'évaluation heuristique
 % Sinon, explorer les coups possibles pour le joueur actuel en utilisant maxMax/4
 % Mettre à jour BestValue en fonction des valeurs renvoyées par maxMax/4 pour chaque coup.
+
+
 
 /**************************/
 
@@ -54,6 +56,8 @@
 % Générer les états pour chaque coup et les évaluer en utilisant la fonction best/3
 % Sélectionner le coup ayant la meilleure valeur d'évaluation pour ce joueur (BestMove)
 % Appeler récursivement bestOf/3 pour les autres joueurs (RestPlayers) et récupérer les meilleurs coups (BestMoves).
+
+
 
 /*************************/
 
@@ -149,5 +153,18 @@ cyclist_eval((Ligne, Colonne), Cards, Val) :-
 %
 %
 %
+
+take_card([Card|Cards], Card). 
+take_card([_|Cards], Card):- 
+    take_card(Cards, Card).
+
+
+get_player_cards("Belgique", BelCards).
+get_player_cards("Italie", ItaCards).
+get_player_cards("Hollande", HolCards).
+get_player_cards("Allemagne", AllCards).
+
+play_card() :- .
+
 
 /*************************/
