@@ -64,41 +64,31 @@
 % State : l'état actuel du jeu?
 % Value : [Val1, Val2, Val3, Val4]
 %
-% Chute : val - 20
+% Chute : val - 20                          OK
 % Case chance : Val - 3                     OK
 % Ligne arrivé (102) : Val + 20             OK
 % Case supplémentaire (103 - 112): Val      OK
-% Case vierge : Val                         
+% Case vierge : Val                         OK      
 % Case 89 - 102 : Val + 2                   OK
 
 player([Belgique, Italie, Hollande, Allemagne, PlayerCurrent], [Val1, Val2, Val3, Val4]) :-
-    player_eval(Belgique, Val1),
-    player_eval(Italie, Val2),
-    player_eval(Hollande, Val3),
-    player_eval(Allemagne, Val4).
-    
-% player_eval([[Coureur1, Coureur2, Coureur3], Cards], Val):-
-%     writeln("TEST "+ Coureur1),
-%     cyclist_eval(Coureur1, Cards, Val1),
-%     cyclist_eval(Coureur2, Cards, Val2),
-%     cyclist_eval(Coureur3, Cards, Val3),
-%     writeln("TEST 2 "+ Coureur1),
-%     Val is Val1 + Val2 + Val3.
+    stateInit("Belgique", [Be1, Be2, Be3], Cards1),
+    stateInit("Italie", [It1, It2, It3], Cards2),
+    stateInit("Hollande", [Hol1, Hol2, Hol3], Cards3),
+    stateInit("Allemagne", [All1, All2, All3], Cards4),
+    player_eval([Be1,Be2,Be3], Cards1, Val1),
+    player_eval([It1, It2, It3], Cards2, Val2),
+    player_eval([Hol1, Hol2, Hol3], Cards3, Val3),
+    player_eval([All1, All2, All3], Cards4, Val4).
 
+  
+player_eval([Coureur1, Coureur2, Coureur3], Cards, Val):-
+    writeln("TEST " + Cards), % Vous pouvez afficher ici les positions des coureurs
+    cyclist_eval(Coureur1, Cards, Val1),
+    cyclist_eval(Coureur2, Cards, Val2),
+    cyclist_eval(Coureur3, Cards, Val3),
+    Val is Val1 + Val2 + Val3.
 
-player_eval([], _, 0).
-
-%player_eval([[Coureur | AutreCoureur], Cards], Val1):-
-%    cyclist_eval(Coureur, Cards, Val2),
-%    player_eval([[AutreCoureur], Cards], Val3),
-%    Val1 is Val2 + Val3,
-%    writeln("Test", Coureur).
-
-player_eval([[Coureur | AutreCoureur], Cards], Val1) :-
-    cyclist_eval(Coureur, Cards, Val2),
-    player_eval([[AutreCoureur], Cards], Val3),
-    Val1 is Val2 + Val3,
-    writeln("Test ", Coureur).
 
 % Exclure les lignes comprises entre 89 et 102
 exclude_lines(Ligne) :- Ligne >= 89, Ligne =< 102.
