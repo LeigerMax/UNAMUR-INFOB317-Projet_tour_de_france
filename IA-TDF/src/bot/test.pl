@@ -243,36 +243,11 @@
 
 
 
-:- begin_tests(tests).
-
-
-
-test(get_card_play_valide_2) :-
-    set_cyclist_position("Belgique", 1, 4, 1), 
-    set_cyclist_position("Belgique", 2, 4, 2), 
-    set_cyclist_position("Belgique", 3, 5, 1),
-
-    set_cyclist_position("Italie", 1, 0, 0), 
-    set_cyclist_position("Italie", 2, 0, 0), 
-    set_cyclist_position("Italie", 3, 0, 0),
-
-    set_cyclist_position("Hollande", 1, 0, 0), 
-    set_cyclist_position("Hollande", 2, 0, 0), 
-    set_cyclist_position("Hollande", 3, 0, 0),
-
-    set_cyclist_position("Allemagne", 1, 0, 0), 
-    set_cyclist_position("Allemagne", 2, 0, 0), 
-    set_cyclist_position("Allemagne", 3, 0, 0),
-    
-    avancer_cycliste("Italie",1,4,_,_).
-
-:- end_tests(tests).
 
 
 /**** TEST MAXMAX ****/
 
 :- begin_tests(state_init).
-
 
 
     test(stateInit) :-
@@ -304,53 +279,207 @@ test(get_card_play_valide_2) :-
         stateInit("Hollande", [Hol1, Hol2, Hol3], Cards3),
         stateInit("Allemagne", [All1, All2, All3], Cards4),
 
-        player(Belgique, Vald),
-        writeln(Belgique),
-        writeln(Vald).    
+        player(Belgique, Vald). 
+
+    :- end_tests(state_init).
 
 
+    :- begin_tests(evaluate).
 
-    % Test de cyclist_eval pour une case chance
-    test(cyclist_eval_case_chance) :-
-        Cards = [1, 2, 4 ,8],
-        cyclist_eval((9, 1), Cards, Val),
-        assertion(Val =:= 6). % Le résultat attendu est 9 - 3 = 6
+        % Test de cyclist_eval pour une case chance
+        test(cyclist_eval_case_chance) :-
+            set_cyclist_position("Belgique", 1, 0, 0), 
+            set_cyclist_position("Belgique", 2, 0, 0), 
+            set_cyclist_position("Belgique", 3, 0, 0),
 
-  
-    % Test de cyclist_eval pour une case non chance
-    test(cyclist_eval_non_case_chance) :-
-        Cards = [1, 2, 4 ,8],
-        cyclist_eval((5, 2), Cards, Val),
-        assertion(Val =:= 0). % Le résultat attendu est 0 car ce n'est pas une case chance
-  
-  
-    % Test de player_eval pour un joueur avec des coureurs en case chance
-    test(player_eval_case_chance) :-
-        Cards = [1, 2, 4 ,8],
-        player_eval([[(9, 1), (4, 2), (11, 1)], Cards], Val),
-        assertion(Val =:= 6 + 0 + 8). % Le résultat attendu est la somme des évaluations des coureurs
-
-
-    % Test de player_eval pour un joueur avec des coureurs en case non chance
-    test(player_eval_non_case_chance) :-
-        Cards = [1, 2, 4 ,8],
-        player_eval([[(5, 2), (5, 3), (6, 1)], Cards], Val),
-        assertion(Val =:= 0). % Le résultat attendu est 0 car ce ne sont pas des cases chance
-
-    % Test de player_eval pour un joueur avec un cycliste sur la  case 102
-    test(player_eval_case_102) :-
-        Cards = [1, 2, 4 ,8],
-        cyclist_eval((102, 1), Cards, Val),
-        assertion(Val =:= 20). % Le résultat attendu est 20 car se trouve à la case 102
+            set_cyclist_position("Italie", 1, 0, 0), 
+            set_cyclist_position("Italie", 2, 0, 0), 
+            set_cyclist_position("Italie", 3, 0, 0),
     
-    % Test de player_eval pour un joueur avec un cycliste sur une case supplémentaire 
-    test(player_eval_case_supp) :-
-        Cards = [1, 2, 4 ,8],
-        cyclist_eval((105, 1), Cards, Val),
-        assertion(Val =:= 105). % Le résultat attendu est 105 car se trouve à la case 105
+            set_cyclist_position("Hollande", 1, 0, 0), 
+            set_cyclist_position("Hollande", 2, 0, 0), 
+            set_cyclist_position("Hollande", 3, 0, 0),
+    
+            set_cyclist_position("Allemagne", 1, 0, 0), 
+            set_cyclist_position("Allemagne", 2, 0, 0), 
+            set_cyclist_position("Allemagne", 3, 0, 0),
+
+            set_player_cards("Belgique", [1, 2, 4 ,8]),
+            set_player_cards("Italie", [4, 5, 6]),
+            set_player_cards("Hollande", [7, 8, 9]),
+            set_player_cards("Allemagne", [10, 11, 12]),
+
+            Cards = [1, 2, 4 ,8],
+            cyclist_eval((9, 1), Cards, Val),
+            assertion(Val =:= 6). % Le résultat attendu est 9 - 3 = 6
+
+    
+        % Test de cyclist_eval pour une case non chance
+        test(cyclist_eval_non_case_chance) :-
+            set_cyclist_position("Belgique", 1, 0, 0), 
+            set_cyclist_position("Belgique", 2, 0, 0), 
+            set_cyclist_position("Belgique", 3, 0, 0),
+
+            set_cyclist_position("Italie", 1, 0, 0), 
+            set_cyclist_position("Italie", 2, 0, 0), 
+            set_cyclist_position("Italie", 3, 0, 0),
+    
+            set_cyclist_position("Hollande", 1, 0, 0), 
+            set_cyclist_position("Hollande", 2, 0, 0), 
+            set_cyclist_position("Hollande", 3, 0, 0),
+    
+            set_cyclist_position("Allemagne", 1, 0, 0), 
+            set_cyclist_position("Allemagne", 2, 0, 0), 
+            set_cyclist_position("Allemagne", 3, 0, 0),
+
+            Cards = [1, 2, 4 ,8],
+            cyclist_eval((5, 2), Cards, Val),
+            assertion(Val =:= 5). % Le résultat attendu est 0 car ce n'est pas une case chance
+    
+    
+        % Test de player_eval pour un joueur avec des coureurs en case chance
+        test(player_eval_case_chance) :-
+            set_cyclist_position("Belgique", 1, 0, 0), 
+            set_cyclist_position("Belgique", 2, 0, 0), 
+            set_cyclist_position("Belgique", 3, 0, 0),
+
+            set_cyclist_position("Italie", 1, 0, 0), 
+            set_cyclist_position("Italie", 2, 0, 0), 
+            set_cyclist_position("Italie", 3, 0, 0),
+    
+            set_cyclist_position("Hollande", 1, 0, 0), 
+            set_cyclist_position("Hollande", 2, 0, 0), 
+            set_cyclist_position("Hollande", 3, 0, 0),
+    
+            set_cyclist_position("Allemagne", 1, 0, 0), 
+            set_cyclist_position("Allemagne", 2, 0, 0), 
+            set_cyclist_position("Allemagne", 3, 0, 0),
+
+            Cards = [1, 2, 4 ,8],
+            player_eval([[(9, 1), (4, 2), (11, 1)], Cards], Val),
+            assertion(Val =:= 6 + 4 + 8). % Le résultat attendu est la somme des évaluations des coureurs
 
 
+        % Test de player_eval pour un joueur avec des coureurs en case non chance
+        test(player_eval_non_case_chance) :-
+            set_cyclist_position("Belgique", 1, 0, 0), 
+            set_cyclist_position("Belgique", 2, 0, 0), 
+            set_cyclist_position("Belgique", 3, 0, 0),
+
+            set_cyclist_position("Italie", 1, 0, 0), 
+            set_cyclist_position("Italie", 2, 0, 0), 
+            set_cyclist_position("Italie", 3, 0, 0),
+    
+            set_cyclist_position("Hollande", 1, 0, 0), 
+            set_cyclist_position("Hollande", 2, 0, 0), 
+            set_cyclist_position("Hollande", 3, 0, 0),
+    
+            set_cyclist_position("Allemagne", 1, 0, 0), 
+            set_cyclist_position("Allemagne", 2, 0, 0), 
+            set_cyclist_position("Allemagne", 3, 0, 0),
+
+            Cards = [1, 2, 4 ,8],
+            player_eval([[(5, 2), (5, 3), (6, 1)], Cards], Val),
+            assertion(Val =:= 16). % Le résultat attendu est 16 car ce ne sont pas des cases chance
+
+        % Test de player_eval pour un joueur avec un cycliste sur la  case 102
+        test(player_eval_case_102) :-
+            set_cyclist_position("Belgique", 1, 0, 0), 
+            set_cyclist_position("Belgique", 2, 0, 0), 
+            set_cyclist_position("Belgique", 3, 0, 0),
+
+            set_cyclist_position("Italie", 1, 0, 0), 
+            set_cyclist_position("Italie", 2, 0, 0), 
+            set_cyclist_position("Italie", 3, 0, 0),
+    
+            set_cyclist_position("Hollande", 1, 0, 0), 
+            set_cyclist_position("Hollande", 2, 0, 0), 
+            set_cyclist_position("Hollande", 3, 0, 0),
+    
+            set_cyclist_position("Allemagne", 1, 0, 0), 
+            set_cyclist_position("Allemagne", 2, 0, 0), 
+            set_cyclist_position("Allemagne", 3, 0, 0),
+
+            Cards = [1, 2, 4 ,8],
+            cyclist_eval((102, 1), Cards, Val),
+            assertion(Val =:= 122). % Le résultat attendu est 122 car se trouve à la case 102
         
-:- end_tests(state_init).
+        % Test de player_eval pour un joueur avec un cycliste sur une case supplémentaire 
+        test(player_eval_case_supp) :-
+            set_cyclist_position("Belgique", 1, 0, 0), 
+            set_cyclist_position("Belgique", 2, 0, 0), 
+            set_cyclist_position("Belgique", 3, 0, 0),
 
-%bite
+            set_cyclist_position("Italie", 1, 0, 0), 
+            set_cyclist_position("Italie", 2, 0, 0), 
+            set_cyclist_position("Italie", 3, 0, 0),
+    
+            set_cyclist_position("Hollande", 1, 0, 0), 
+            set_cyclist_position("Hollande", 2, 0, 0), 
+            set_cyclist_position("Hollande", 3, 0, 0),
+    
+            set_cyclist_position("Allemagne", 1, 0, 0), 
+            set_cyclist_position("Allemagne", 2, 0, 0), 
+            set_cyclist_position("Allemagne", 3, 0, 0),
+
+            Cards = [1, 2, 4 ,8],
+            cyclist_eval((105, 1), Cards, Val),
+            assertion(Val =:= 105). % Le résultat attendu est 105 car se trouve à la case 105
+
+        test(player_eval_case_chute) :-
+            set_cyclist_position("Belgique", 1, 4, 3), 
+            set_cyclist_position("Belgique", 2, 4, 2), 
+            set_cyclist_position("Belgique", 3, 4, 1),
+
+            set_cyclist_position("Italie", 1, 0, 0), 
+            set_cyclist_position("Italie", 2, 0, 0), 
+            set_cyclist_position("Italie", 3, 0, 0),
+    
+            set_cyclist_position("Hollande", 1, 0, 0), 
+            set_cyclist_position("Hollande", 2, 0, 0), 
+            set_cyclist_position("Hollande", 3, 0, 0),
+    
+            set_cyclist_position("Allemagne", 1, 0, 0), 
+            set_cyclist_position("Allemagne", 2, 0, 0), 
+            set_cyclist_position("Allemagne", 3, 0, 0),
+
+            Cards = [1, 2, 4 ,8],
+            cyclist_eval((4, 1), Cards, Val),
+            assertion(Val =:= -16). % Le résultat attendu est -16 car chute
+
+
+
+        test(global) :-
+            set_cyclist_position("Belgique", 1, 4, 1), 
+            set_cyclist_position("Belgique", 2, 4, 2), 
+            set_cyclist_position("Belgique", 3, 4, 3),
+    
+            set_cyclist_position("Italie", 1, 11, 1), 
+            set_cyclist_position("Italie", 2, 11, 2), 
+            set_cyclist_position("Italie", 3, 102, 1),
+    
+            set_cyclist_position("Hollande", 1, 105, 1), 
+            set_cyclist_position("Hollande", 2, 1, 1), 
+            set_cyclist_position("Hollande", 3, 6, 2),
+    
+            set_cyclist_position("Allemagne", 1, 9, 1), 
+            set_cyclist_position("Allemagne", 2, 88, 1), 
+            set_cyclist_position("Allemagne", 3, 100, 1),
+    
+            set_player_cards("Belgique", [1, 2, 4 ,8, 2]),
+            set_player_cards("Italie", [4, 5, 6, 12, 4]),
+            set_player_cards("Hollande", [7, 8, 9, 5, 9]),
+            set_player_cards("Allemagne", [10, 11, 12, 1, 4]),
+    
+    
+            stateInit("Belgique", [Be1, Be2, Be3], Cards1),
+            stateInit("Italie", [It1, It2, It3], Cards2),
+            stateInit("Hollande", [Hol1, Hol2, Hol3], Cards3),
+            stateInit("Allemagne", [All1, All2, All3], Cards4),
+    
+            %player(Belgique,Val1).
+            player([Belgique, Italie, Hollande, Allemagne, 1], [Val1, Val2, Val3, Val4]). 
+
+
+
+    :- end_tests(evaluate).

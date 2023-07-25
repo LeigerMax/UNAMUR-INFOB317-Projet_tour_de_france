@@ -1,3 +1,4 @@
+:- use_module(library(clpfd)).
 :- consult('etat.pl').
 
 % PlayerWhoPlay 
@@ -70,55 +71,54 @@
 % Case vierge : Val                         
 % Case 89 - 102 : Val + 2                   OK
 
-
 player([Belgique, Italie, Hollande, Allemagne, PlayerCurrent], [Val1, Val2, Val3, Val4]) :-
     player_eval(Belgique, Val1),
     player_eval(Italie, Val2),
     player_eval(Hollande, Val3),
     player_eval(Allemagne, Val4).
     
-player_eval([[Coureur1, Coureur2, Coureur3], Cards], Val):-
-    writeln("Cy "+Coureur1),writeln("Cartes" +Cards),
-    %cyclist_eval(Coureur, Cards, Val).
-    cyclist_eval(Coureur1, Cards, Val1),
-    cyclist_eval(Coureur2, Cards, Val2),
-    cyclist_eval(Coureur3, Cards, Val3),
-    Val is Val1 + Val2 + Val3.
+% player_eval([[Coureur1, Coureur2, Coureur3], Cards], Val):-
+%     writeln("TEST "+ Coureur1),
+%     cyclist_eval(Coureur1, Cards, Val1),
+%     cyclist_eval(Coureur2, Cards, Val2),
+%     cyclist_eval(Coureur3, Cards, Val3),
+%     writeln("TEST 2 "+ Coureur1),
+%     Val is Val1 + Val2 + Val3.
 
 
-player_eval([[Coureur | AutreCoureur], Cards], Val1):-
+player_eval([], _, 0).
+
+%player_eval([[Coureur | AutreCoureur], Cards], Val1):-
+%    cyclist_eval(Coureur, Cards, Val2),
+%    player_eval([[AutreCoureur], Cards], Val3),
+%    Val1 is Val2 + Val3,
+%    writeln("Test", Coureur).
+
+player_eval([[Coureur | AutreCoureur], Cards], Val1) :-
     cyclist_eval(Coureur, Cards, Val2),
     player_eval([[AutreCoureur], Cards], Val3),
-    Val1 is Val2 + Val3.
-
-    
-% Global 
-cyclist_eval((Ligne, Colonne), Cards, Val) :-
-    \+ case_chance(Ligne, Colonne), % Vérifie si la case n'est pas une "case chance"
-    \+ is_case_supplementaire(Ligne), % Vérifie si la case n'est pas une "case supplementaire"
-    \+ exclude_lines(Ligne), % Vérifie que la ligne n'est pas comprise entre 89 et 102
-    Ligne =\= 102, % Vérifie si la case n'est pas la case finale
-    writeln("TEST AFTER case vierge "+Ligne + Colonne),
-    Val is 0. % Exemple d'évaluation pour une case non chance TODO: Mettre ligne ?
+    Val1 is Val2 + Val3,
+    writeln("Test ", Coureur).
 
 % Exclure les lignes comprises entre 89 et 102
 exclude_lines(Ligne) :- Ligne >= 89, Ligne =< 102.
 
+
 % Ligne 102
 cyclist_eval((102, Colonne), Cards, Val) :- 
     writeln("Ligne 102"),
-    Val is 20.
+    Val is 102 + 20.
 
 % Case supplémentaire
 cyclist_eval((Ligne, Colonne), Cards, Val) :- 
-    writeln("TEST BEFORE "+Ligne + Colonne),
+    writeln("TEST BEFORE supplementaire "+Ligne + Colonne),
     is_case_supplementaire(Ligne),
     writeln("TEST AFTER OK supplementaire "+Ligne + Colonne),
     Val is Ligne.
 
 % Case chance
 cyclist_eval((Ligne, Colonne), Cards, Val) :-
-    writeln("TEST BEFORE "+Ligne + Colonne),
+    writeln("TEST BEFORE Chance "+Ligne + Colonne),
     case_chance(Ligne, Colonne),
     writeln("TEST AFTER OK Chance "+Ligne + Colonne),
     Val is Ligne - 3. % Exemple d'évaluation pour une "case chance"
@@ -128,6 +128,24 @@ cyclist_eval((Ligne, _), _, Val) :-
     Ligne >= 89,
     Ligne =< 102,
     Val is Ligne + 2.
+
+% Chute
+cyclist_eval((Ligne, Colonne), Cards, Val) :- 
+    writeln("TEST BEFORE Chute "+Ligne + Colonne),
+    \+ case_disponible_et_presente(Ligne),
+    writeln("TEST AFTER OK Chute "+Ligne + Colonne),
+    Val is Ligne -20.
+    
+    
+% Global 
+cyclist_eval((Ligne, Colonne), Cards, Val) :-
+    \+ case_chance(Ligne, Colonne), % Vérifie si la case n'est pas une "case chance"
+    \+ is_case_supplementaire(Ligne), % Vérifie si la case n'est pas une "case supplementaire"
+    \+ exclude_lines(Ligne), % Vérifie que la ligne n'est pas comprise entre 89 et 102
+    case_disponible_et_presente(Ligne), % Vérifie que la ligne ne provoque pas de chute 
+    Ligne =\= 102, % Vérifie si la case n'est pas la case finale
+    writeln("TEST AFTER case vierge "+Ligne + Colonne),
+    Val is Ligne. % Exemple d'évaluation pour une case non chance TODO: Mettre ligne ?
 
 
 /*************************/

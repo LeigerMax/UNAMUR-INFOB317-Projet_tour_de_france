@@ -347,6 +347,7 @@ case_disponible_et_presente(LigneArrivee, 2, Chute,ColonneChoix, Disponible) :-
     ).
 
 
+
 avancer_cycliste(PlayerId, CyclisteId, Card, ColonneChoix, Chute) :-
     get_cyclist_position(PlayerId, CyclisteId, LigneActuelle, ColonneActuelle),
     LigneArrivee is LigneActuelle + Card,
@@ -360,3 +361,10 @@ avancer_cycliste(PlayerId, CyclisteId, Card, ColonneChoix, Chute) :-
     writeln('Le cycliste ' + PlayerId + ' - ' + CyclisteId + ' avancera a la case (' + LigneArrivee + ', ' + ColonneChoix + ').'). 
 
 
+% Vérifie si une case est disponible, présente sur le plateau, et accessible dans l'une des 4 colonnes possibles
+% Entrées : LigneArrivee
+case_disponible_et_presente(LigneArrivee) :-
+    % Vérifier pour chaque colonne possible
+    between(1, 4, ColonneChoix),
+    case_disponible(LigneArrivee, ColonneChoix),
+    case_presente(LigneArrivee, ColonneChoix).
