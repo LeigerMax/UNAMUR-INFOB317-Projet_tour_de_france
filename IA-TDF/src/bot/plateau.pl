@@ -250,8 +250,8 @@ is_case_supplementaire(Ligne) :-
 % Entrées : Ligne, Colonne
 case_presente(Ligne, Colonne) :-
     plateau(Plateau),
-    member([Ligne, Colonne, _, true], Plateau),
-    writeln('Case presente : Ligne ' + Ligne + ', Colonne ' + Colonne).
+    member([Ligne, Colonne, _, true], Plateau).
+    %writeln('Case presente : Ligne ' + Ligne + ', Colonne ' + Colonne).
 
 
 % Vérifie si une case est une case chance
@@ -286,8 +286,8 @@ case_disponible(Ligne, Colonne) :-
                 !
             )
         )
-    ),
-    writeln('Case disponible : Ligne ' + Ligne + ', Colonne ' + Colonne).
+    ).
+    %writeln('Case disponible : Ligne ' + Ligne + ', Colonne ' + Colonne).
 
 
 % Vérifie si une case est disponible (aucun cycliste présent)
