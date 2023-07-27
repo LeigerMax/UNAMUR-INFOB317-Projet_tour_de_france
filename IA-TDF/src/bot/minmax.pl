@@ -1,4 +1,5 @@
 :- use_module(library(clpfd)).
+:- use_module(library(lists)).
 :- consult('etat.pl').
 
 % PlayerWhoPlay 
@@ -14,14 +15,11 @@
 
 maxmax(State, BestNoeud, ValueNoeud, Depth) :-
     Depth > 0,
-    %bagof(ChildNoeud, move(State, ChildNoeud, Depth), ChildNoeudList),
     move(State, ChildNoeudList, Depth),
     NewDepth is Depth - 1,
     bestmove(ChildNoeudList, BestNoeud, ValueNoeud, NewDepth), !
     ;
-    writeln("State "+State),
-    evaluate([_,_,_,_,State], ValueNoeud),
-    writeln("TEST maxmax ValueNoeud "+ValueNoeud). 
+    evaluate([_,_,_,_,State], ValueNoeud).
 
 /***********************/
 
@@ -30,17 +28,13 @@ maxmax(State, BestNoeud, ValueNoeud, Depth) :-
 /******* BEST MOVE *******/
 bestmove([], _, _, _).
 
-best([Node], Node, Value, Depth) :-
-    maxmax(Node, _, Value, Depth), !. 
+bestmove([Node], Node, ValueNoeud, Depth) :-
+    maxmax(Node, _, ValueNoeud, Depth), !. 
 
-bestmove([ChildNoeud | ChildNoeudList], BestNoeud, Value, Depth) :-
-    writeln("TEST ChildNoeud 1 "+ChildNoeud),
-    writeln("TEST ChildNoeudList 2 "+ChildNoeudList),
-    maxmax(ChildNoeud, _, FirstValue, Depth),
-    writeln("TEST bestmove 2 "+FirstValue),
-    bestmove(ChildNoeudList, SecondNode, SecondValue, Depth),
-    %writeln("TEST bestmove 3 "+SecondValue),
-    betterof(ChildNoeud, ValueNoeud, SecondNoeud, ValueSecondNoeud, BestNoeud, BestValue).
+bestmove([ChildNoeud | ChildNoeudList], BestNoeud, BestValue, Depth) :-
+    maxmax(ChildNoeud, _, ValuePremierNoeud, Depth),
+    bestmove(ChildNoeudList, SecondNoeud, ValueSecondNoeud, Depth),
+    betterof(ChildNoeud, ValuePremierNoeud, SecondNoeud, ValueSecondNoeud, BestNoeud, BestValue).
 
 
 /**************************/
@@ -48,9 +42,15 @@ bestmove([ChildNoeud | ChildNoeudList], BestNoeud, Value, Depth) :-
 
 /******* BETTER OF *******/
 betterof(PremierNoeud, ValuePremierNoeud, SecondNoeud, ValueSecondNoeud, PremierNoeud, ValuePremierNoeud) :-
-   % writeln("TEST PremierNoeud "+ValuePremierNoeud),
-   % writeln("TEST TempBestValue "+ValuePremierNoeud),
-    ValuePremierNoeud #> ValueSecondNoeud.
+    writeln("TEST BETTEROF PremierNoeud " + PremierNoeud),
+    writeln("TEST BETTEROF ValuePremierNoeud " + ValuePremierNoeud),
+    writeln("TEST BETTEROF SecondNoeud " + SecondNoeud),
+    writeln("TEST BETTEROF ValueSecondNoeud " + ValueSecondNoeud),
+    sum_list(ValuePremierNoeud, SumPremierNoeud),
+    sum_list(ValueSecondNoeud, SumSecondNoeud),
+    writeln("SumPremierNoeud " + SumPremierNoeud),
+    writeln("SumSecondNoeud " + SumSecondNoeud),
+    SumPremierNoeud > SumSecondNoeud.
 
 betterof(_, _, SecondNoeud, ValueSecondNoeud, SecondNoeud, ValueSecondNoeud).
 
@@ -71,6 +71,17 @@ betterof(_, _, SecondNoeud, ValueSecondNoeud, SecondNoeud, ValueSecondNoeud).
 % Case vierge : Val                         OK      
 % Case 89 - 102 : Val + 2                   OK
 
+% Décomposition de PlayerCurrent
+decompose(PlayerCurrent, Pays, Coureurs, Cartes) :-
+    PlayerCurrent = [Pays, Coureurs, Cartes].
+
+% Décomposition de la liste des coureurs
+decompose_coureurs([], [], [], []).
+decompose_coureurs([(A, B) | Reste], Coureur1, Coureur2, Coureur3) :-
+    Coureur1 = (A, B),
+    decompose_coureurs(Reste, Coureur2, Coureur3, []).
+
+
 evaluate([Belgique, Italie, Hollande, Allemagne, PlayerCurrent], [Val1, Val2, Val3, Val4]) :-
     stateInit("Belgique", [Be1, Be2, Be3], Cards1),
     stateInit("Italie", [It1, It2, It3], Cards2),
@@ -80,18 +91,37 @@ evaluate([Belgique, Italie, Hollande, Allemagne, PlayerCurrent], [Val1, Val2, Va
    % player_eval([It1, It2, It3], Cards2, Val2),
    % player_eval([Hol1, Hol2, Hol3], Cards3, Val3),
    % player_eval([All1, All2, All3], Cards4, Val4),
-    writeln("PlayerCurrent " +PlayerCurrent),
-    stateInit(PlayerCurrent, [C1, C2, C3], Cards), %ICI il récupère les éléments de base, mais nous nous voulons qu'il récupère son state
-    writeln("Cards " +C1),
-    (PlayerCurrent = "Belgique"
-        -> player_eval([C1, C2, C3], Cards, Val1),
+    decompose(PlayerCurrent, Pays, Coureurs, Cards),
+    decompose_coureurs(Coureurs, Coureur1, Coureur2, Coureur3),
+    (Pays = "Belgique"
+        -> player_eval([Coureur1, Coureur2, Coureur3], Cards, Val1),
             player_eval([It1, It2, It3], Cards2, Val2),
             player_eval([Hol1, Hol2, Hol3], Cards3, Val3),
-            player_eval([All1, All2, All3], Cards4, Val4),
-            writeln("OK")
-        ; writeln("KO")
+            player_eval([All1, All2, All3], Cards4, Val4)
+            ; writeln("KO")
     ),
-    writeln("BELGIQUE "+Val1).
+    (Pays = "Italie"
+        -> player_eval([Be1, Be2, Be3], Cards1, Val1),
+            player_eval([Coureur1, Coureur2, Coureur3], Cards, Val2),
+            player_eval([Hol1, Hol2, Hol3], Cards3, Val3),
+            player_eval([All1, All2, All3], Cards4, Val4)
+            ; writeln("KO")
+    ),
+    (Pays = "Hollande"
+        -> player_eval([Be1, Be2, Be3], Cards1, Val1),
+            player_eval([It1, It2, It3], Cards2, Val2),
+            player_eval([Coureur1, Coureur2, Coureur3], Cards, Val3),
+            player_eval([All1, All2, All3], Cards4, Val4)
+            ; writeln("KO")
+    ),
+    (Pays = "Allemagne"
+        -> player_eval([Be1, Be2, Be3], Cards1, Val1),
+            player_eval([It1, It2, It3], Cards2, Val2),
+            player_eval([Hol1, Hol2, Hol3], Cards3, Val3),
+            player_eval([Coureur1, Coureur2, Coureur3], Cards, Val4)
+            ; writeln("KO")
+    ).
+
 
 
   
@@ -99,6 +129,7 @@ player_eval([Coureur1, Coureur2, Coureur3], Cards, Val):-
     cyclist_eval(Coureur1, Cards, Val1),
     cyclist_eval(Coureur2, Cards, Val2),
     cyclist_eval(Coureur3, Cards, Val3),
+   
     Val is Val1 + Val2 + Val3.
 
 
@@ -146,14 +177,22 @@ cyclist_eval((Ligne, Colonne), Cards, Val) :-
 
 
 /********* MOVE **********/
+% Nouvelle save des cards restantes
+% Choix cycliste
+% Choix State
+% Edit move afin de faire une boucle en fonction du nombre de cards
+
 move(State, ChildNoeud, Depth) :- 
     get_player_cards(State, Cards),
+    length(Cards, Longueur),
     move(State, Cards, ChildNoeud1, NewCards1, Depth),
     move(State, NewCards1, ChildNoeud2, NewCards2, Depth),
     move(State, NewCards2, ChildNoeud3, NewCards3, Depth),
     move(State, NewCards3, ChildNoeud4, NewCards4, Depth),
     move(State, NewCards4, ChildNoeud5, NewCards5, Depth),
     append([[ChildNoeud1], [ChildNoeud2], [ChildNoeud3], [ChildNoeud4], [ChildNoeud5]], ChildNoeud).
+
+
 
 take_card([Card | Cards], Card).
 take_card([_,Cards], Card) :-

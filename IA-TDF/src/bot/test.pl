@@ -536,16 +536,17 @@
         set_cyclist_position("Allemagne", 2, 88, 1), 
         set_cyclist_position("Allemagne", 3, 100, 1),
 
-        set_player_cards("Belgique", [5,2,4,8,2]),
+        set_player_cards("Belgique", [5,12,4,9,12]),
         set_player_cards("Italie", [4,5,6,12,4]),
         set_player_cards("Hollande", [7,8,9,5,9]),
         set_player_cards("Allemagne", [10,11,12,1,4]),
 
-        evaluate([_,_,_,_,_], [Value,_,_,_]),
-        format("Valeur Before Belgique : ~w~n", [Value]),
+        %evaluate([_,_,_,_,_], [Value,_,_,_]),
+        %format("Valeur Before Belgique : ~w~n", [Value]),
         % Appel au prédicat maxmax pour l'état initial
         maxmax("Belgique", BestNoeud, ValueNoeud, 1),
-        format("Valeur du meilleur coup : ~w~n", [ValueNoeud]).
+        format("Valeur du meilleur coup : ~w~n", [ValueNoeud]),
+        writeln("Meilleur coup "+ [BestNoeud]).
 
 
 

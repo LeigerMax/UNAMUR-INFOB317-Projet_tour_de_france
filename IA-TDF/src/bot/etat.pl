@@ -69,9 +69,6 @@ stateInit(PlayerId, [Coureur1, Coureur2, Coureur3], Cards):-
     Coureur1 = (Ligne1, Colonne1),
     Coureur2 = (Ligne2, Colonne2),
     Coureur3 = (Ligne3, Colonne3),
-    PaysVariable = ([Coureur1, Coureur2, Coureur3], Cards),
-    writeln(PaysVariable).
-
-
+    PaysVariable = ([Coureur1, Coureur2, Coureur3], Cards).
 
 
