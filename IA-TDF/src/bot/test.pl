@@ -544,7 +544,7 @@
         %evaluate([_,_,_,_,_], [Value,_,_,_]),
         %format("Valeur Before Belgique : ~w~n", [Value]),
         % Appel au prédicat maxmax pour l'état initial
-        maxmax("Belgique", BestNoeud, ValueNoeud, 1),
+        maxmax("Belgique", BestNoeud, ValueNoeud, 2),
         format("Valeur du meilleur coup : ~w~n", [ValueNoeud]),
         writeln("Meilleur coup "+ [BestNoeud]).
 

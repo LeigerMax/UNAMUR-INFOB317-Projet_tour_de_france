@@ -15,7 +15,7 @@
 
 maxmax(State, BestNoeud, ValueNoeud, Depth) :-
     Depth > 0,
-    move(State, ChildNoeudList, Depth),
+    move(State, ChildNoeudList),
     NewDepth is Depth - 1,
     bestmove(ChildNoeudList, BestNoeud, ValueNoeud, NewDepth), !
     ;
@@ -87,10 +87,6 @@ evaluate([Belgique, Italie, Hollande, Allemagne, PlayerCurrent], [Val1, Val2, Va
     stateInit("Italie", [It1, It2, It3], Cards2),
     stateInit("Hollande", [Hol1, Hol2, Hol3], Cards3),
     stateInit("Allemagne", [All1, All2, All3], Cards4),
-   % player_eval([Be1,Be2,Be3], Cards1, Val1),
-   % player_eval([It1, It2, It3], Cards2, Val2),
-   % player_eval([Hol1, Hol2, Hol3], Cards3, Val3),
-   % player_eval([All1, All2, All3], Cards4, Val4),
     decompose(PlayerCurrent, Pays, Coureurs, Cards),
     decompose_coureurs(Coureurs, Coureur1, Coureur2, Coureur3),
     (Pays = "Belgique"
@@ -182,17 +178,54 @@ cyclist_eval((Ligne, Colonne), Cards, Val) :-
 % Choix State
 % Edit move afin de faire une boucle en fonction du nombre de cards
 
-move(State, ChildNoeud, Depth) :- 
+%Les cartes restantes à tester      : CardsRestantes
+%Les cartes jouer 	                : CardPlay
+%Le deck complet		            : Cards
+%Les cartes qui n'ont pas été jouer : CardsDontPlay
+
+move(State, ChildNoeudList) :- 
     get_player_cards(State, Cards),
     length(Cards, Longueur),
-    move(State, Cards, ChildNoeud1, NewCards1, Depth),
-    move(State, NewCards1, ChildNoeud2, NewCards2, Depth),
-    move(State, NewCards2, ChildNoeud3, NewCards3, Depth),
-    move(State, NewCards3, ChildNoeud4, NewCards4, Depth),
-    move(State, NewCards4, ChildNoeud5, NewCards5, Depth),
-    append([[ChildNoeud1], [ChildNoeud2], [ChildNoeud3], [ChildNoeud4], [ChildNoeud5]], ChildNoeud).
+    (Longueur = 5
+        ->   move(State, Cards, Cards, ChildNoeud1, CardsRestantes),
+             move(State, CardsRestantes, Cards, ChildNoeud2, CardsRestantes2),
+             move(State, CardsRestantes2, Cards, ChildNoeud3, CardsRestantes3),
+             move(State, CardsRestantes3, Cards, ChildNoeud4, CardsRestantes4),
+             move(State, CardsRestantes4, Cards, ChildNoeud5, CardsRestantes5),
+             TmpChildNoeudList = [[ChildNoeud1], [ChildNoeud2], [ChildNoeud3], [ChildNoeud4], [ChildNoeud5]]
+        ;   (Longueur = 4
+                ->  move(State, Cards, Cards, ChildNoeud1, CardsRestantes),
+                    move(State, CardsRestantes, Cards, ChildNoeud2, CardsRestantes2),
+                    move(State, CardsRestantes2, Cards, ChildNoeud3, CardsRestantes3),
+                    move(State, CardsRestantes3, Cards, ChildNoeud4, CardsRestantes4),
+                    TmpChildNoeudList = [[ChildNoeud1], [ChildNoeud2], [ChildNoeud3], [ChildNoeud4]]
+                ;   (Longueur = 3
+                        ->  move(State, Cards, Cards, ChildNoeud1, CardsRestantes),
+                            move(State, CardsRestantes, Cards, ChildNoeud2, CardsRestantes2),
+                            move(State, CardsRestantes2, Cards, ChildNoeud3, CardsRestantes3),
+                            TmpChildNoeudList = [[ChildNoeud1], [ChildNoeud2], [ChildNoeud3]]
+                        ;   (Longueur = 2
+                                ->  move(State, Cards, Cards, ChildNoeud1, CardsRestantes),
+                                    move(State, CardsRestantes, Cards, ChildNoeud2, _),
+                                    TmpChildNoeudList = [[ChildNoeud1], [ChildNoeud2]]
+                                ;   (Longueur = 1
+                                        ->  move(State, Cards, Cards, ChildNoeud1, _),
+                                            TmpChildNoeudList = [[ChildNoeud1]]
+                                        ;   writeln("KO")
+                                    )
+                            )
+                    )
+            )
+    ),
+    append(TmpChildNoeudList, ChildNoeudList).
 
 
+    
+
+move(State, CardsRestantes, Cards, NewState, NewCardsRestantes) :- 
+    take_card(CardsRestantes,Card),
+    avancer_cycliste2(State,CardsRestantes, 1, Card, Cards, NewState, NewCardsRestantes).
+    
 
 take_card([Card | Cards], Card).
 take_card([_,Cards], Card) :-
@@ -201,49 +234,27 @@ take_card([_,Cards], Card) :-
 
 get_player_cards(PlayerId, Cards).
 
-move(State, Cards, NewState, NewCards, Depth) :- 
-    take_card(Cards,Card),
-    avancer_cycliste2(State,Cards, 1, Card, NewState, NewCards). 
 
-
-avancer_cycliste2(State,Cards, SelectedCyclist, Card, NewState, NewCards) :-
+avancer_cycliste2(State,CardsRestantes, SelectedCyclist, Card, Cards, NewState, NewCardsRestantes) :-
     get_cyclist_position(State, SelectedCyclist, LigneAvant, ColonneAvant),
     NewLigne is LigneAvant + Card,
     NewColonne is 1,
     \+ is_case_supplementaire(NewLigne),
-    %set_cyclist_position(State, SelectedCyclist, NewLigne, NewColonne),
-    remove_card3(Cards, NewCards2),
-    % Mettre à jour le nouvel état en fonction des nouveaux coureurs et cartes
+    remove_first_elem(CardsRestantes, NewCardsRestantes),
+    remove_card2(Card, Cards, CardsDontPlay),
     get_cyclist_position(State, 1, NewLigne1, NewColonne1),
     get_cyclist_position(State, 2, NewLigne2, NewColonne2),
     get_cyclist_position(State, 3, NewLigne3, NewColonne3),
-   
-    NewState = [State, [(NewLigne, NewColonne), (NewLigne2, NewColonne2), (NewLigne3, NewColonne3)], NewCards2],
-    NewCards = NewCards2,
+    NewState = [State, [(NewLigne, NewColonne), (NewLigne2, NewColonne2), (NewLigne3, NewColonne3)], CardsDontPlay],
     writeln("NewState "+NewState).
 
 
+remove_first_elem([_|Rest], Rest).
+
 % Prédicat pour retirer une carte d'une liste de cartes
 remove_card2(Card, Cards, NewCards) :-
-    writeln("Cards" + Cards),
-    (   select(Card, Cards, NewCards)
-    -> writeln("La carte est  presente dans la liste " + Card)
-    ;   writeln("La carte n'est pas presente dans la liste." + Card)
-    ).
+    select(Card, Cards, NewCards).
 
-remover( _, [], []).
-remover( R, [R|T], T).
-remover( R, [H|T], [H|T2]) :- 
-    H \= R, 
-    remover( R, T, T2).
-
-remove_card3([_|Rest], Rest).
-
-/*
-remove_card2(Element, [Element|Rest], Rest).
-remove_card2(Element, [X|Rest], [X|NewRest]) :-
-    remove_card2(Element, Rest, NewRest).
-*/
 /*************************/
 
 /********* MOVE **********/
