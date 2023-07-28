@@ -258,8 +258,8 @@ case_presente(Ligne, Colonne) :-
 % Entrées : Ligne, Colonne
 case_chance(Ligne, Colonne) :-
     plateau(Plateau),
-    member([Ligne, Colonne, true, _], Plateau),
-    writeln('Case chance : Ligne ' + Ligne + ', Colonne ' + Colonne).
+    member([Ligne, Colonne, true, _], Plateau).
+    %writeln('Case chance : Ligne ' + Ligne + ', Colonne ' + Colonne).
 
 % Vérifie si une case est une case chance, et détermine la nouvelle colonne en conséquence.
 % Entrées : Ligne, Colonne

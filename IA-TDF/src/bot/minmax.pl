@@ -2,9 +2,50 @@
 :- use_module(library(lists)).
 :- consult('etat.pl').
 
-% PlayerWhoPlay 
+/******* WHO PLAY *******/
+maxPlayCount(3).
+
+% Prédicat pour obtenir le prochain joueur
+nextPlayer(Belgique, Italie).
+nextPlayer(Italie,Hollande).
+nextPlayer(Hollande,Allemange).
+nextPlayer(Allemagne,Belgique).
 
 
+% Save les etats de chaque joueur
+% trouver le joueur qui doit jouer (envoyer via le serveur)
+% chaque joueur peut jouer 3 fois
+% si il n'a pas jouer on prend le cycliste le plus loin (petite ligne)
+% si il a jouer une fois, on prend l'avant denier cycliste (moyenne ligne)
+% si il a jouer 2 fois, on prend le premier cycliste (grosse ligne)
+% si il a jouer 3 fois, on prend le joueur suivant
+
+
+% Prédicat pour initialiser l'état du jeu
+initGameState(StateB,StateI,StateH,StateA, State) :-
+    State = [[StateB, 0],
+    [StateI, 0],
+    [StateH, 0],
+    [StateA, 0]].
+
+
+% Prédicat pour mettre à jour l'état du jeu après que le joueur ait joué un tour
+updateGameState(Player, [Player, Coureurs, Cards, Counter], [Player, Coureurs, Cards, NewCounter]) :-
+    NewCounter is Counter + 1.
+
+% Prédicat pour obtenir le joueur qui doit jouer
+getCurrentPlayer([[Player|_]|_], Player).
+
+% Prédicat pour obtenir le cycliste suivant qui doit jouer en fonction du compteur de tours du joueur
+getNextCyclist([_, [Cyclist|_], _, 0], Cyclist).
+getNextCyclist([_, [_, Cyclist|_], _, 1], Cyclist).
+getNextCyclist([_, [_, _, Cyclist|_], _, 2], Cyclist).
+getNextCyclist([_, [_, _, _, Cyclist|_], _, 3], Cyclist).
+
+% Prédicat pour réinitialiser le compteur de tours d'un joueur à 0
+resetCounter([Player, Coureurs, Cards, _], [Player, Coureurs, Cards, 0]).
+
+/***********************/
 
 /******* MAX MAX *******/
 % State : Etat
@@ -15,7 +56,7 @@
 
 maxmax(State, BestNoeud, ValueNoeud, Depth) :-
     Depth > 0,
-    move(State, ChildNoeudList),
+    move(State, ChildNoeudList, Depth),
     NewDepth is Depth - 1,
     bestmove(ChildNoeudList, BestNoeud, ValueNoeud, NewDepth), !
     ;
@@ -42,14 +83,14 @@ bestmove([ChildNoeud | ChildNoeudList], BestNoeud, BestValue, Depth) :-
 
 /******* BETTER OF *******/
 betterof(PremierNoeud, ValuePremierNoeud, SecondNoeud, ValueSecondNoeud, PremierNoeud, ValuePremierNoeud) :-
-    writeln("TEST BETTEROF PremierNoeud " + PremierNoeud),
-    writeln("TEST BETTEROF ValuePremierNoeud " + ValuePremierNoeud),
-    writeln("TEST BETTEROF SecondNoeud " + SecondNoeud),
-    writeln("TEST BETTEROF ValueSecondNoeud " + ValueSecondNoeud),
+   % writeln("TEST BETTEROF PremierNoeud " + PremierNoeud),
+   % writeln("TEST BETTEROF ValuePremierNoeud " + ValuePremierNoeud),
+   % writeln("TEST BETTEROF SecondNoeud " + SecondNoeud),
+   % writeln("TEST BETTEROF ValueSecondNoeud " + ValueSecondNoeud),
     sum_list(ValuePremierNoeud, SumPremierNoeud),
     sum_list(ValueSecondNoeud, SumSecondNoeud),
-    writeln("SumPremierNoeud " + SumPremierNoeud),
-    writeln("SumSecondNoeud " + SumSecondNoeud),
+  % writeln("SumPremierNoeud " + SumPremierNoeud),
+  % writeln("SumSecondNoeud " + SumSecondNoeud),
     SumPremierNoeud > SumSecondNoeud.
 
 betterof(_, _, SecondNoeud, ValueSecondNoeud, SecondNoeud, ValueSecondNoeud).
@@ -94,28 +135,28 @@ evaluate([Belgique, Italie, Hollande, Allemagne, PlayerCurrent], [Val1, Val2, Va
             player_eval([It1, It2, It3], Cards2, Val2),
             player_eval([Hol1, Hol2, Hol3], Cards3, Val3),
             player_eval([All1, All2, All3], Cards4, Val4)
-            ; writeln("KO")
+            ; write("")
     ),
     (Pays = "Italie"
         -> player_eval([Be1, Be2, Be3], Cards1, Val1),
             player_eval([Coureur1, Coureur2, Coureur3], Cards, Val2),
             player_eval([Hol1, Hol2, Hol3], Cards3, Val3),
             player_eval([All1, All2, All3], Cards4, Val4)
-            ; writeln("KO")
+            ; write("")
     ),
     (Pays = "Hollande"
         -> player_eval([Be1, Be2, Be3], Cards1, Val1),
             player_eval([It1, It2, It3], Cards2, Val2),
             player_eval([Coureur1, Coureur2, Coureur3], Cards, Val3),
             player_eval([All1, All2, All3], Cards4, Val4)
-            ; writeln("KO")
+            ; write("")
     ),
     (Pays = "Allemagne"
         -> player_eval([Be1, Be2, Be3], Cards1, Val1),
             player_eval([It1, It2, It3], Cards2, Val2),
             player_eval([Hol1, Hol2, Hol3], Cards3, Val3),
             player_eval([Coureur1, Coureur2, Coureur3], Cards, Val4)
-            ; writeln("KO")
+            ; write("")
     ).
 
 
@@ -183,33 +224,33 @@ cyclist_eval((Ligne, Colonne), Cards, Val) :-
 %Le deck complet		            : Cards
 %Les cartes qui n'ont pas été jouer : CardsDontPlay
 
-move(State, ChildNoeudList) :- 
-    get_player_cards(State, Cards),
+move(State, ChildNoeudList, Depth) :- 
+    decompose(State, Pays, Coureurs, Cards),
     length(Cards, Longueur),
     (Longueur = 5
-        ->   move(State, Cards, Cards, ChildNoeud1, CardsRestantes),
-             move(State, CardsRestantes, Cards, ChildNoeud2, CardsRestantes2),
-             move(State, CardsRestantes2, Cards, ChildNoeud3, CardsRestantes3),
-             move(State, CardsRestantes3, Cards, ChildNoeud4, CardsRestantes4),
-             move(State, CardsRestantes4, Cards, ChildNoeud5, CardsRestantes5),
+        ->   move(State, Cards, Cards, ChildNoeud1, CardsRestantes, Depth),
+             move(State, CardsRestantes, Cards, ChildNoeud2, CardsRestantes2, Depth),
+             move(State, CardsRestantes2, Cards, ChildNoeud3, CardsRestantes3, Depth),
+             move(State, CardsRestantes3, Cards, ChildNoeud4, CardsRestantes4, Depth),
+             move(State, CardsRestantes4, Cards, ChildNoeud5, CardsRestantes5, Depth),
              TmpChildNoeudList = [[ChildNoeud1], [ChildNoeud2], [ChildNoeud3], [ChildNoeud4], [ChildNoeud5]]
         ;   (Longueur = 4
-                ->  move(State, Cards, Cards, ChildNoeud1, CardsRestantes),
-                    move(State, CardsRestantes, Cards, ChildNoeud2, CardsRestantes2),
-                    move(State, CardsRestantes2, Cards, ChildNoeud3, CardsRestantes3),
-                    move(State, CardsRestantes3, Cards, ChildNoeud4, CardsRestantes4),
+                ->  move(State, Cards, Cards, ChildNoeud1, CardsRestantes, Depth),
+                    move(State, CardsRestantes, Cards, ChildNoeud2, CardsRestantes2, Depth),
+                    move(State, CardsRestantes2, Cards, ChildNoeud3, CardsRestantes3, Depth),
+                    move(State, CardsRestantes3, Cards, ChildNoeud4, CardsRestantes4, Depth),
                     TmpChildNoeudList = [[ChildNoeud1], [ChildNoeud2], [ChildNoeud3], [ChildNoeud4]]
                 ;   (Longueur = 3
-                        ->  move(State, Cards, Cards, ChildNoeud1, CardsRestantes),
-                            move(State, CardsRestantes, Cards, ChildNoeud2, CardsRestantes2),
-                            move(State, CardsRestantes2, Cards, ChildNoeud3, CardsRestantes3),
+                        ->  move(State, Cards, Cards, ChildNoeud1, CardsRestantes, Depth),
+                            move(State, CardsRestantes, Cards, ChildNoeud2, CardsRestantes2, Depth),
+                            move(State, CardsRestantes2, Cards, ChildNoeud3, CardsRestantes3, Depth),
                             TmpChildNoeudList = [[ChildNoeud1], [ChildNoeud2], [ChildNoeud3]]
                         ;   (Longueur = 2
-                                ->  move(State, Cards, Cards, ChildNoeud1, CardsRestantes),
-                                    move(State, CardsRestantes, Cards, ChildNoeud2, _),
+                                ->  move(State, Cards, Cards, ChildNoeud1, CardsRestantes, Depth),
+                                    move(State, CardsRestantes, Cards, ChildNoeud2, _, Depth),
                                     TmpChildNoeudList = [[ChildNoeud1], [ChildNoeud2]]
                                 ;   (Longueur = 1
-                                        ->  move(State, Cards, Cards, ChildNoeud1, _),
+                                        ->  move(State, Cards, Cards, ChildNoeud1, _, Depth),
                                             TmpChildNoeudList = [[ChildNoeud1]]
                                         ;   writeln("KO")
                                     )
@@ -220,9 +261,25 @@ move(State, ChildNoeudList) :-
     append(TmpChildNoeudList, ChildNoeudList).
 
 
-    
+/*
+% Prédicat pour effectuer le mouvement pour chaque profondeur
+move(State, CardsRestantes, Cards, NewState, NewCardsRestantes, Depth) :- 
+    Depth = 3,
+    take_card(CardsRestantes, Card),
+    avancer_cycliste2(State, CardsRestantes, 1, Card, Cards, NewState, NewCardsRestantes).
 
-move(State, CardsRestantes, Cards, NewState, NewCardsRestantes) :- 
+move(State, CardsRestantes, Cards, NewState, NewCardsRestantes, Depth) :- 
+    Depth = 2,
+    take_card(CardsRestantes, Card),
+    avancer_cycliste2(State, CardsRestantes, 2, Card, Cards, NewState, NewCardsRestantes).
+
+move(State, CardsRestantes, Cards, NewState, NewCardsRestantes, Depth) :- 
+    Depth = 1,
+    take_card(CardsRestantes, Card),
+    avancer_cycliste2(State, CardsRestantes, 3, Card, Cards, NewState, NewCardsRestantes).
+*/
+
+move(State, CardsRestantes, Cards, NewState, NewCardsRestantes, Depth) :- 
     take_card(CardsRestantes,Card),
     avancer_cycliste2(State,CardsRestantes, 1, Card, Cards, NewState, NewCardsRestantes).
     
@@ -234,7 +291,7 @@ take_card([_,Cards], Card) :-
 
 get_player_cards(PlayerId, Cards).
 
-
+/*
 avancer_cycliste2(State,CardsRestantes, SelectedCyclist, Card, Cards, NewState, NewCardsRestantes) :-
     get_cyclist_position(State, SelectedCyclist, LigneAvant, ColonneAvant),
     NewLigne is LigneAvant + Card,
@@ -247,9 +304,84 @@ avancer_cycliste2(State,CardsRestantes, SelectedCyclist, Card, Cards, NewState, 
     get_cyclist_position(State, 3, NewLigne3, NewColonne3),
     NewState = [State, [(NewLigne, NewColonne), (NewLigne2, NewColonne2), (NewLigne3, NewColonne3)], CardsDontPlay],
     writeln("NewState "+NewState).
+*/
 
+avancer_cycliste2(State,CardsRestantes, SelectedCyclist, Card, Cards, NewState, NewCardsRestantes) :-
+    decompose(State, Pays, Coureurs, Cards),
+    decompose_coureurs(Coureurs, Coureur1, Coureur2, Coureur3),
+    (SelectedCyclist = 1
+        -> Coureur1 = (LigneAvant, Colonne),
+           NewLigne is LigneAvant + Card,
+           NewColonne is 1,
+           \+ is_case_supplementaire(NewLigne),
+           remove_first_elem(CardsRestantes, NewCardsRestantes),
+           remove_card2(Card, Cards, CardsDontPlay),
+           NewState = [Pays, [(NewLigne, NewColonne),Coureur2, Coureur3], CardsDontPlay]
+        ; (SelectedCyclist = 2
+            ->  Coureur2 = (LigneAvant, Colonne),
+                NewLigne is LigneAvant + Card,
+                NewColonne is 1,
+                \+ is_case_supplementaire(NewLigne),
+                remove_first_elem(CardsRestantes, NewCardsRestantes),
+                remove_card2(Card, Cards, CardsDontPlay),
+                NewState = [Pays, [Coureur1,(NewLigne, NewColonne), Coureur3], CardsDontPlay] 
+            ; (SelectedCyclist = 3
+                ->  Coureur3 = (LigneAvant, Colonne),
+                    NewLigne is LigneAvant + Card,
+                    NewColonne is 1,
+                    \+ is_case_supplementaire(NewLigne),
+                    remove_first_elem(CardsRestantes, NewCardsRestantes),
+                    remove_card2(Card, Cards, CardsDontPlay),
+                    NewState = [Pays, [Coureur1,Coureur2, (NewLigne, NewColonne)], CardsDontPlay] 
+                ; writeln("KO")
+                )
+            )
+    ),
+    writeln("NewState "+NewState).
+
+/*
+% Cas lorsque SelectedCyclist = 1
+avancer_cycliste2(State, CardsRestantes, 1, Card, Cards, NewState, NewCardsRestantes) :-
+    decompose(State, Pays, Coureurs, Cards),
+    decompose_coureurs(Coureurs, Coureur1, Coureur2, Coureur3),
+    Coureur1 = (LigneAvant, Colonne),
+    NewLigne is LigneAvant + Card,
+    NewColonne is 1,
+    \+ is_case_supplementaire(NewLigne),
+    remove_first_elem(CardsRestantes, NewCardsRestantes),
+    remove_card2(Card, Cards, CardsDontPlay),
+    NewState = [Pays, [(NewLigne, NewColonne), Coureur2, Coureur3], CardsDontPlay],
+    writeln("NewState " + NewState).
+
+% Cas lorsque SelectedCyclist = 2
+avancer_cycliste2(State, CardsRestantes, 2, Card, Cards, NewState, NewCardsRestantes) :-
+    decompose(State, Pays, Coureurs, Cards),
+    decompose_coureurs(Coureurs, Coureur1, Coureur2, Coureur3),
+    Coureur2 = (LigneAvant, Colonne),
+    NewLigne is LigneAvant + Card,
+    NewColonne is 1,
+    \+ is_case_supplementaire(NewLigne),
+    remove_first_elem(CardsRestantes, NewCardsRestantes),
+    remove_card2(Card, Cards, CardsDontPlay),
+    NewState = [Pays, [Coureur1, (NewLigne, NewColonne), Coureur3], CardsDontPlay],
+    writeln("NewState " + NewState).
+
+% Cas lorsque SelectedCyclist = 3
+avancer_cycliste2(State, CardsRestantes, 3, Card, Cards, NewState, NewCardsRestantes) :-
+    decompose(State, Pays, Coureurs, Cards),
+    decompose_coureurs(Coureurs, Coureur1, Coureur2, Coureur3),
+    Coureur3 = (LigneAvant, Colonne),
+    NewLigne is LigneAvant + Card,
+    NewColonne is 1,
+    \+ is_case_supplementaire(NewLigne),
+    remove_first_elem(CardsRestantes, NewCardsRestantes),
+    remove_card2(Card, Cards, CardsDontPlay),
+    NewState = [Pays, [Coureur1, Coureur2, (NewLigne, NewColonne)], CardsDontPlay],
+    writeln("NewState " + NewState).
+*/
 
 remove_first_elem([_|Rest], Rest).
+
 
 % Prédicat pour retirer une carte d'une liste de cartes
 remove_card2(Card, Cards, NewCards) :-
