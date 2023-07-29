@@ -520,9 +520,9 @@
 
       
     test(global) :-
-        set_cyclist_position("Belgique", 1, 4, 1), 
+        set_cyclist_position("Belgique", 1, 5, 1), 
         set_cyclist_position("Belgique", 2, 4, 2), 
-        set_cyclist_position("Belgique", 3, 4, 3),
+        set_cyclist_position("Belgique", 3, 6, 3),
     
         set_cyclist_position("Italie", 1, 11, 1), 
         set_cyclist_position("Italie", 2, 11, 2), 
@@ -541,37 +541,30 @@
         set_player_cards("Hollande", [7,8,9,5,9]),
         set_player_cards("Allemagne", [10,11,12,1,4]),
 
+        set_cyclist_play("Belgique", 1, 0),
+        set_cyclist_play("Belgique", 2, 0),
+        set_cyclist_play("Belgique", 3, 0),
+        set_cyclist_play("Italie", 1, 0),
+        set_cyclist_play("Italie", 2, 0),
+        set_cyclist_play("Italie", 3, 0),
+        set_cyclist_play("Hollande", 1, 0),
+        set_cyclist_play("Hollande", 2, 0),
+        set_cyclist_play("Hollande", 3, 0),
+        set_cyclist_play("Allemagne", 1, 0),
+        set_cyclist_play("Allemagne", 2, 0),
+        set_cyclist_play("Allemagne", 3, 0),
+
         %evaluate([_,_,_,_,_], [Value,_,_,_]),
         %format("Valeur Before Belgique : ~w~n", [Value]),
         % Appel au prédicat maxmax pour l'état initial
-        State = ["Belgique", [(4, 1), (4, 2), (4, 3)], [5,12,4,9,12]],
-        maxmax(State, BestNoeud, ValueNoeud, 3),
+
+        stateInit("Belgique", Coureurs, Cards, State),
+        maxmax(State, BestNoeud, ValueNoeud, 1),
         format("Valeur du meilleur coup : ~w~n", [ValueNoeud]),
         writeln("Meilleur coup "+ [BestNoeud]).
 
-        test(global2) :-
-            set_cyclist_position("Belgique", 1, 4, 1), 
-            set_cyclist_position("Belgique", 2, 4, 2), 
-            set_cyclist_position("Belgique", 3, 4, 3),
-        
-            set_cyclist_position("Italie", 1, 11, 1), 
-            set_cyclist_position("Italie", 2, 11, 2), 
-            set_cyclist_position("Italie", 3, 102, 1),
-        
-            set_cyclist_position("Hollande", 1, 105, 1), 
-            set_cyclist_position("Hollande", 2, 1, 1), 
-            set_cyclist_position("Hollande", 3, 6, 2),
-        
-            set_cyclist_position("Allemagne", 1, 90, 1), 
-            set_cyclist_position("Allemagne", 2, 88, 1), 
-            set_cyclist_position("Allemagne", 3, 100, 1),
     
-            set_player_cards("Belgique", [5,12,4,9,12]),
-            set_player_cards("Italie", [4,5,6,12,4]),
-            set_player_cards("Hollande", [7,8,9,5,9]),
-            set_player_cards("Allemagne", [10,11,12,1,4]),
     
-
-
 
     :- end_tests(maxmax).
+

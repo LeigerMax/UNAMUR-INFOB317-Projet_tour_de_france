@@ -60,7 +60,7 @@ translate_player_name("Allemagne", Allemagne).
 % [P1, P2, P3, P4] , [Val1, Val2, Val3, Val4]
 %% [C1 , C2, C3] , CARDS
 %%% (Ligne, Colonne)
-stateInit(PlayerId, [Coureur1, Coureur2, Coureur3], Cards):-
+stateInit(PlayerId, [Coureur1, Coureur2, Coureur3], Cards, State):-
     translate_player_name(PlayerId, PaysVariable),
     get_cyclist_position(PlayerId, 1, Ligne1, Colonne1),
     get_cyclist_position(PlayerId, 2, Ligne2, Colonne2),
@@ -69,6 +69,39 @@ stateInit(PlayerId, [Coureur1, Coureur2, Coureur3], Cards):-
     Coureur1 = (Ligne1, Colonne1),
     Coureur2 = (Ligne2, Colonne2),
     Coureur3 = (Ligne3, Colonne3),
-    PaysVariable = ([Coureur1, Coureur2, Coureur3], Cards).
+    PaysVariable = ([Coureur1, Coureur2, Coureur3], Cards),
+    State = [PlayerId, [Coureur1, Coureur2, Coureur3], Cards].
 
 
+
+/******* Cyclist Play *******/
+
+set_cyclist_play(PlayerId, CyclisteId, Bool) :-
+    retractall(cyclist_play(PlayerId, CyclisteId, _)),
+    assertz(cyclist_play(PlayerId, CyclisteId, Bool)).
+
+
+get_cyclist_play(PlayerId, CyclisteId, Bool) :-  
+    cyclist_play(PlayerId, CyclisteId, Bool),
+    !.
+
+
+set_cyclist_play_tmp(PlayerId, CyclisteId, Bool) :-
+    retractall(cyclist_play_tmp(PlayerId, _, Bool)),
+    assertz(cyclist_play_tmp(PlayerId, CyclisteId, Bool)).
+
+
+get_cyclist_play_tmp(PlayerId, CyclisteId, Bool) :-
+    cyclist_play_tmp(PlayerId, CyclisteId, Bool),
+    !.
+    
+
+set_cyclist_play2(PlayerId, CyclisteId, Bool) :-
+    retractall(cyclist_play(PlayerId, CyclisteId, _)),
+    assertz(cyclist_play(PlayerId, CyclisteId, Bool)).
+
+
+get_cyclist_play2(PlayerId, CyclisteId, Bool) :-  
+    cyclist_play(PlayerId, CyclisteId, Bool),
+    !.
+    
