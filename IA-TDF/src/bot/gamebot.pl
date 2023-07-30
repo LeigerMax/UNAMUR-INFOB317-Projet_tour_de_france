@@ -33,7 +33,7 @@ get_min_card([Card|Rest], Min) :-
 % Sorties : MinCard
 get_min_card(PlayerId, MinCard) :-
     get_player_cards(PlayerId, Cards),
-    get_min_card(Cards, MaxCard).
+    get_min_card(Cards, MinCard).
 
 % Compare les cartes (max)
 % Entrées : Card
