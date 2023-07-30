@@ -2,25 +2,33 @@
 :- use_module(library(lists)).
 :- consult('etat.pl').
 
+/******* START MAXMA *******/
 
-
-start_maxmax(PlayerId, CyclistId,MaxCard),
+start_maxmax(PlayerId, CyclistId, MaxCard) :-
+    writeln("STARTING MAXMAX"),
     Depth is 3,
+    set_cyclist_depth(PlayerId, CyclistId, Depth),
+    set_cyclist_play_tmp(PlayerId, CyclistId, 1),
     stateInit(PlayerId, Coureurs, Cards, State),
+    run_depth_loop(State, Depth),
     maxmax(State, BestNoeud, ValueNoeud, Depth),
     writeln("Valeur du meilleur coup "+ [ValueNoeud]),
     writeln("Noeud du meilleur coup "+ [BestNoeud]).
-    %Chercher la carte jouer dans le BestNoeud
+
+% Prédicat pour exécuter la boucle jusqu'à ce que TempDepth atteigne 0
+run_depth_loop(State, Depth) :-
+    Depth > 0,
+    TempDepth is Depth - 1,
+    whoCyclistePlay(State, TempDepth),
+    run_depth_loop(State, TempDepth).
+run_depth_loop(_, _).
+
+
+/************************/
+
 
 
 /******* WHO PLAY *******/
-
-% Récupérer les états en début de partie 
-% Pour chaque Player, tiré les cyclistes (plus loin au plus proche) % Stocker une liste
-% Un compteur par cycliste 
-% Porté 0 - 5 cartes = 5
-% Porté 1 - 4 cartes = 20
-% save cycliste ayant déjà jouer
 
 
 
@@ -35,32 +43,50 @@ nextPlayer("Hollande", "Allemange").
 nextPlayer("Allemagne", "Belgique").
 
 
-whoCyclistePlay(State, CyclisteID) :-
+% Le prédicat de base qui associe les cyclistes avec un Depths
+whoCyclistePlay(State, Depth) :-
     decompose(State, Pays, Cyclistes, Cards),
     decompose_coureurs(Cyclistes, Cycliste1, Cycliste2, Cycliste3),
     Cycliste1 = (Ligne1, _),
     Cycliste2 = (Ligne2, _),
     Cycliste3 = (Ligne3, _),
-    smallest_line(Ligne1, Ligne2, Ligne3, MinLine),
+    smallest_line(Pays,Ligne1, Ligne2, Ligne3, MinLine),
     (
-        (Cycliste1 = (MinLine, _) -> CyclisteID = 1);
-        (Cycliste2 = (MinLine, _) -> CyclisteID = 2);
-        (Cycliste3 = (MinLine, _) -> CyclisteID = 3)
-    ),
-    writeln("Plus petit cycliste "+CyclisteID).
-    %set_cyclist_play(Pays, CyclisteID, 1).
-
-finishPlayerPlay(State, NewState) :-
-    decompose(State, Pays, Cyclistes, Cards),
-    ( get_cyclist_play(Pays, 1, 1), get_cyclist_play(Pays, 2, 1) , get_cyclist_play(Pays, 3, 1) 
-    ->  nextPlayer(Pays, NewPays),
-        stateBase(NewPays, NewState)
-    ; writeln("Peut encore jouer")
+        (get_cyclist_play(Pays, 1, Bool1), Bool1 = 0, get_cyclist_play_tmp(Pays, 1, 0), Cycliste1 = (MinLine, _) -> CyclisteID = 1, set_cyclist_depth(Pays, 1, Depth), set_cyclist_play_tmp(Pays, 1, 1), NewDepth is Depth - 1);
+        (get_cyclist_play(Pays, 2, Bool2), Bool2 = 0, get_cyclist_play_tmp(Pays, 2, 0), Cycliste2 = (MinLine, _) -> CyclisteID = 2, set_cyclist_depth(Pays, 2, Depth), set_cyclist_play_tmp(Pays, 2, 1), NewDepth is Depth - 1);
+        (get_cyclist_play(Pays, 3, Bool3), Bool3 = 0, get_cyclist_play_tmp(Pays, 3, 0), Cycliste3 = (MinLine, _) -> CyclisteID = 3, set_cyclist_depth(Pays, 3, Depth), set_cyclist_play_tmp(Pays, 3, 1), NewDepth is Depth - 1);
+        (nextPlayer(Pays, NewPays), stateBase(NewPays, NewState), whoCyclistePlay(NewState, Depth)) % Si tous les cyclistes ont joué, passez au joueur suivant avec le même Depth
     ).
 
+
 % Prédicat pour trouver la plus petite ligne parmi trois valeurs
-smallest_line(L1, L2, L3, MinLine) :-
-    MinLine is min(min(L1, L2), L3).
+smallest_line(Pays,L1, L2, L3, MinLine) :-
+    (get_cyclist_play_tmp(Pays, 1, 1) -> NewL1 is 9999; NewL1 is L1),
+    (get_cyclist_play_tmp(Pays, 2, 1) -> NewL2 is 9999; NewL2 is L2),
+    (get_cyclist_play_tmp(Pays, 3, 1) -> NewL3 is 9999; NewL3 is L3),
+    MinLine is min(min(NewL1, NewL2), NewL3).
+
+
+/*
+    whoCyclistePlay(State, CyclisteID) :-
+        decompose(State, Pays, Cyclistes, Cards),
+        decompose_coureurs(Cyclistes, Cycliste1, Cycliste2, Cycliste3),
+        Cycliste1 = (Ligne1, _),
+        Cycliste2 = (Ligne2, _),
+        Cycliste3 = (Ligne3, _),
+        get_cyclist_play(Pays, 1, Bool1),
+        get_cyclist_play(Pays, 2, Bool2),
+        get_cyclist_play(Pays, 3, Bool3),
+        smallest_line(Ligne1, Ligne2, Ligne3, MinLine),
+        (
+            (Bool1 = 0, Cycliste1 = (MinLine, _) -> CyclisteID = 1);
+            (Bool2 = 0, Cycliste2 = (MinLine, _) -> CyclisteID = 2);
+            (Bool3 = 0, Cycliste3 = (MinLine, _) -> CyclisteID = 3);
+            (nextPlayer(Pays,NewPays), stateBase(NewPays, NewState), whoCyclistePlay(NewState, _) )
+        ),
+        writeln("Plus petit cycliste "+CyclisteID).
+*/
+
 
 /***********************/
 
@@ -246,12 +272,8 @@ cyclist_eval((Ligne, Colonne), Cards, Val) :-
 
 move(State, ChildNoeudList, Depth) :- 
     decompose(State, Pays, Coureurs, Cards),
-    whoCyclistePlay(State, CyclisteID),
+    get_cyclist_depth(PlayerID, CyclisteID, Depth), 
     length(Cards, Longueur),
-    (Depth > 0 
-        -> 
-        ;
-    ),
     (Longueur = 5
         ->   move(State, Cards, Cards, CyclisteID, ChildNoeud1, CardsRestantes, Depth),
              move(State, CardsRestantes, Cards, CyclisteID, ChildNoeud2, CardsRestantes2, Depth),

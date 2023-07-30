@@ -524,7 +524,7 @@
         set_cyclist_position("Belgique", 2, 4, 2), 
         set_cyclist_position("Belgique", 3, 6, 3),
     
-        set_cyclist_position("Italie", 1, 11, 1), 
+        set_cyclist_position("Italie", 1, 12, 1), 
         set_cyclist_position("Italie", 2, 11, 2), 
         set_cyclist_position("Italie", 3, 102, 1),
     
@@ -554,14 +554,31 @@
         set_cyclist_play("Allemagne", 2, 0),
         set_cyclist_play("Allemagne", 3, 0),
 
+        set_cyclist_play_tmp("Belgique", 1, 0),
+        set_cyclist_play_tmp("Belgique", 2, 0),
+        set_cyclist_play_tmp("Belgique", 3, 0),
+        set_cyclist_play_tmp("Italie", 1, 0),
+        set_cyclist_play_tmp("Italie", 2, 0),
+        set_cyclist_play_tmp("Italie", 3, 0),
+        set_cyclist_play_tmp("Hollande", 1, 0),
+        set_cyclist_play_tmp("Hollande", 2, 0),
+        set_cyclist_play_tmp("Hollande", 3, 0),
+        set_cyclist_play_tmp("Allemagne", 1, 0),
+        set_cyclist_play_tmp("Allemagne", 2, 0),
+        set_cyclist_play_tmp("Allemagne", 3, 0),
+
+        
+        start_maxmax("Belgique", 1, MaxCard).
+
         %evaluate([_,_,_,_,_], [Value,_,_,_]),
         %format("Valeur Before Belgique : ~w~n", [Value]),
         % Appel au prédicat maxmax pour l'état initial
 
-        stateInit("Belgique", Coureurs, Cards, State),
-        maxmax(State, BestNoeud, ValueNoeud, 1),
-        format("Valeur du meilleur coup : ~w~n", [ValueNoeud]),
-        writeln("Meilleur coup "+ [BestNoeud]).
+        %stateInit("Belgique", Coureurs, Cards, State),
+        %maxmax(State, BestNoeud, ValueNoeud, 3),
+        %format("Valeur du meilleur coup : ~w~n", [ValueNoeud]),
+        %writeln("Meilleur coup "+ [BestNoeud]).
+
 
     
     

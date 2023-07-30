@@ -84,20 +84,37 @@ process_player_cards(PlayerId, Cards, Response) :-
 
 
 /**************************** Joueur qui doit jouer  ****************************/  
-process_message(_{type: "playerWhoPlay", playerId: PlayerId, cyclistId: CyclistId}, Response) :-
+process_message(_{type: "playerWhoPlay", playerId: PlayerId, cyclistId: CyclistId, count:Count}, Response) :-
     writeln("playerWhoPlay"),
     writeln(PlayerId),
     writeln(CyclistId),
+    writeln(Count),
     !,
     sleep(2),
-    process_player_play(PlayerId, CyclistId, Response).
+    process_player_play(PlayerId, CyclistId, Count, Response).
     
-process_player_play(PlayerId, CyclistId, Response) :-
+process_player_play(PlayerId, CyclistId, Count, Response) :-
     get_player_cards(PlayerId, Cards), % Get les cartes du joueur
     writeln('Cartes du joueur : ' + Cards),
-    set_cyclist_play2(PlayerId, CyclistId,1),
-    get_card_play(PlayerId, CyclistId, Cards, MaxCard, Colonne, Cards), % Get la plus grande carte de la main
-    start_maxmax(PlayerId, CyclistId,MaxCard),
+    MaxCard is 1,
+    Colonne is 1,
+    %get_card_play(PlayerId, CyclistId, Cards, MaxCard, Colonne, Cards), % Get la plus grande carte de la main
+    %start_maxmax(PlayerId, CyclistId,MaxCard),
+    (Count = 12
+        ->  set_cyclist_play("Belgique", 1,0),
+            set_cyclist_play("Belgique", 2,0),
+            set_cyclist_play("Belgique", 3,0),
+            set_cyclist_play("Italie", 1,0),
+            set_cyclist_play("Italie", 2,0),
+            set_cyclist_play("Italie", 3,0),
+            set_cyclist_play("Hollande", 1,0),
+            set_cyclist_play("Hollande", 2,0),
+            set_cyclist_play("Hollande", 3,0),
+            set_cyclist_play("Allemange", 1,0),
+            set_cyclist_play("Allemange", 2,0),
+            set_cyclist_play("Allemange", 3,0)
+        ;   set_cyclist_play(PlayerId, CyclistId,1)
+    ),
     Response = json{status: 'success', message: 'Player find',type: "playerWhoPlay", playerId: PlayerId, maxCard: MaxCard, colonne: Colonne}.
     
 

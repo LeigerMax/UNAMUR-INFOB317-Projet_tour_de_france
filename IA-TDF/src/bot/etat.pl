@@ -86,22 +86,24 @@ get_cyclist_play(PlayerId, CyclisteId, Bool) :-
     !.
 
 
+
 set_cyclist_play_tmp(PlayerId, CyclisteId, Bool) :-
-    retractall(cyclist_play_tmp(PlayerId, _, Bool)),
+    retractall(cyclist_play_tmp(PlayerId, CyclisteId, _)),
     assertz(cyclist_play_tmp(PlayerId, CyclisteId, Bool)).
 
 
-get_cyclist_play_tmp(PlayerId, CyclisteId, Bool) :-
+get_cyclist_play_tmp(PlayerId, CyclisteId, Bool) :-  
     cyclist_play_tmp(PlayerId, CyclisteId, Bool),
     !.
     
 
-set_cyclist_play2(PlayerId, CyclisteId, Bool) :-
-    retractall(cyclist_play(PlayerId, CyclisteId, _)),
-    assertz(cyclist_play(PlayerId, CyclisteId, Bool)).
+
+set_cyclist_depth(PlayerId, CyclisteId, Depth) :-
+    retractall(cyclist_depth(PlayerId, CyclisteId, _)),
+    assertz(cyclist_depth(PlayerId, CyclisteId, Depth)),
+    writeln("SAVE "+PlayerId + CyclisteId + Depth).
 
 
-get_cyclist_play2(PlayerId, CyclisteId, Bool) :-  
-    cyclist_play(PlayerId, CyclisteId, Bool),
+get_cyclist_depth(PlayerId, CyclisteId, Depth) :-  
+    cyclist_depth(PlayerId, CyclisteId, Depth),
     !.
-    

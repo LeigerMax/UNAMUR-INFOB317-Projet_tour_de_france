@@ -136,12 +136,13 @@ methods: {
     }
   },
 
-  sendPlayerPlay(playerId,cyclistId) {
+  sendPlayerPlay(playerId,cyclistId, count) {
     if (this.socket.readyState === WebSocket.OPEN) {
       const message = {
         type: "playerWhoPlay",
         playerId: playerId,
-        cyclistId: cyclistId
+        cyclistId: cyclistId, 
+        count: count
       };
       this.socket.send(JSON.stringify(message));
     } else {
@@ -191,7 +192,7 @@ methods: {
       const colonne = message.colonne;
       console.log(`Joueur qui doit jouer : ${playerId}`);
 
-    //if(playerId === "" || playerId === "") {
+    if(playerId === "" || playerId === "") {
         console.log("BOT A JOUER");
         const choixCarteSelect = document.getElementById('choix_cartes-select');
         const choixColonneSelect = document.getElementById('choix_colonne-select');
@@ -207,7 +208,7 @@ methods: {
         boutonDeplacerBot.disabled = false;
         boutonDeplacerBot.click();
     
-     //}
+     }
     }
     else if (message.type === "cyclistePosition") {
       const playerId = message.playerId;
@@ -494,7 +495,7 @@ methods: {
 
 
        // Envoie le joueur qui doit jouer au serveur via WebSocket
-       this.sendPlayerPlay("Belgique",1);
+       this.sendPlayerPlay("Belgique",1, 1);
 
     },
 
@@ -692,7 +693,7 @@ methods: {
       this.sendPlayerCards(this.cartes, nom);
 
 
-      this.sendPlayerPlay(nom,this.choixCycliste);
+      this.sendPlayerPlay(nom,this.choixCycliste,this.move_counter);
 
     },
 
