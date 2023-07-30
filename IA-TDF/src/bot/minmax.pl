@@ -6,12 +6,17 @@
 
 start_maxmax(PlayerId, CyclistId, MaxCard) :-
     writeln("STARTING MAXMAX"),
-    Depth is 3,
+    Depth is 12,
     set_cyclist_depth(PlayerId, CyclistId, Depth),
     set_cyclist_play_tmp(PlayerId, CyclistId, 1),
-    stateInit(PlayerId, Coureurs, Cards, State),
-    run_depth_loop(State, Depth),
-    maxmax(State, BestNoeud, ValueNoeud, Depth),
+    stateInit(PlayerId, Coureurs, Cards, StateForLoop),
+    run_depth_loop(StateForLoop, Depth),
+    stateInit("Belgique", _, _, StateBE),
+    stateInit("Italie", _, _, StateIT),
+    stateInit("Hollande", _, _, StateHO),
+    stateInit("Allemagne", _, _, StateAL),
+    States = [StateBE, StateIT, StateHO, StateAL, PlayerId],
+    maxmax(States, BestNoeud, ValueNoeud, Depth),
     writeln("Valeur du meilleur coup "+ [ValueNoeud]),
     writeln("Noeud du meilleur coup "+ [BestNoeud]).
 
@@ -67,27 +72,6 @@ smallest_line(Pays,L1, L2, L3, MinLine) :-
     MinLine is min(min(NewL1, NewL2), NewL3).
 
 
-/*
-    whoCyclistePlay(State, CyclisteID) :-
-        decompose(State, Pays, Cyclistes, Cards),
-        decompose_coureurs(Cyclistes, Cycliste1, Cycliste2, Cycliste3),
-        Cycliste1 = (Ligne1, _),
-        Cycliste2 = (Ligne2, _),
-        Cycliste3 = (Ligne3, _),
-        get_cyclist_play(Pays, 1, Bool1),
-        get_cyclist_play(Pays, 2, Bool2),
-        get_cyclist_play(Pays, 3, Bool3),
-        smallest_line(Ligne1, Ligne2, Ligne3, MinLine),
-        (
-            (Bool1 = 0, Cycliste1 = (MinLine, _) -> CyclisteID = 1);
-            (Bool2 = 0, Cycliste2 = (MinLine, _) -> CyclisteID = 2);
-            (Bool3 = 0, Cycliste3 = (MinLine, _) -> CyclisteID = 3);
-            (nextPlayer(Pays,NewPays), stateBase(NewPays, NewState), whoCyclistePlay(NewState, _) )
-        ),
-        writeln("Plus petit cycliste "+CyclisteID).
-*/
-
-
 /***********************/
 
 
@@ -105,8 +89,7 @@ maxmax(State, BestNoeud, ValueNoeud, Depth) :-
     NewDepth is Depth - 1,
     bestmove(ChildNoeudList, BestNoeud, ValueNoeud, NewDepth), !
     ;
-    evaluate([_,_,_,_,State], ValueNoeud).
-
+    evaluate(State, ValueNoeud).
 
 
 /***********************/
@@ -118,11 +101,16 @@ bestmove([], _, _, _, _).
 
 bestmove([Node], Node, ValueNoeud, Depth) :-
     maxmax(Node, _, ValueNoeud, Depth), !. 
-
+/*
 bestmove([ChildNoeud | ChildNoeudList], BestNoeud, BestValue, Depth) :-
     maxmax(ChildNoeud, _, ValuePremierNoeud, Depth),
     bestmove(ChildNoeudList, SecondNoeud, ValueSecondNoeud, Depth),
     betterof(ChildNoeud, ValuePremierNoeud, SecondNoeud, ValueSecondNoeud, BestNoeud, BestValue).
+*/
+bestmove([ChildNoeud | ChildNoeudList], BestNoeud, BestValue, Depth) :-
+    maxmax(ChildNoeud, _, ValuePremierNoeud, Depth),
+    bestmove(ChildNoeudList, SecondNoeud, ValueSecondNoeud, Depth),
+    betterof(FirstFiveElements, ValuePremierNoeud, SecondNoeud, ValueSecondNoeud, BestNoeud, BestValue).
 
 
 /**************************/
@@ -163,6 +151,13 @@ betterof(_, _, SecondNoeud, ValueSecondNoeud, SecondNoeud, ValueSecondNoeud).
 decompose(PlayerCurrent, Pays, Coureurs, Cartes) :-
     PlayerCurrent = [Pays, Coureurs, Cartes].
 
+% Décomposition de State
+decompose_state(State, StateBE, StateIT, StateHO, StateAL, PlayerID) :-
+    State = [StateBE, StateIT, StateHO, StateAL, PlayerID].
+
+compose_state(State, StateBE, StateIT, StateHO, StateAL, PlayerID) :-
+    State = [StateBE, StateIT, StateHO, StateAL, PlayerID].
+
 % Décomposition de la liste des coureurs
 decompose_coureurs([], [], [], []).
 decompose_coureurs([(A, B) | Reste], Coureur1, Coureur2, Coureur3) :-
@@ -171,44 +166,60 @@ decompose_coureurs([(A, B) | Reste], Coureur1, Coureur2, Coureur3) :-
 
 
 evaluate([Belgique, Italie, Hollande, Allemagne, PlayerCurrent], [Val1, Val2, Val3, Val4]) :-
-    stateInit("Belgique", [Be1, Be2, Be3], Cards1, _),
-    stateInit("Italie", [It1, It2, It3], Cards2, _),
-    stateInit("Hollande", [Hol1, Hol2, Hol3], Cards3, _),
-    stateInit("Allemagne", [All1, All2, All3], Cards4, _),
+    %stateInit("Belgique", [Be1, Be2, Be3], Cards1, _),
+    %stateInit("Italie", [It1, It2, It3], Cards2, _),
+    %stateInit("Hollande", [Hol1, Hol2, Hol3], Cards3, _),
+    %stateInit("Allemagne", [All1, All2, All3], Cards4, _),
+    decompose(Belgique, _ , CoureursBE, Cards1),
+    decompose_coureurs(CoureursBE, Be1, Be2, Be3),
+    player_eval([Be1, Be2, Be3], Cards1, Val1),
+
+    decompose(Italie, _ , CoureursIT, Cards2),
+    decompose_coureurs(CoureursIT, It1, It2, It3),
+    player_eval([It1, It2, It3], Cards2, Val2),
+
+    decompose(Hollande, _ , CoureursHO, Cards3),
+    decompose_coureurs(CoureursHO, Hol1, Hol2, Hol3),
+    player_eval([Hol1, Hol2, Hol3], Cards3, Val3),
+
+    decompose(Allemagne, _ , CoureursAL, Cards4),
+    decompose_coureurs(CoureursAL, All1, All2, All3),
+    player_eval([All1, All2, All3], Cards4, Val4).
+
+/*
     decompose(PlayerCurrent, Pays, Coureurs, Cards),
     decompose_coureurs(Coureurs, Coureur1, Coureur2, Coureur3),
     (Pays = "Belgique"
-        -> player_eval([Coureur1, Coureur2, Coureur3], Cards, Val1),
+        ->  player_eval([Coureur1, Coureur2, Coureur3], Cards, Val1),
             player_eval([It1, It2, It3], Cards2, Val2),
             player_eval([Hol1, Hol2, Hol3], Cards3, Val3),
             player_eval([All1, All2, All3], Cards4, Val4)
             ; write("")
     ),
     (Pays = "Italie"
-        -> player_eval([Be1, Be2, Be3], Cards1, Val1),
+        ->  player_eval([Be1, Be2, Be3], Cards1, Val1),
             player_eval([Coureur1, Coureur2, Coureur3], Cards, Val2),
             player_eval([Hol1, Hol2, Hol3], Cards3, Val3),
             player_eval([All1, All2, All3], Cards4, Val4)
             ; write("")
     ),
     (Pays = "Hollande"
-        -> player_eval([Be1, Be2, Be3], Cards1, Val1),
+        ->  player_eval([Be1, Be2, Be3], Cards1, Val1),
             player_eval([It1, It2, It3], Cards2, Val2),
             player_eval([Coureur1, Coureur2, Coureur3], Cards, Val3),
             player_eval([All1, All2, All3], Cards4, Val4)
             ; write("")
     ),
     (Pays = "Allemagne"
-        -> player_eval([Be1, Be2, Be3], Cards1, Val1),
+        ->  player_eval([Be1, Be2, Be3], Cards1, Val1),
             player_eval([It1, It2, It3], Cards2, Val2),
             player_eval([Hol1, Hol2, Hol3], Cards3, Val3),
             player_eval([Coureur1, Coureur2, Coureur3], Cards, Val4)
             ; write("")
     ).
+*/
 
 
-
-  
 player_eval([Coureur1, Coureur2, Coureur3], Cards, Val):-
     cyclist_eval(Coureur1, Cards, Val1),
     cyclist_eval(Coureur2, Cards, Val2),
@@ -270,9 +281,26 @@ cyclist_eval((Ligne, Colonne), Cards, Val) :-
 %Le deck complet		            : Cards
 %Les cartes qui n'ont pas été jouer : CardsDontPlay
 
-move(State, ChildNoeudList, Depth) :- 
-    decompose(State, Pays, Coureurs, Cards),
-    get_cyclist_depth(PlayerID, CyclisteID, Depth), 
+move(States, ChildNoeudList, Depth) :-
+    decompose_state(States, StateBE, StateIT, StateHO, StateAL, Player),
+    get_cyclist_depth(PlayerID, CyclisteID, Depth),
+    writeln("Player "+Player+ "CyclisteID "+ CyclisteID+ " Depth "+ Depth),
+    (PlayerID = "Belgique"
+        -> decompose(StateBE, Pays, Coureurs, Cards), State = StateBE
+        ; write("")
+    ),
+    (PlayerID = "Italie"
+        -> decompose(StateIT, Pays, Coureurs, Cards), State = StateIT
+        ; write("")
+    ),
+    (PlayerID = "Hollande"
+        -> decompose(StateHO, Pays, Coureurs, Cards), State = StateHO
+        ; write("")
+    ),
+    (PlayerID = "Allemange"
+        -> decompose(StateAL, Pays, Coureurs, Cards), State = StateAL
+        ; write("")
+    ),
     length(Cards, Longueur),
     (Longueur = 5
         ->   move(State, Cards, Cards, CyclisteID, ChildNoeud1, CardsRestantes, Depth),
@@ -280,35 +308,112 @@ move(State, ChildNoeudList, Depth) :-
              move(State, CardsRestantes2, Cards, CyclisteID, ChildNoeud3, CardsRestantes3, Depth),
              move(State, CardsRestantes3, Cards, CyclisteID, ChildNoeud4, CardsRestantes4, Depth),
              move(State, CardsRestantes4, Cards, CyclisteID, ChildNoeud5, CardsRestantes5, Depth),
-             TmpChildNoeudList = [[ChildNoeud1], [ChildNoeud2], [ChildNoeud3], [ChildNoeud4], [ChildNoeud5]]
+             (PlayerID = "Belgique"
+                -> TmpChildNoeudList = [[[ChildNoeud1, StateIT, StateHO, StateAL, PlayerID], [ChildNoeud2, StateIT, StateHO, StateAL, PlayerID], [ChildNoeud3, StateIT, StateHO, StateAL, PlayerID], [ChildNoeud4, StateIT, StateHO, StateAL, PlayerID], [ChildNoeud5, StateIT, StateHO, StateAL, PlayerID]]]
+                ; write("")
+            ),
+            (PlayerID = "Italie"
+                -> TmpChildNoeudList = [[[StateBE, ChildNoeud1, StateHO, StateAL, PlayerID], [StateBE, ChildNoeud2, StateHO, StateAL, PlayerID], [StateBE, ChildNoeud3, StateHO, StateAL, PlayerID], [StateBE, ChildNoeud4, StateHO, StateAL, PlayerID], [StateBE, ChildNoeud5, StateHO, StateAL, PlayerID]]]
+                ; write("")
+            ),
+            (PlayerID = "Hollande"
+                -> TmpChildNoeudList = [[[StateBE, StateIT,ChildNoeud1, StateAL , PlayerID], [StateBE, StateIT,ChildNoeud2, StateAL , PlayerID], [StateBE, StateIT,ChildNoeud3, StateAL , PlayerID], [StateBE, StateIT,ChildNoeud4, StateAL , PlayerID], [StateBE, StateIT,ChildNoeud5, StateAL , PlayerID]]]
+                ; write("")
+            ),
+            (PlayerID = "Allemange"
+                -> TmpChildNoeudList = [[[StateBE, StateIT, StateHO, ChildNoeud1 , PlayerID], [StateBE, StateIT,StateHO, ChildNoeud2, PlayerID], [StateBE, StateIT,StateHO, ChildNoeud3 , PlayerID], [StateBE, StateIT,StateHO, ChildNoeud4 , PlayerID], [StateBE, StateIT,StateHO, ChildNoeud5, PlayerID]]]
+                ; write("")
+            ), append(TmpChildNoeudList, ChildNoeudList), !
         ;   (Longueur = 4
                 ->  move(State, Cards, Cards, CyclisteID, ChildNoeud1, CardsRestantes, Depth),
                     move(State, CardsRestantes, Cards, CyclisteID, ChildNoeud2, CardsRestantes2, Depth),
                     move(State, CardsRestantes2, Cards, CyclisteID, ChildNoeud3, CardsRestantes3, Depth),
                     move(State, CardsRestantes3, Cards, CyclisteID, ChildNoeud4, CardsRestantes4, Depth),
-                    TmpChildNoeudList = [[ChildNoeud1], [ChildNoeud2], [ChildNoeud3], [ChildNoeud4]]
+                    writeln("TEST"),
+                    (PlayerID = "Belgique"
+                        -> TmpChildNoeudList = [[[ChildNoeud1, StateIT, StateHO, StateAL, PlayerID], [ChildNoeud2, StateIT, StateHO, StateAL, PlayerID], [ChildNoeud3, StateIT, StateHO, StateAL, PlayerID], [ChildNoeud4, StateIT, StateHO, StateAL, PlayerID]]]
+                        ; write("")
+                    ),
+                    (PlayerID = "Italie"
+                        -> TmpChildNoeudList = [[[StateBE, ChildNoeud1, StateHO, StateAL, PlayerID], [StateBE, ChildNoeud2, StateHO, StateAL, PlayerID], [StateBE, ChildNoeud3, StateHO, StateAL, PlayerID], [StateBE, ChildNoeud4, StateHO, StateAL, PlayerID]]]
+                        ; write("")
+                    ),
+                    (PlayerID = "Hollande"
+                        -> TmpChildNoeudList = [[[StateBE, StateIT,ChildNoeud1, StateAL , PlayerID], [StateBE, StateIT,ChildNoeud2, StateAL , PlayerID], [StateBE, StateIT,ChildNoeud3, StateAL , PlayerID], [StateBE, StateIT,ChildNoeud4, StateAL , PlayerID]]]
+                        ; write("")
+                    ),
+                    (PlayerID = "Allemange"
+                        -> TmpChildNoeudList = [[[StateBE, StateIT, StateHO, ChildNoeud1 , PlayerID], [StateBE, StateIT,StateHO, ChildNoeud2, PlayerID], [StateBE, StateIT,StateHO, ChildNoeud3 , PlayerID], [StateBE, StateIT,StateHO, ChildNoeud4 , PlayerID]]]
+                        ; write("")
+                    ), append(TmpChildNoeudList, ChildNoeudList), !
                 ;   (Longueur = 3
                         ->  move(State, Cards, Cards, CyclisteID, ChildNoeud1, CardsRestantes, Depth),
                             move(State, CardsRestantes, Cards, CyclisteID, ChildNoeud2, CardsRestantes2, Depth),
                             move(State, CardsRestantes2, Cards, CyclisteID, ChildNoeud3, CardsRestantes3, Depth),
-                            TmpChildNoeudList = [[ChildNoeud1], [ChildNoeud2], [ChildNoeud3]]
+                            (PlayerID = "Belgique"
+                                -> TmpChildNoeudList = [[[ChildNoeud1, StateIT, StateHO, StateAL, PlayerID], [ChildNoeud2, StateIT, StateHO, StateAL, PlayerID], [ChildNoeud3, StateIT, StateHO, StateAL, PlayerID]]]
+                                ; write("")
+                            ),
+                            (PlayerID = "Italie"
+                                -> TmpChildNoeudList = [[[StateBE, ChildNoeud1, StateHO, StateAL, PlayerID], [StateBE, ChildNoeud2, StateHO, StateAL, PlayerID], [StateBE, ChildNoeud3, StateHO, StateAL, PlayerID]]]
+                                ; write("")
+                            ),
+                            (PlayerID = "Hollande"
+                                -> TmpChildNoeudList = [[[StateBE, StateIT,ChildNoeud1, StateAL , PlayerID], [StateBE, StateIT,ChildNoeud2, StateAL , PlayerID], [StateBE, StateIT,ChildNoeud3, StateAL , PlayerID]]]
+                                ; write("")
+                            ),
+                            (PlayerID = "Allemange"
+                                -> TmpChildNoeudList = [[[StateBE, StateIT, StateHO, ChildNoeud1 , PlayerID], [StateBE, StateIT,StateHO, ChildNoeud2, PlayerID], [StateBE, StateIT,StateHO, ChildNoeud3 , PlayerID]]]
+                                ; write("")
+                            ), append(TmpChildNoeudList, ChildNoeudList), !
                         ;   (Longueur = 2
                                 ->  move(State, Cards, Cards, CyclisteID, ChildNoeud1, CardsRestantes, Depth),
                                     move(State, CardsRestantes, Cards, CyclisteID, ChildNoeud2, _, Depth),
-                                    TmpChildNoeudList = [[ChildNoeud1], [ChildNoeud2]]
+                                    (PlayerID = "Belgique"
+                                        -> TmpChildNoeudList = [[[ChildNoeud1, StateIT, StateHO, StateAL, PlayerID], [ChildNoeud2, StateIT, StateHO, StateAL, PlayerID]]]
+                                        ; write("")
+                                    ),
+                                    (PlayerID = "Italie"
+                                        -> TmpChildNoeudList = [[[StateBE, ChildNoeud1, StateHO, StateAL, PlayerID], [StateBE, ChildNoeud2, StateHO, StateAL, PlayerID]]]
+                                        ; write("")
+                                    ),
+                                    (PlayerID = "Hollande"
+                                        -> TmpChildNoeudList = [[[StateBE, StateIT,ChildNoeud1, StateAL , PlayerID], [StateBE, StateIT,ChildNoeud2, StateAL , PlayerID]]]
+                                        ; write("")
+                                    ),
+                                    (PlayerID = "Allemange"
+                                        -> TmpChildNoeudList = [[[StateBE, StateIT, StateHO, ChildNoeud1 , PlayerID], [StateBE, StateIT,StateHO, ChildNoeud2, PlayerID]]]
+                                        ; write("")
+                                    ), append(TmpChildNoeudList, ChildNoeudList), !
                                 ;   (Longueur = 1
                                         ->  move(State, Cards, Cards, CyclisteID, ChildNoeud1, _, Depth),
-                                            TmpChildNoeudList = [[ChildNoeud1]]
+                                        (PlayerID = "Belgique"
+                                            -> TmpChildNoeudList = [[ChildNoeud1, StateIT, StateHO, StateAL, PlayerID]]
+                                            ; write("")
+                                        ),
+                                        (PlayerID = "Italie"
+                                            -> TmpChildNoeudList = [[StateBE, ChildNoeud1, StateHO, StateAL, PlayerID]]
+                                            ; write("")
+                                        ),
+                                        (PlayerID = "Hollande"
+                                            -> TmpChildNoeudList = [[StateBE, StateIT,ChildNoeud1, StateAL , PlayerID]]
+                                            ; write("")
+                                        ),
+                                        (PlayerID = "Allemange"
+                                            -> TmpChildNoeudList = [[StateBE, StateIT, StateHO, ChildNoeud1 , PlayerID]]
+                                            ; write("")
+                                        ), append(TmpChildNoeudList, ChildNoeudList), !
                                         ;   writeln("KO")
                                     )
                             )
                     )
             )
-    ),
-    append(TmpChildNoeudList, ChildNoeudList).
+    ).
+
+    
 
 
-move(State, CardsRestantes, Cards,CyclisteID, NewState, NewCardsRestantes, Depth) :- 
+move(State, CardsRestantes, Cards, CyclisteID, NewState, NewCardsRestantes, Depth) :- 
     take_card(CardsRestantes,Card),
     avancer_cycliste2(State,CardsRestantes, CyclisteID, Card, Cards, NewState, NewCardsRestantes).
     
