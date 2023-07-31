@@ -490,36 +490,10 @@
 
 
     :- begin_tests(maxmax).
-/*
-    test(test_apply_card_to_cyclist) :-
-        set_cyclist_position("Belgique", 1, 4, 1), 
-        set_cyclist_position("Belgique", 2, 4, 2), 
-        set_cyclist_position("Belgique", 3, 4, 3),
+
+
     
-        set_cyclist_position("Italie", 1, 11, 1), 
-        set_cyclist_position("Italie", 2, 11, 2), 
-        set_cyclist_position("Italie", 3, 102, 1),
-    
-        set_cyclist_position("Hollande", 1, 105, 1), 
-        set_cyclist_position("Hollande", 2, 1, 1), 
-        set_cyclist_position("Hollande", 3, 6, 2),
-    
-        set_cyclist_position("Allemagne", 1, 90, 1), 
-        set_cyclist_position("Allemagne", 2, 88, 1), 
-        set_cyclist_position("Allemagne", 3, 100, 1),
-
-        set_player_cards("Belgique", [5, 2, 4 ,8, 2]),
-        set_player_cards("Italie", [4, 5, 6, 12, 4]),
-        set_player_cards("Hollande", [7, 8, 9, 5, 9]),
-        set_player_cards("Allemagne", [10, 11, 12, 1, 4]),
-
-        stateInit("Belgique", [Be1, Be2, Be3], Cards1),
-
-        move("Belgique", Cards1, NewState, NewCards, 3),
-        writeln("New State "+NewState).*/
-
-      
-    test(global) :-
+    test(in_game) :-
         set_cyclist_position("Belgique", 1, 5, 1), 
         set_cyclist_position("Belgique", 2, 4, 2), 
         set_cyclist_position("Belgique", 3, 6, 3),
@@ -570,16 +544,108 @@
         
         start_maxmax("Belgique", 1, MaxCard).
 
-        %evaluate([_,_,_,_,_], [Value,_,_,_]),
-        %format("Valeur Before Belgique : ~w~n", [Value]),
-        % Appel au prédicat maxmax pour l'état initial
 
-        %stateInit("Belgique", Coureurs, Cards, State),
-        %maxmax(State, BestNoeud, ValueNoeud, 3),
-        %format("Valeur du meilleur coup : ~w~n", [ValueNoeud]),
-        %writeln("Meilleur coup "+ [BestNoeud]).
+    test(when_start) :-
+        set_cyclist_position("Belgique", 1, 0, 0), 
+        set_cyclist_position("Belgique", 2, 0, 0), 
+        set_cyclist_position("Belgique", 3, 0, 0),
+    
+        set_cyclist_position("Italie", 1, 0, 0), 
+        set_cyclist_position("Italie", 2, 0, 0), 
+        set_cyclist_position("Italie", 3, 0, 0),
+    
+        set_cyclist_position("Hollande", 1, 0,0), 
+        set_cyclist_position("Hollande", 2, 0,0), 
+        set_cyclist_position("Hollande", 3, 0,0),
+    
+        set_cyclist_position("Allemagne", 1, 0, 0), 
+        set_cyclist_position("Allemagne", 2, 0, 01), 
+        set_cyclist_position("Allemagne", 3, 0, 01),
 
+        set_player_cards("Belgique", [5,12,4,9,12]),
+        set_player_cards("Italie", [4,5,6,12,4]),
+        set_player_cards("Hollande", [7,8,9,5,9]),
+        set_player_cards("Allemagne", [10,11,12,1,4]),
 
+        set_cyclist_play("Belgique", 1, 0),
+        set_cyclist_play("Belgique", 2, 0),
+        set_cyclist_play("Belgique", 3, 0),
+        set_cyclist_play("Italie", 1, 0),
+        set_cyclist_play("Italie", 2, 0),
+        set_cyclist_play("Italie", 3, 0),
+        set_cyclist_play("Hollande", 1, 0),
+        set_cyclist_play("Hollande", 2, 0),
+        set_cyclist_play("Hollande", 3, 0),
+        set_cyclist_play("Allemagne", 1, 0),
+        set_cyclist_play("Allemagne", 2, 0),
+        set_cyclist_play("Allemagne", 3, 0),
+
+        set_cyclist_play_tmp("Belgique", 1, 0),
+        set_cyclist_play_tmp("Belgique", 2, 0),
+        set_cyclist_play_tmp("Belgique", 3, 0),
+        set_cyclist_play_tmp("Italie", 1, 0),
+        set_cyclist_play_tmp("Italie", 2, 0),
+        set_cyclist_play_tmp("Italie", 3, 0),
+        set_cyclist_play_tmp("Hollande", 1, 0),
+        set_cyclist_play_tmp("Hollande", 2, 0),
+        set_cyclist_play_tmp("Hollande", 3, 0),
+        set_cyclist_play_tmp("Allemagne", 1, 0),
+        set_cyclist_play_tmp("Allemagne", 2, 0),
+        set_cyclist_play_tmp("Allemagne", 3, 0),
+
+        
+        start_maxmax("Belgique", 1, MaxCard).
+
+        test(one_card) :-
+            set_cyclist_position("Belgique", 1, 5, 1), 
+            set_cyclist_position("Belgique", 2, 4, 2), 
+            set_cyclist_position("Belgique", 3, 6, 3),
+        
+            set_cyclist_position("Italie", 1, 12, 1), 
+            set_cyclist_position("Italie", 2, 11, 2), 
+            set_cyclist_position("Italie", 3, 102, 1),
+        
+            set_cyclist_position("Hollande", 1, 105, 1), 
+            set_cyclist_position("Hollande", 2, 6, 1), 
+            set_cyclist_position("Hollande", 3, 6, 2),
+        
+            set_cyclist_position("Allemagne", 1, 90, 1), 
+            set_cyclist_position("Allemagne", 2, 88, 1), 
+            set_cyclist_position("Allemagne", 3, 100, 1),
+    
+            set_player_cards("Belgique", [5]),
+            set_player_cards("Italie", [4,5,6,12,4]),
+            set_player_cards("Hollande", [7,8,9,5,9]),
+            set_player_cards("Allemagne", [10,11,12,1,4]),
+    
+            set_cyclist_play("Belgique", 1, 0),
+            set_cyclist_play("Belgique", 2, 0),
+            set_cyclist_play("Belgique", 3, 0),
+            set_cyclist_play("Italie", 1, 0),
+            set_cyclist_play("Italie", 2, 0),
+            set_cyclist_play("Italie", 3, 0),
+            set_cyclist_play("Hollande", 1, 0),
+            set_cyclist_play("Hollande", 2, 0),
+            set_cyclist_play("Hollande", 3, 0),
+            set_cyclist_play("Allemagne", 1, 0),
+            set_cyclist_play("Allemagne", 2, 0),
+            set_cyclist_play("Allemagne", 3, 0),
+    
+            set_cyclist_play_tmp("Belgique", 1, 0),
+            set_cyclist_play_tmp("Belgique", 2, 0),
+            set_cyclist_play_tmp("Belgique", 3, 0),
+            set_cyclist_play_tmp("Italie", 1, 0),
+            set_cyclist_play_tmp("Italie", 2, 0),
+            set_cyclist_play_tmp("Italie", 3, 0),
+            set_cyclist_play_tmp("Hollande", 1, 0),
+            set_cyclist_play_tmp("Hollande", 2, 0),
+            set_cyclist_play_tmp("Hollande", 3, 0),
+            set_cyclist_play_tmp("Allemagne", 1, 0),
+            set_cyclist_play_tmp("Allemagne", 2, 0),
+            set_cyclist_play_tmp("Allemagne", 3, 0),
+    
+            
+            start_maxmax("Belgique", 1, MaxCard).
     
     
 

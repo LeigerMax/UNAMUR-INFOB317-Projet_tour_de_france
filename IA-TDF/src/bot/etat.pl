@@ -58,9 +58,9 @@ translate_player_name("Allemagne", Allemagne).
 
 % StateInit
 % [P1, P2, P3, P4] , [Val1, Val2, Val3, Val4]
-%% [C1 , C2, C3] , CARDS
+%% [C1 , C2, C3] , CARDS, CARD
 %%% (Ligne, Colonne)
-stateInit(PlayerId, [Coureur1, Coureur2, Coureur3], Cards, State):-
+stateInit(PlayerId, [Coureur1, Coureur2, Coureur3], Cards, Card, State):-
     translate_player_name(PlayerId, PaysVariable),
     get_cyclist_position(PlayerId, 1, Ligne1, Colonne1),
     get_cyclist_position(PlayerId, 2, Ligne2, Colonne2),
@@ -69,8 +69,9 @@ stateInit(PlayerId, [Coureur1, Coureur2, Coureur3], Cards, State):-
     Coureur1 = (Ligne1, Colonne1),
     Coureur2 = (Ligne2, Colonne2),
     Coureur3 = (Ligne3, Colonne3),
-    PaysVariable = ([Coureur1, Coureur2, Coureur3], Cards),
-    State = [PlayerId, [Coureur1, Coureur2, Coureur3], Cards].
+    Card is 0,
+    PaysVariable = ([Coureur1, Coureur2, Coureur3], Cards, Card),
+    State = [PlayerId, [Coureur1, Coureur2, Coureur3], Cards, Card].
 
 
 
@@ -107,3 +108,7 @@ set_cyclist_depth(PlayerId, CyclisteId, Depth) :-
 get_cyclist_depth(PlayerId, CyclisteId, Depth) :-  
     cyclist_depth(PlayerId, CyclisteId, Depth),
     !.
+
+clear_cyclist_depth :-
+    retractall(cyclist_depth(_, _, _)).
+    

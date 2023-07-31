@@ -1,3 +1,4 @@
+:- use_module(library(random)).
 :- consult('etat.pl').
 
 
@@ -105,3 +106,20 @@ remove_card(Element, [X|Rest], [X|NewRest]) :-
     remove_card(Element, Rest, NewRest).
 
 
+
+
+% Prédicat pour générer un nombre aléatoire entre Min et Max
+random_between(Min, Max, RandomNum) :-
+    random(Min, Max, RandomNum).
+
+% Prédicat pour générer une liste de 3 chiffres aléatoires entre 1 et 12
+generate_random_list(List) :-
+    generate_random_number_list(3, 1, 12, List).
+
+% Prédicat récursif pour générer une liste de N chiffres aléatoires entre Min et Max
+generate_random_number_list(0, _, _, []).
+generate_random_number_list(N, Min, Max, [RandomNum | Rest]) :-
+    N > 0,
+    random_between(Min, Max, RandomNum),
+    NewN is N - 1,
+    generate_random_number_list(NewN, Min, Max, Rest).
