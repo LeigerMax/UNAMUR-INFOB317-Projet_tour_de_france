@@ -7,8 +7,10 @@
 
 :- consult('tbot.pl').
 :- consult('gamebot.pl').
-:- consult('minimax.pl').
+:- consult('minmax.pl').
 :- consult('plateau.pl').
+:- consult('etat.pl').
+:- consult('alphabeta.pl').
 
 
 /* --------------------------------------------------------------------- */
@@ -21,16 +23,17 @@
 
 echo(WebSocket) :-
     ws_receive(WebSocket, Message, [format(json)]),
-    (   Message.opcode == close
-    ->  true
-    ;   get_response(Message.data, Response),
+    %(   Message.opcode == close
+    %->  true
+    %;   
+    get_response(Message.data, Response),
         writeln(Response),
         string_to_atom_list(Response, AtomResponse),
         produire_reponse(AtomResponse, ResponseBot),
         writeln(ResponseBot),
         ws_send(WebSocket, json(ResponseBot)),
-        echo(WebSocket)
-    ).
+        echo(WebSocket).
+   % ).
 
 run :-
     run(9999).
@@ -82,18 +85,50 @@ process_player_cards(PlayerId, Cards, Response) :-
 
 
 /**************************** Joueur qui doit jouer  ****************************/  
-process_message(_{type: "playerWhoPlay", playerId: PlayerId, cyclistId: CyclistId}, Response) :-
+process_message(_{type: "playerWhoPlay", playerId: PlayerId, cyclistId: CyclistId, count:Count}, Response) :-
     writeln("playerWhoPlay"),
     writeln(PlayerId),
-    writeln(CyclistId),
     !,
-    sleep(2),
-    process_player_play(PlayerId, CyclistId, Response).
+    sleep(1),
+    process_player_play(PlayerId, CyclistId, Count, Response).
     
-process_player_play(PlayerId, CyclistId, Response) :-
+process_player_play(PlayerId, CyclistId, Count, Response) :-
     get_player_cards(PlayerId, Cards), % Get les cartes du joueur
     writeln('Cartes du joueur : ' + Cards),
-    get_card_play(PlayerId, CyclistId, Cards, MaxCard, Colonne, Cards), % Get la plus grande carte de la main
+    Colonne is 1,
+    (Count = 1
+        ->  set_cyclist_play("Belgique", 1, 0),
+            set_cyclist_play("Belgique", 2, 0),
+            set_cyclist_play("Belgique", 3, 0),
+            set_cyclist_play("Italie", 1, 0),
+            set_cyclist_play("Italie", 2, 0),
+            set_cyclist_play("Italie", 3, 0),
+            set_cyclist_play("Hollande", 1, 0),
+            set_cyclist_play("Hollande", 2, 0),
+            set_cyclist_play("Hollande", 3, 0),
+            set_cyclist_play("Allemagne", 1, 0),
+            set_cyclist_play("Allemagne", 2, 0),
+            set_cyclist_play("Allemagne", 3, 0)
+            ; write("")
+    ),
+    %get_card_play(PlayerId, CyclistId, Cards, MaxCard, Colonne, Cards), % Get la plus grande carte de la main
+    start_maxmax(PlayerId, CyclistId, MaxCard),
+    (Count = 12
+        ->  set_cyclist_play("Belgique", 1,0),
+            set_cyclist_play("Belgique", 2,0),
+            set_cyclist_play("Belgique", 3,0),
+            set_cyclist_play("Italie", 1,0),
+            set_cyclist_play("Italie", 2,0),
+            set_cyclist_play("Italie", 3,0),
+            set_cyclist_play("Hollande", 1,0),
+            set_cyclist_play("Hollande", 2,0),
+            set_cyclist_play("Hollande", 3,0),
+            set_cyclist_play("Allemange", 1,0),
+            set_cyclist_play("Allemange", 2,0),
+            set_cyclist_play("Allemange", 3,0)
+        ;   set_cyclist_play(PlayerId, CyclistId,1)
+    ),
+    writeln("MaxCard"+MaxCard),
     Response = json{status: 'success', message: 'Player find',type: "playerWhoPlay", playerId: PlayerId, maxCard: MaxCard, colonne: Colonne}.
     
 

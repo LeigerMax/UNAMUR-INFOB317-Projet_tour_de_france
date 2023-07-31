@@ -136,12 +136,13 @@ methods: {
     }
   },
 
-  sendPlayerPlay(playerId,cyclistId) {
+  sendPlayerPlay(playerId,cyclistId, count) {
     if (this.socket.readyState === WebSocket.OPEN) {
       const message = {
         type: "playerWhoPlay",
         playerId: playerId,
-        cyclistId: cyclistId
+        cyclistId: cyclistId, 
+        count: count
       };
       this.socket.send(JSON.stringify(message));
     } else {
@@ -191,13 +192,21 @@ methods: {
       const colonne = message.colonne;
       console.log(`Joueur qui doit jouer : ${playerId}`);
 
-    //if(playerId === "" || playerId === "") {
+    //if(playerId === "Hollande" || playerId === "Allemagne") {
         console.log("BOT A JOUER");
         const choixCarteSelect = document.getElementById('choix_cartes-select');
         const choixColonneSelect = document.getElementById('choix_colonne-select');
-        choixCarteSelect.value = maxCard; // Sélectionne la plus grande carte
-        choixColonneSelect.value = colonne; // Sélectionne la colonne
-        //choixColonneSelect.options[1].selected = true;
+       
+        if (choixCarteSelect.options.length === 2) {
+          // Si choixCarteSelect contient un seul élément, choisissez cette option
+          choixCarteSelect.options[1].selected = true;
+          choixColonneSelect.value = 1; // Sélectionne la colonne
+        } 
+        else {
+          choixCarteSelect.value = maxCard; // Sélectionne la plus grande carte
+          choixColonneSelect.value = colonne; // Sélectionne la colonne
+        }
+
 
         var selectElement = document.getElementById("deplacer_button_dynamique");
         selectElement.style.backgroundColor = "rgb(234, 211, 66)";
@@ -493,15 +502,15 @@ methods: {
 
 
 
-       // Envoie le joueur qui doit jouer au serveur via WebSocket
-       this.sendPlayerPlay("Belgique",1);
+      // Envoie le joueur qui doit jouer au serveur via WebSocket
+      this.sendPlayerPlay("Belgique",1, 1);
 
     },
 
 
     // Met à jour l'input des cartes disponibles en fonction du joueur à jouer
     carte_dynamique() {
-
+      
       // Cherche le joueur qui doit jouer
       var nom = "";
       if (this.move_card_counter <= 3) {
@@ -692,7 +701,7 @@ methods: {
       this.sendPlayerCards(this.cartes, nom);
 
 
-      this.sendPlayerPlay(nom,this.choixCycliste);
+      this.sendPlayerPlay(nom,this.choixCycliste,this.move_counter);
 
     },
 
@@ -816,7 +825,6 @@ methods: {
           const id = "card" + joueur.substring(0, 2) + (i + 1); // gérer le cas où le joueur a une carte de moins
           const cardElement = document.getElementById(id);
           cardElement.textContent = numeros[i];
-
           i++;
         }
 
