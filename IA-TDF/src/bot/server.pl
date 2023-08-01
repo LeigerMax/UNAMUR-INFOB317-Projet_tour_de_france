@@ -15,7 +15,7 @@
 
 /* --------------------------------------------------------------------- */
 /*                                                                       */
-/*                            Création Serv                              */
+/*                                  TBot                                 */
 /*                                                                       */
 /* --------------------------------------------------------------------- */
 
@@ -58,7 +58,7 @@ get_response(Message, Response) :-
 
 /* --------------------------------------------------------------------- */
 /*                                                                       */
-/*                           Nouvel écho de jeu                          */
+/*                                  GAME                                 */
 /*                                                                       */
 /* --------------------------------------------------------------------- */
 
@@ -74,17 +74,21 @@ card_echo(WebSocket) :-
     ).
 
 /**************************** Cartes ****************************/
+
+% Traite les messages de type "playerCards"
 process_message(_{type: "playerCards", playerId: PlayerId, cards: Cards}, Response) :-
     process_player_cards(PlayerId, Cards, Response).
 
-
+% Traite les cartes du joueur
 process_player_cards(PlayerId, Cards, Response) :-
-    set_player_cards(PlayerId, Cards),  % Enregistre les cartes du joueur
-    get_max_card(Cards, MaxCard), % Get la plus grande carte de la main
+    set_player_cards(PlayerId, Cards),  
+    get_max_card(Cards, MaxCard), 
     Response = json{status: 'success', message: 'Cards received', type: "playerCards", playerId: PlayerId, cards: Cards, maxCard: MaxCard}.
 
 
 /**************************** Joueur qui doit jouer  ****************************/  
+
+% Traite les messages de type "playerWhoPlay"
 process_message(_{type: "playerWhoPlay", playerId: PlayerId, cyclistId: CyclistId, count:Count}, Response) :-
     writeln("playerWhoPlay"),
     writeln(PlayerId),
@@ -92,8 +96,9 @@ process_message(_{type: "playerWhoPlay", playerId: PlayerId, cyclistId: CyclistI
     sleep(1),
     process_player_play(PlayerId, CyclistId, Count, Response).
     
+% Faire jouer le bot et appel de l'algorithme maxmax    
 process_player_play(PlayerId, CyclistId, Count, Response) :-
-    get_player_cards(PlayerId, Cards), % Get les cartes du joueur
+    get_player_cards(PlayerId, Cards), 
     writeln('Cartes du joueur : ' + Cards),
     Colonne is 1,
     (Count = 1
@@ -128,27 +133,29 @@ process_player_play(PlayerId, CyclistId, Count, Response) :-
             set_cyclist_play("Allemange", 3,0)
         ;   set_cyclist_play(PlayerId, CyclistId,1)
     ),
-    writeln("MaxCard"+MaxCard),
     Response = json{status: 'success', message: 'Player find',type: "playerWhoPlay", playerId: PlayerId, maxCard: MaxCard, colonne: Colonne}.
     
 
 /**************************** Position cyclistes ****************************/
+
+% Traite les messages de type "cyclistePosition"
 process_message(_{type: "cyclistePosition", playerId: PlayerId, cyclistId: CyclistId, ligne: Ligne, colonne: Colonne}, Response) :-
     set_cyclist_position(PlayerId, CyclistId, Ligne, Colonne),
     process_player_cyclistePosition(PlayerId, CyclistId, Ligne, Colonne, Response).
  
+% Traite la position des cyclistes 
 process_player_cyclistePosition(PlayerId, CyclistId, Ligne, Colonne, Response) :-
     get_cyclist_position(PlayerId, CyclistId, Ligne, Colonne),
     Response = json{status: 'success', message: 'Cycliste Position', type: "cyclistePosition", playerId: PlayerId, cyclistId: CyclistId, ligne: Ligne, colonne: Colonne}.
 
 
-
-
 /**************************** End Game ****************************/
+
+% Traite les messages de type "endGame"
 process_message(_{type: "endGame"}, Response) :-
     process_end_game(Response).
 
+% Traite la fin du jeu
 process_end_game(Response) :-
-    % Traitement de la fin du jeu
     stop,
     Response = json{status: 'success', message: 'End Game', type: "endGame"}.

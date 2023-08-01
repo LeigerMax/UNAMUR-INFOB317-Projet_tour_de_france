@@ -186,6 +186,24 @@ regle_rep(carte,12,
    get_max_card(Cards, MaxCard),
    Ligne = ['Vous devriez jouer la carte ', MaxCard, '.'].
 
+regle_rep(carte,12, 
+   [[ quelle ], 4, [ carte ], 2, [jouer],  4, [ hollande]], [Ligne]) :-
+   PlayerId = "Hollande",
+   get_player_cards(PlayerId, Cards),
+   [Carte | _] = Cards,
+   get_max_card(Cards, MaxCard),
+   Ligne = ['Vous devriez jouer la carte ', MaxCard, '.'].
+
+
+regle_rep(carte,12, 
+   [[ quelle ], 4, [ carte ], 2, [jouer],  4, [ allemagne]], [Ligne]) :-
+   PlayerId = "Allemagne",
+   get_player_cards(PlayerId, Cards),
+   [Carte | _] = Cards,
+   get_max_card(Cards, MaxCard),
+   Ligne = ['Vous devriez jouer la carte ', MaxCard, '.'].
+   
+
 % ----------------------------------------------------------------%
 
 

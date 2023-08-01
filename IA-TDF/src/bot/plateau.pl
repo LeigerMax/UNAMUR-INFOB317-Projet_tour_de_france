@@ -240,14 +240,12 @@ bougerCyclisteUnique((LignPos, ColPos), NbMouvement, UniqueOutcomes) :-
 /**********************************************************************/
 
 % Vérifie si c'est une case supplemantaire
-% Entrées : Ligne
 is_case_supplementaire(Ligne) :-
     Ligne >= 103,
     Ligne =< 112.
 
 
 % Vérifie si une case est présente dans le plateau
-% Entrées : Ligne, Colonne
 case_presente(Ligne, Colonne) :-
     plateau(Plateau),
     member([Ligne, Colonne, _, true], Plateau).
@@ -255,15 +253,12 @@ case_presente(Ligne, Colonne) :-
 
 
 % Vérifie si une case est une case chance
-% Entrées : Ligne, Colonne
 case_chance(Ligne, Colonne) :-
     plateau(Plateau),
     member([Ligne, Colonne, true, _], Plateau).
     %writeln('Case chance : Ligne ' + Ligne + ', Colonne ' + Colonne).
 
 % Vérifie si une case est une case chance, et détermine la nouvelle colonne en conséquence.
-% Entrées : Ligne, Colonne
-% Sorties : NewColonne
 case_chance2(Ligne,Colonne,NewColonne) :-
     (case_chance(Ligne, Colonne) % Vérifier si c'est une case chance
         -> NewColonne is 2
@@ -272,7 +267,6 @@ case_chance2(Ligne,Colonne,NewColonne) :-
     ).
 
 % Vérifie si une case est disponible (aucun cycliste présent)
-% Entrées : Ligne, Colonne
 case_disponible(Ligne, Colonne) :-
     Players = ["Belgique", "Italie", "Hollande", "Allemagne"],
     Cyclists = [1, 2, 3],
@@ -291,7 +285,6 @@ case_disponible(Ligne, Colonne) :-
 
 
 % Vérifie si une case est disponible (aucun cycliste présent)
-% Entrées : Ligne, Colonne
 case_disponible2(Ligne, Colonne) :-
     (case_disponible(Ligne, Colonne) % Vérifier si la case est disponible
         -> writeln('Case disponible')
@@ -299,7 +292,6 @@ case_disponible2(Ligne, Colonne) :-
     ).
 
 % Vérifie si une case est disponible, présente sur le plateau, et accessible dans l'une des 4 colonnes possibles
-% Entrées : LigneArrivee, ColonneChoix, Chute
 case_disponible_et_presente(LigneArrivee, 1, Chute,ColonneChoix, Disponible) :-
     % Vérifier pour la première colonne
     ColonneArrive1 is 1,
@@ -347,7 +339,7 @@ case_disponible_et_presente(LigneArrivee, 2, Chute,ColonneChoix, Disponible) :-
     ).
 
 
-
+% Simule l'avancer d'un cycliste sur le plateau
 avancer_cycliste(PlayerId, CyclisteId, Card, ColonneChoix, Chute) :-
     get_cyclist_position(PlayerId, CyclisteId, LigneActuelle, ColonneActuelle),
     LigneArrivee is LigneActuelle + Card,
@@ -362,7 +354,6 @@ avancer_cycliste(PlayerId, CyclisteId, Card, ColonneChoix, Chute) :-
 
 
 % Vérifie si une case est disponible, présente sur le plateau, et accessible dans l'une des 4 colonnes possibles
-% Entrées : LigneArrivee
 case_disponible_et_presente(LigneArrivee) :-
     % Vérifier pour chaque colonne possible
     between(1, 4, ColonneChoix),
