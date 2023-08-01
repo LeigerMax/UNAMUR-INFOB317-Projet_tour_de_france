@@ -1,5 +1,5 @@
 
-![Generic badge](https://img.shields.io/badge/STATUT-DEV-blue.svg)   ![Generic badge](https://img.shields.io/badge/VERSION-1.0-green.svg) ![Generic badge](https://img.shields.io/badge/SCHOOL_PROJET-UNamur-green.svg)
+![Generic badge](https://img.shields.io/badge/STATUT-DEV-blue.svg)   ![Generic badge](https://img.shields.io/badge/VERSION-2.0-green.svg) ![Generic badge](https://img.shields.io/badge/SCHOOL_PROJET-UNamur-green.svg)
 
 
 # UNamur- Projet IA - Tour de France
