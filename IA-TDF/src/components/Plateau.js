@@ -48,18 +48,18 @@ class Plateau {
             { nbLignes: 90, nbColonnes: 2 },
         ];
         this.caseIndisponible = [
-            [10, 1],
-            [12, 1],
-            [38, 1],
-            [38, 2],
-            [38, 3],
-            [39, 0],
-            [39, 1],
-            [39, 2],
-            [100, 1],
-            [100, 2],
-            [101, 1],
-            [101, 2],
+            { nbLignes: 10, nbColonnes: 1 },
+            { nbLignes: 12, nbColonnes: 1 },
+            { nbLignes: 38, nbColonnes: 1 },
+            { nbLignes: 38, nbColonnes: 2 },
+            { nbLignes: 38, nbColonnes: 3 },
+            { nbLignes: 39, nbColonnes: 0 },
+            { nbLignes: 39, nbColonnes: 1 },
+            { nbLignes: 39, nbColonnes: 2 },
+            { nbLignes: 100, nbColonnes: 1 },
+            { nbLignes: 100, nbColonnes: 2 },
+            { nbLignes: 101, nbColonnes: 1 },
+            { nbLignes: 101, nbColonnes: 2 },
         ];
     }
 
@@ -80,15 +80,16 @@ class Plateau {
      */
     check_position_plateau(ligne, colonne) {
         for (const circuit of this.case) {
-            if (ligne >= circuit.debut && ligne <= circuit.fin) {
-                const nbColonnes = Array.isArray(circuit.nbColonnes) ? circuit.nbColonnes[colonne - 1] : circuit.nbColonnes;
-                if (colonne >= 1 && colonne <= nbColonnes) {
-                    return true;
-                }
+          if (ligne >= circuit.debut && ligne <= circuit.fin) {
+            const nbColonnes = Array.isArray(circuit.nbColonnes) ? circuit.nbColonnes[colonne - 1] : circuit.nbColonnes;
+            if (colonne >= 1 && colonne <= nbColonnes) {
+              return true;
             }
+          }
         }
         return false;
-    }
+      }
+      
 
 
     /**
@@ -144,12 +145,14 @@ class Plateau {
      */
     check_case_indisponible(ligne, colonne) {
         for (const caseIndispo of this.caseIndisponible) {
-            if (caseIndispo[0] === ligne && caseIndispo[1] === colonne) {
-                return true;
-            }
+          if (caseIndispo.nbLignes === ligne && caseIndispo.nbColonnes === colonne) {
+            return true;
+          }
         }
         return false;
-    }
+      }
+      
+      
 
     /**
      * Renvoie le nombre de colonnes pour une ligne donnée

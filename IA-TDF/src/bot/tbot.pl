@@ -3,6 +3,11 @@
 :- use_module(library(http/thread_httpd)).
 :- use_module(library(http/http_dispatch)).
 
+:- consult('minmax.pl').
+:- consult('plateau.pl').
+:- consult('gamebot.pl').
+:- consult('etat.pl').
+
 
 
 /* --------------------------------------------------------------------- */
@@ -96,8 +101,13 @@ nb_equipes(4).
 
 mclef(but,10).
 mclef(carte,10).
+mclef(carte,11).
+mclef(carte,12).
 mclef(commence,10).
+
 mclef(chance,10).
+mclef(chance,11).
+
 mclef(chute,10).
 mclef(descente,10).
 mclef(depasser,10).
@@ -120,6 +130,17 @@ mclef(plateau, 11).
 mclef(plateau, 12).
 
 mclef(point,10).
+
+mclef(grande, 10).
+mclef(grande, 9).
+mclef(grande, 8).
+mclef(grande, 7).
+
+mclef(petite, 10).
+mclef(petite, 9).
+mclef(petite, 8).
+mclef(petite, 7).
+
 
 
 
@@ -145,7 +166,43 @@ regle_rep(but,5,
 
 regle_rep(carte,10,
    [ [ combien ], 4, [ carte ] ],
-   [ [ "Le", jeu, est, compose, de, 96, cartes, secondes, numerotees, de, 1, "à", "12.", "Une", fois, que, toutes, les, cartes, du, paquet, ont, "été" ,jouees, le, paquet, est, melange, "à", "nouveau."] ] ).
+   [ [ "Le", jeu, est, compose, de, 96, cartes, secondes, numerotees, de, 1, a, "12.", "Une", fois, que, toutes, les, cartes, du, paquet, ont, ete ,jouees, le, paquet, est, melange, a, "nouveau."] ] ).
+
+% ----------------------------------------------------------------%
+
+regle_rep(carte,11, 
+   [[ quelle ], 4, [ carte ], 2, [jouer], 4,  [ belgique]], [Ligne]) :-
+   PlayerId = "Belgique",
+   get_player_cards(PlayerId, Cards),
+   [Carte | _] = Cards,
+   get_max_card(Cards, MaxCard),
+   Ligne = ['Vous devriez jouer la carte ', MaxCard, '.'].
+
+regle_rep(carte,12, 
+   [[ quelle ], 4, [ carte ], 2, [jouer],  4, [ italie]], [Ligne]) :-
+   PlayerId = "Italie",
+   get_player_cards(PlayerId, Cards),
+   [Carte | _] = Cards,
+   get_max_card(Cards, MaxCard),
+   Ligne = ['Vous devriez jouer la carte ', MaxCard, '.'].
+
+regle_rep(carte,12, 
+   [[ quelle ], 4, [ carte ], 2, [jouer],  4, [ hollande]], [Ligne]) :-
+   PlayerId = "Hollande",
+   get_player_cards(PlayerId, Cards),
+   [Carte | _] = Cards,
+   get_max_card(Cards, MaxCard),
+   Ligne = ['Vous devriez jouer la carte ', MaxCard, '.'].
+
+
+regle_rep(carte,12, 
+   [[ quelle ], 4, [ carte ], 2, [jouer],  4, [ allemagne]], [Ligne]) :-
+   PlayerId = "Allemagne",
+   get_player_cards(PlayerId, Cards),
+   [Carte | _] = Cards,
+   get_max_card(Cards, MaxCard),
+   Ligne = ['Vous devriez jouer la carte ', MaxCard, '.'].
+   
 
 % ----------------------------------------------------------------%
 
@@ -153,8 +210,8 @@ regle_rep(carte,10,
 regle_rep(commence,5,
   [ [ commence ], 4 , [ partie ] ],
   [ [ des, X, equipes, "c'est", au, joueur, ayant, la, plus, haute, carte, secondes, de, "commencer." ] ] ):-
-
      nb_equipes(X).
+
 
 % ----------------------------------------------------------------%
 
@@ -259,6 +316,85 @@ regle_rep(point,10,
   [ [comment],4, [ point ] ],
   [ [ "A", chaque, fois, "qu'un", cycliste, joue, son, tour, il, gagne, 10, points, "supplementaires."] ] ).
 
+% ----------------------------------------------------------------%
+
+regle_rep(grande,10,
+  [ [grande], 2, [ carte ], 2 , [belgique] ],
+  [ [ "La", plus, grande, carte, est, MaxCardBel] ] ):-
+      PlayerId = "Belgique",
+      get_max_card(PlayerId,MaxCardBel).
+
+regle_rep(grande,9,
+  [ [grande], 2, [ carte ], 2 , [italie] ],
+  [ [ "La", plus, grande, carte, est, MaxCardIta] ] ):-
+      PlayerId = "Italie",
+      get_max_card(PlayerId,MaxCardIta).
+
+regle_rep(grande,8,
+   [ [grande], 2, [ carte ], 2 , [hollande] ],
+   [ [ "La", plus, grande, carte, est, MaxCardHol] ] ):-
+       PlayerId = "Hollande",
+       get_max_card(PlayerId,MaxCardHol).
+ 
+regle_rep(grande,7,
+  [ [grande], 2, [ carte ], 2 , [allemagne] ],
+  [ [ "La", plus, grande, carte, est, MaxCardAll] ] ):-
+      PlayerId = "Allemagne",
+      get_max_card(PlayerId,MaxCardAll).
+
+% ----------------------------------------------------------------%
+
+regle_rep(petite,10,    
+  [ [petite], 2, [ carte ], 2 , [belgique] ],
+  [ [ "La", plus, petite, carte, est, MinCardBel] ] ):-
+      PlayerId = "Belgique",
+      get_min_card(PlayerId, MinCardBel).
+
+regle_rep(petite,10,    
+   [ [petite], 2, [ carte ], 2 , [italie] ],
+   [ [ "La", plus, petite, carte, est, MinCardIta] ] ):-
+       PlayerId = "Italie",
+       get_min_card(PlayerId, MinCardIta).
+
+regle_rep(petite,10,    
+   [ [petite], 2, [ carte ], 2 , [allemagne] ],
+   [ [ "La", plus, petite, carte, est, MinCardAll] ] ):-
+       PlayerId = "Allemagne",
+       get_min_card(PlayerId, MinCardAll).
+ 
+regle_rep(petite,10,    
+   [ [petite], 2, [ carte ], 2 , [hollande] ],
+   [ [ "La", plus, petite, carte, est, MinCardHol] ] ):-
+       PlayerId = "Hollande",
+       get_min_card(PlayerId, MinCardHol).
+
+% ----------------------------------------------------------------%
+
+
+
+/* --------------------------------------------------------------------- */
+/*                                                                       */
+/*                             Tbot lien jeu                             */
+/*                                                                       */
+/* --------------------------------------------------------------------- */
+/*
+% Prédicat pour récupérer les cartes du joueur à partir du serveur
+get_player_cards(PlayerId, Cards) :-
+   gamebot:get_player_cards(PlayerId, Cards).
+
+
+% Prédicat pour obtenir la plus grande carte de la main du joueur
+get_max_card(PlayerId, MaxCard) :-
+   get_player_cards(PlayerId, Cards),
+   get_max_card(Cards, MaxCard).
+
+% Exemple d'utilisation du prédicat get_max_card/2 dans produire_reponse/2
+produire_reponse([quelle, carte, je, dois, jouer], [Ligne]) :-
+% Récupérer l'identifiant du joueur (par exemple, à partir de la question ou d'un état interne)
+PlayerId = "Belgique",
+get_max_card(PlayerId, Carte),
+Ligne = ['Vous devriez jouer la carte ', Carte, '.'].
+*/
 
 /* --------------------------------------------------------------------- */
 /*                                                                       */
@@ -583,6 +719,7 @@ synonymes(equipe, [team]).
 synonymes(help, [aide]).
 synonymes(score, [classement]).
 synonymes(plateau, [map]).
+synonymes(grande, [elevee, forte]).
 
 % Modification du prédicat mFind/3 pour rechercher des synonymes
 mFind(M, L, Variant) :-

@@ -4,11 +4,18 @@
 :- use_module(library(lists)).
 :- use_module(library(http/websocket)).
 
+
 :- consult('tbot.pl').
+:- consult('gamebot.pl').
+:- consult('minmax.pl').
+:- consult('plateau.pl').
+:- consult('etat.pl').
+:- consult('alphabeta.pl').
+
 
 /* --------------------------------------------------------------------- */
 /*                                                                       */
-/*                            Création Serv                              */
+/*                                  TBot                                 */
 /*                                                                       */
 /* --------------------------------------------------------------------- */
 
@@ -16,16 +23,17 @@
 
 echo(WebSocket) :-
     ws_receive(WebSocket, Message, [format(json)]),
-    (   Message.opcode == close
-    ->  true
-    ;   get_response(Message.data, Response),
+    %(   Message.opcode == close
+    %->  true
+    %;   
+    get_response(Message.data, Response),
         writeln(Response),
         string_to_atom_list(Response, AtomResponse),
         produire_reponse(AtomResponse, ResponseBot),
         writeln(ResponseBot),
         ws_send(WebSocket, json(ResponseBot)),
-        echo(WebSocket)
-    ).
+        echo(WebSocket).
+   % ).
 
 run :-
     run(9999).
@@ -50,7 +58,7 @@ get_response(Message, Response) :-
 
 /* --------------------------------------------------------------------- */
 /*                                                                       */
-/*                           Nouvel écho de cartes                        */
+/*                                  GAME                                 */
 /*                                                                       */
 /* --------------------------------------------------------------------- */
 
@@ -66,38 +74,88 @@ card_echo(WebSocket) :-
     ).
 
 /**************************** Cartes ****************************/
+
+% Traite les messages de type "playerCards"
 process_message(_{type: "playerCards", playerId: PlayerId, cards: Cards}, Response) :-
-    writeln("playerCards"), 
-    writeln(PlayerId), 
-    writeln(Cards),    
-    !,
     process_player_cards(PlayerId, Cards, Response).
 
+% Traite les cartes du joueur
 process_player_cards(PlayerId, Cards, Response) :-
-    Response = json{status: 'success', message: 'Cards received',type: "playerCards", playerId: PlayerId, cards: Cards}.
-      
+    set_player_cards(PlayerId, Cards),  
+    get_max_card(Cards, MaxCard), 
+    Response = json{status: 'success', message: 'Cards received', type: "playerCards", playerId: PlayerId, cards: Cards, maxCard: MaxCard}.
+
 
 /**************************** Joueur qui doit jouer  ****************************/  
-process_message(_{type: "playerWhoPlay", playerId: PlayerId}, Response) :-
+
+% Traite les messages de type "playerWhoPlay"
+process_message(_{type: "playerWhoPlay", playerId: PlayerId, cyclistId: CyclistId, count:Count}, Response) :-
     writeln("playerWhoPlay"),
     writeln(PlayerId),
     !,
-    process_player_play(PlayerId, Response).
+    sleep(1),
+    process_player_play(PlayerId, CyclistId, Count, Response).
     
-process_player_play(PlayerId, Response) :-
-    Response = json{status: 'success', message: 'Player find',type: "playerWhoPlay", playerId: PlayerId}.
+% Faire jouer le bot et appel de l'algorithme maxmax    
+process_player_play(PlayerId, CyclistId, Count, Response) :-
+    get_player_cards(PlayerId, Cards), 
+    writeln('Cartes du joueur : ' + Cards),
+    Colonne is 1,
+    (Count = 1
+        ->  set_cyclist_play("Belgique", 1, 0),
+            set_cyclist_play("Belgique", 2, 0),
+            set_cyclist_play("Belgique", 3, 0),
+            set_cyclist_play("Italie", 1, 0),
+            set_cyclist_play("Italie", 2, 0),
+            set_cyclist_play("Italie", 3, 0),
+            set_cyclist_play("Hollande", 1, 0),
+            set_cyclist_play("Hollande", 2, 0),
+            set_cyclist_play("Hollande", 3, 0),
+            set_cyclist_play("Allemagne", 1, 0),
+            set_cyclist_play("Allemagne", 2, 0),
+            set_cyclist_play("Allemagne", 3, 0)
+            ; write("")
+    ),
+    %get_card_play(PlayerId, CyclistId, Cards, MaxCard, Colonne, Cards), % Get la plus grande carte de la main
+    start_maxmax(PlayerId, CyclistId, MaxCard),
+    (Count = 12
+        ->  set_cyclist_play("Belgique", 1,0),
+            set_cyclist_play("Belgique", 2,0),
+            set_cyclist_play("Belgique", 3,0),
+            set_cyclist_play("Italie", 1,0),
+            set_cyclist_play("Italie", 2,0),
+            set_cyclist_play("Italie", 3,0),
+            set_cyclist_play("Hollande", 1,0),
+            set_cyclist_play("Hollande", 2,0),
+            set_cyclist_play("Hollande", 3,0),
+            set_cyclist_play("Allemange", 1,0),
+            set_cyclist_play("Allemange", 2,0),
+            set_cyclist_play("Allemange", 3,0)
+        ;   set_cyclist_play(PlayerId, CyclistId,1)
+    ),
+    Response = json{status: 'success', message: 'Player find',type: "playerWhoPlay", playerId: PlayerId, maxCard: MaxCard, colonne: Colonne}.
     
 
 /**************************** Position cyclistes ****************************/
-process_message(_{type: "cyclistePosition", playerId: PlayerId, cyclistId: CyclistId, positionCycliste: PositionCycliste}, Response) :-
-    writeln("cyclistePosition"),
-    writeln(PlayerId),
-    writeln(CyclistId),
-    writeln(PositionCycliste),
-    !,
-    process_player_cyclistePosition(PlayerId, CyclistId, PositionCycliste, Response).
 
-process_player_cyclistePosition(PlayerId, CyclistId, PositionCycliste, Response) :-
-    Response = json{status: 'success', message: 'Cycliste Position', type: "cyclistePosition", playerId: PlayerId, cyclistId: CyclistId, positionCycliste: PositionCycliste}.
+% Traite les messages de type "cyclistePosition"
+process_message(_{type: "cyclistePosition", playerId: PlayerId, cyclistId: CyclistId, ligne: Ligne, colonne: Colonne}, Response) :-
+    set_cyclist_position(PlayerId, CyclistId, Ligne, Colonne),
+    process_player_cyclistePosition(PlayerId, CyclistId, Ligne, Colonne, Response).
+ 
+% Traite la position des cyclistes 
+process_player_cyclistePosition(PlayerId, CyclistId, Ligne, Colonne, Response) :-
+    get_cyclist_position(PlayerId, CyclistId, Ligne, Colonne),
+    Response = json{status: 'success', message: 'Cycliste Position', type: "cyclistePosition", playerId: PlayerId, cyclistId: CyclistId, ligne: Ligne, colonne: Colonne}.
 
 
+/**************************** End Game ****************************/
+
+% Traite les messages de type "endGame"
+process_message(_{type: "endGame"}, Response) :-
+    process_end_game(Response).
+
+% Traite la fin du jeu
+process_end_game(Response) :-
+    stop,
+    Response = json{status: 'success', message: 'End Game', type: "endGame"}.
