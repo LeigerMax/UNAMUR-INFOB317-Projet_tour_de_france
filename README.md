@@ -17,6 +17,7 @@
 
 
 ## About The Projet
+Recreation of the "Tour de France Plateau" game for 4 players, including 2 bots, using the MaxMax algorithm developed in Prolog.
 
 ## Installation
 1. Download the Project
