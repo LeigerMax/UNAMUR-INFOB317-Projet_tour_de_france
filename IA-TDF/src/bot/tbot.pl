@@ -113,6 +113,7 @@ mclef(descente,10).
 mclef(depasser,10).
 
 mclef(deplacer,10).
+mclef(deplacer,11).
 mclef(deplacer,9).
 mclef(deplacer,8).
 mclef(deplacer,7).
@@ -132,14 +133,14 @@ mclef(plateau, 12).
 mclef(point,10).
 
 mclef(grande, 10).
-mclef(grande, 9).
-mclef(grande, 8).
-mclef(grande, 7).
+mclef(grande, 11).
+mclef(grande, 12).
+mclef(grande, 13).
 
 mclef(petite, 10).
-mclef(petite, 9).
-mclef(petite, 8).
-mclef(petite, 7).
+mclef(petite, 11).
+mclef(petite, 12).
+mclef(petite, 13).
 
 
 
@@ -186,24 +187,6 @@ regle_rep(carte,12,
    get_max_card(Cards, MaxCard),
    Ligne = ['Vous devriez jouer la carte ', MaxCard, '.'].
 
-regle_rep(carte,12, 
-   [[ quelle ], 4, [ carte ], 2, [jouer],  4, [ hollande]], [Ligne]) :-
-   PlayerId = "Hollande",
-   get_player_cards(PlayerId, Cards),
-   [Carte | _] = Cards,
-   get_max_card(Cards, MaxCard),
-   Ligne = ['Vous devriez jouer la carte ', MaxCard, '.'].
-
-
-regle_rep(carte,12, 
-   [[ quelle ], 4, [ carte ], 2, [jouer],  4, [ allemagne]], [Ligne]) :-
-   PlayerId = "Allemagne",
-   get_player_cards(PlayerId, Cards),
-   [Carte | _] = Cards,
-   get_max_card(Cards, MaxCard),
-   Ligne = ['Vous devriez jouer la carte ', MaxCard, '.'].
-   
-
 % ----------------------------------------------------------------%
 
 
@@ -247,11 +230,11 @@ regle_rep(deplacer,10,
   [ [ deplacer ], 2, [ coureur ], 4 ,[ occupee ] ],
   [ [ non, ce "n'est", pas, un, mouvement, "autorise." ]]).
 
-regle_rep(deplacer,8,
+regle_rep(deplacer,11,
   [ [ deplacer ], 2, [ coureur ], 3 ,[ diagonal ] ], 
   [ [ oui, "c'est", "possible.", les, deplacements, se, font, toujours, de, "l'avant.", et, cela, fonctionne, donc, sur, une, case, "diagonale." ]]).
    
- regle_rep(deplacer,8,
+ regle_rep(deplacer,11,
   [ [ deplacer ], 2, [ coureur ], 3 ,[ adjacente ] ], 
   [ [ oui, "c'est", "possible.", les, deplacements, se, font, toujours, de, "l'avant.", et, cela, fonctionne, donc, sur, une, case, "adjacente." ]]).
  
@@ -324,19 +307,19 @@ regle_rep(grande,10,
       PlayerId = "Belgique",
       get_max_card(PlayerId,MaxCardBel).
 
-regle_rep(grande,9,
+regle_rep(grande,11,
   [ [grande], 2, [ carte ], 2 , [italie] ],
   [ [ "La", plus, grande, carte, est, MaxCardIta] ] ):-
       PlayerId = "Italie",
       get_max_card(PlayerId,MaxCardIta).
 
-regle_rep(grande,8,
+regle_rep(grande,12,
    [ [grande], 2, [ carte ], 2 , [hollande] ],
    [ [ "La", plus, grande, carte, est, MaxCardHol] ] ):-
        PlayerId = "Hollande",
        get_max_card(PlayerId,MaxCardHol).
  
-regle_rep(grande,7,
+regle_rep(grande,13,
   [ [grande], 2, [ carte ], 2 , [allemagne] ],
   [ [ "La", plus, grande, carte, est, MaxCardAll] ] ):-
       PlayerId = "Allemagne",
@@ -350,23 +333,23 @@ regle_rep(petite,10,
       PlayerId = "Belgique",
       get_min_card(PlayerId, MinCardBel).
 
-regle_rep(petite,10,    
+regle_rep(petite,11,    
    [ [petite], 2, [ carte ], 2 , [italie] ],
    [ [ "La", plus, petite, carte, est, MinCardIta] ] ):-
        PlayerId = "Italie",
        get_min_card(PlayerId, MinCardIta).
 
-regle_rep(petite,10,    
+regle_rep(petite,12,    
    [ [petite], 2, [ carte ], 2 , [allemagne] ],
    [ [ "La", plus, petite, carte, est, MinCardAll] ] ):-
        PlayerId = "Allemagne",
        get_min_card(PlayerId, MinCardAll).
  
-regle_rep(petite,10,    
+regle_rep(petite,13,    
    [ [petite], 2, [ carte ], 2 , [hollande] ],
    [ [ "La", plus, petite, carte, est, MinCardHol] ] ):-
        PlayerId = "Hollande",
-       get_min_card(PlayerId, MinCardHol).
+       get_min_card(PlayerId, MinCardHol).   
 
 % ----------------------------------------------------------------%
 
